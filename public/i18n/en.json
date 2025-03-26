@@ -6,10 +6,11 @@
                 "home": "Home",
                 "transactions": "Transactions"
             },
-            "sign-out": "Sign out"
+            "options": {
+                "theme": "Theme",
+                "language": "Language",
+                "sign-out": "Sign out"
+            }
         }
-    },
-    "pages": {
-        "home": ""
     }
 }
