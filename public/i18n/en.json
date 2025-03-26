@@ -1,0 +1,15 @@
+{
+    "teste": "teste",
+    "components": {
+        "navbar": {
+            "pages": {
+                "home": "Home",
+                "transactions": "Transactions"
+            },
+            "sign-out": "Sign out"
+        }
+    },
+    "pages": {
+        "home": ""
+    }
+}
