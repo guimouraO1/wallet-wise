@@ -31,6 +31,15 @@ export interface TransactionsResponse {
     transactionsCount: number;
 }
 
+export interface PayloadMakeTransaction {
+    name: string;
+    amount: number;
+    type: TransactionTypes;
+    paymentMethod: PaymentMethod;
+    accountId: string;
+    description: string;
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -53,5 +62,9 @@ export class TransactionsService {
         }
 
         return this.http.get<TransactionsResponse>(`${environment.apiUrl}/transaction`, { params });
+    }
+
+    makeTransaction(data: PayloadMakeTransaction): Observable<any> {
+        return this.http.post(`${environment.apiUrl}/transaction`, data);
     }
 }

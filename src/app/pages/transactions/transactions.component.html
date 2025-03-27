@@ -32,9 +32,16 @@
             <option value="pix">Pix</option>
           </select>
         </div>
-        <!-- <ngx-sonner-toaster richColors  /> -->
-        <!-- <button class="btn btn-primary btn-soft" (click)="toast.error('My first toast')">Give me a toast</button> -->
-        <button class="btn btn-primary btn-soft">Make Transaction</button>
+
+        @if (transactionsCount <= 0) {
+          <button (click)="getTransactions()" class="btn btn-error btn-soft">Try Again</button>
+        }
+
+        @if (selectedTransactions.length > 0) {
+          <button (click)="deleteTransactions()" class="btn btn-error btn-soft">Delete Transactions</button>
+        }
+
+        <button (click)="makeTransaction()" class="btn btn-primary btn-soft">Make Transaction</button>
       </div>
       <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 w-full">
           <table class="table">
@@ -42,7 +49,7 @@
               <tr>
                 <th>
                   <label>
-                    <input type="checkbox" class="checkbox" disabled/>
+                    <input (change)="toggleAllSelection($event)" type="checkbox" class="checkbox" />
                   </label>
                 </th>
                 <th>Name</th>
@@ -59,7 +66,11 @@
                 <tr class="hover:bg-base-300">
                     <td>
                         <label>
-                            <input type="checkbox" class="checkbox" />
+                            <input 
+                              [checked]="selectedTransactions.includes(transaction)"
+                              (change)="toggleSelection(transaction, $event)" 
+                              type="checkbox" class="checkbox" 
+                            />
                         </label>
                     </td>
                     <td>
@@ -82,8 +93,6 @@
                           [ngClass]="transaction.type === 'withdraw' ? 'text-error': 'text-success'">{{formatMoneyToString(transaction.amount)}}</span>
                     </td>
                 </tr>
-              } @empty {
-                <!-- <button class="btn btn-soft btn-warning" (click)="getTransactions()">Try again</button> -->
               }
             </tbody>
           </table>
@@ -105,3 +114,5 @@
       </div>
     </div>
 </div>
+
+<ngx-sonner-toaster richColors  />

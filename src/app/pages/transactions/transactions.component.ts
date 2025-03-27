@@ -1,22 +1,25 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { PayloadTransaction, PaymentMethod, Transaction, TransactionsService, TransactionTypes } from '../../services/transactions.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, take } from 'rxjs';
 import { AccountService } from '../../services/account.service';
 import { CommonModule } from '@angular/common';
 import { formatMoneyToString } from '../../helpers/format-money';
 import { formatDate } from '../../helpers/formate-date';
-// import { toast, NgxSonnerToaster } from 'ngx-sonner';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { toast, NgxSonnerToaster } from 'ngx-sonner';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Dialog, DialogModule } from '@angular/cdk/dialog';
+import { MakeTransactinoModalComponent } from '../../components/make-transactino-modal/make-transactino-modal.component';
 
 @Component({
     selector: 'app-transactions',
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [CommonModule, ReactiveFormsModule, NgxSonnerToaster, DialogModule],
     templateUrl: './transactions.component.html'
 })
 export class TransactionsComponent implements OnInit {
-    // protected readonly toast = toast;
+    protected readonly toast = toast;
     transactionsService = inject(TransactionsService);
     accountService = inject(AccountService);
+    dialog = inject(Dialog);
     transactions: Transaction[] | undefined;
     transactionsCount: number = 0;
     offset: number = 5;
@@ -26,8 +29,32 @@ export class TransactionsComponent implements OnInit {
     selectedTransactionType = new FormControl<TransactionTypes | ''>('');
     selectedName = new FormControl('');
 
+    selectedTransactions: Transaction[] = [];
+
     async ngOnInit() {
         await this.getTransactions();
+    }
+
+    toggleAllSelection(event: Event) {
+        const isChecked = (event.target as HTMLInputElement).checked;
+
+        if (isChecked && this.transactionsCount > 0 && this.transactions) {
+            this.selectedTransactions = [...this.transactions];
+        } else {
+            this.selectedTransactions = [];
+        }
+    }
+
+    toggleSelection(transaction: Transaction, event: Event) {
+        const isChecked = (event.target as HTMLInputElement).checked;
+
+        if (isChecked) {
+            this.selectedTransactions.push(transaction);
+        } else {
+            this.selectedTransactions = this.selectedTransactions.filter((t) => t !== transaction);
+        }
+
+        console.log(this.selectedTransactions);
     }
 
     async removeNameFilter() {
@@ -83,20 +110,46 @@ export class TransactionsComponent implements OnInit {
         return Math.min(this.page * this.offset, this.transactionsCount);
     }
 
+    async makeTransaction() {
+        this.openDialog();
+    }
+
+    openDialog(): void {
+        const dialogRef = this.dialog.open(MakeTransactinoModalComponent);
+
+        dialogRef.closed.pipe(take(1)).subscribe(async (result) => {
+            if (!result) return;
+
+            this.page = 1;
+            await this.getTransactions();
+        });
+    }
+
+    deleteTransactions() {
+        console.log(this.selectedTransactions);
+        toast.info('Deletado!');
+        this.selectedTransactions = [];
+    }
+
     async getTransactions(){
-        const account = await firstValueFrom(this.accountService.getAccount());
+        try {
+            const account = await firstValueFrom(this.accountService.getAccount());
 
-        const data: PayloadTransaction = {
-            accountId: account.id,
-            page: this.page,
-            offset: this.offset,
-            ...(this.selectedTransactionType.value ? { type: this.selectedTransactionType.value } : {}),
-            ...(this.selectedPaymentMethod.value ? { paymentMethod: this.selectedPaymentMethod.value } : {}),
-            ...(this.selectedName.value ? { name: this.selectedName.value } : {})
-        };
+            const data: PayloadTransaction = {
+                accountId: account.id,
+                page: this.page,
+                offset: this.offset,
+                ...(this.selectedTransactionType.value ? { type: this.selectedTransactionType.value } : {}),
+                ...(this.selectedPaymentMethod.value ? { paymentMethod: this.selectedPaymentMethod.value } : {}),
+                ...(this.selectedName.value ? { name: this.selectedName.value } : {})
+            };
 
-        const { transactions, transactionsCount } = await firstValueFrom(this.transactionsService.getTransactions(data));
-        this.transactions = transactions;
-        this.transactionsCount = transactionsCount;
+            const { transactions, transactionsCount } = await firstValueFrom(this.transactionsService.getTransactions(data));
+
+            this.transactions = transactions;
+            this.transactionsCount = transactionsCount;
+        } catch (error) {
+            toast.error('Error get Transactions');
+        }
     }
 }

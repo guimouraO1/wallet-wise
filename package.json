@@ -11,6 +11,7 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "^19.1.0",
+    "@angular/cdk": "^19.2.7",
     "@angular/common": "^19.1.0",
     "@angular/compiler": "^19.1.0",
     "@angular/core": "^19.1.0",
@@ -22,6 +23,7 @@
     "@ngx-translate/http-loader": "^16.0.1",
     "@tailwindcss/postcss": "^4.0.9",
     "jwt-decode": "^4.0.0",
+    "ngx-mask": "^19.0.6",
     "ngx-sonner": "^3.0.0",
     "postcss": "^8.5.3",
     "rxjs": "~7.8.0",

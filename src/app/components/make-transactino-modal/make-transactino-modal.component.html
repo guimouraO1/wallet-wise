@@ -1,0 +1,36 @@
+<div [formGroup]="makeTransactionForm" [attr.data-theme]="themeService.getTheme()" class="flex flex-col w-300 h-100 rounded bg-base-100 p-4">
+    <div class="h-full w-full flex flex-col gap-2">
+        <span class="text-2xl font-bold">New transaction</span>
+        <span class="text-sm opacity-60">Fill in the details to complete your transaction</span>
+        <div class="w-full grid grid-cols-2 gap-2 pt-2">
+            <input formControlName="name" maxlength="50" class="input join-item focus:outline-none focus:border-primary w-full" placeholder="Name"
+                [ngClass]="this.makeTransactionForm.get('name')?.errors && this.makeTransactionForm.get('name')?.dirty ? 'border-error' : ''"/>
+            <input formControlName="amount" prefix="R$ " mask="separator.2" thousandSeparator="," decimalMarker="." maxlength="14" 
+                class="input join-item focus:outline-none focus:border-primary w-full" placeholder="Amount"
+                [ngClass]="this.makeTransactionForm.get('amount')?.errors && this.makeTransactionForm.get('amount')?.dirty ? 'border-error' : ''"/>
+            <select formControlName="type" class="select focus:outline-none focus:border-primary w-full">
+                <option value="" disabled selected>Transaction Type</option>
+                <option value="withdraw">Withdraw</option>
+                <option value="deposit">Deposit</option>
+            </select>
+            <select formControlName="paymentMethod" class="select focus:outline-none focus:border-primary w-full">
+                <option value="" disabled selected>Payment method</option>
+                <option value="credit_card">Credit card</option>
+                <option value="debit_card">Debit card</option>
+                <option value="account_cash">Account cash</option>
+                <option value="pix">Pix</option>
+            </select>
+        </div>
+        <fieldset class="fieldset w-full">
+            <legend class="fieldset-legend">Description (Optional)</legend>
+            <textarea formControlName="description" maxlength="200" class="textarea max-h-24 min-h-24 w-full focus:outline-none focus:border-primary" placeholder="Description"></textarea>
+        </fieldset>
+    </div>
+    <div class="w-full">
+        <div class="flex gap-2 items-end justify-end w-full">
+            <button (click)="closeDialog()" class="btn btn-error btn-soft">Cancel</button>
+            <button [disabled]="this.makeTransactionForm.invalid" (click)="makeTransaction()" class="btn btn-success btn-soft">Make Transaction</button>
+        </div>
+    </div>
+    <ngx-sonner-toaster richColors  />
+</div>

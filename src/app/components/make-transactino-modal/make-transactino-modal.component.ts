@@ -1,0 +1,48 @@
+import { Component, inject } from '@angular/core';
+import { DialogRef } from '@angular/cdk/dialog';
+import { ThemeService } from '../../services/theme.service';
+import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { toast, NgxSonnerToaster } from 'ngx-sonner';
+import { CommonModule } from '@angular/common';
+import { AccountService } from '../../services/account.service';
+import { firstValueFrom } from 'rxjs';
+import { PayloadMakeTransaction, TransactionsService } from '../../services/transactions.service';
+
+@Component({
+    selector: 'app-make-transactino-modal',
+    imports: [NgxMaskDirective, ReactiveFormsModule, FormsModule, NgxSonnerToaster, CommonModule],
+    templateUrl: './make-transactino-modal.component.html'
+})
+export class MakeTransactinoModalComponent {
+    protected readonly toast = toast;
+    dialogRef = inject(DialogRef);
+    themeService = inject(ThemeService);
+    accountService = inject(AccountService);
+    transactionsService = inject(TransactionsService);
+
+    makeTransactionForm = new FormGroup({
+        name: new FormControl('', [Validators.required, Validators.min(3)]),
+        amount: new FormControl(0, [Validators.required, Validators.min(1)]),
+        type: new FormControl('', [Validators.required]),
+        paymentMethod: new FormControl('', [Validators.required]),
+        accountId: new FormControl(''),
+        description: new FormControl('')
+    });
+
+    closeDialog(response: boolean = false) {
+        this.dialogRef.close(response);
+    }
+
+    async makeTransaction() {
+        try {
+            const account = await firstValueFrom(this.accountService.getAccount());
+            this.makeTransactionForm.get('accountId')?.setValue(account.id);
+
+            await firstValueFrom(this.transactionsService.makeTransaction(this.makeTransactionForm.value as PayloadMakeTransaction));
+            this.closeDialog(true);
+        } catch (error) {
+            toast.error('Error in make Transaction');
+        }
+    }
+}
