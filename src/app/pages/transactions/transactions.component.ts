@@ -10,6 +10,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
 import { MakeTransactinoModalComponent } from '../../components/make-transactino-modal/make-transactino-modal.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { LanguageService } from '../../services/language.service';
 
 @Component({
     selector: 'app-transactions',
@@ -21,6 +22,7 @@ export class TransactionsComponent implements OnInit {
     transactionsService = inject(TransactionsService);
     accountService = inject(AccountService);
     dialog = inject(Dialog);
+    languageService = inject(LanguageService);
     transactions: Transaction[] | undefined;
     transactionsCount: number = 0;
     offset: number = 5;
@@ -84,7 +86,7 @@ export class TransactionsComponent implements OnInit {
     }
 
     formatDate(date: string){
-        return formatDate(new Date(date));
+        return formatDate(new Date(date), this.languageService);
     }
 
     async nextPage() {
@@ -127,8 +129,7 @@ export class TransactionsComponent implements OnInit {
     }
 
     deleteTransactions() {
-        console.log(this.selectedTransactions);
-        toast.info('Deletado!');
+        toast.error('No delete function at all');
         this.selectedTransactions = [];
     }
 

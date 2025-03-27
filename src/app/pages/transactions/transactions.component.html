@@ -129,6 +129,33 @@
                           [ngClass]="transaction.type === 'withdraw' ? 'text-error': 'text-success'">{{formatMoneyToString(transaction.amount)}}</span>
                     </td>
                 </tr>
+              } @empty {
+                @for (item of [1,2,3,4,5]; track $index) {
+                  <tr class="hover:bg-base-300">
+                    <td>
+                        <label>
+                            <input disabled type="checkbox" class="checkbox" />
+                        </label>
+                    </td>
+                    <td>
+                        <div class="skeleton p-2 w-full h-4"></div>
+                    </td>
+                    <td>
+                      <div class="skeleton p-2 w-full h-4"></div>
+                    </td>
+                    <td>
+                      <div class="skeleton p-2 w-full h-4"></div>
+                    </td>
+                    <td>
+                      <div class="skeleton p-2 w-full h-4"></div>
+                    </td>
+                    <td>
+                      <div class="skeleton p-2 w-full h-4"></div>
+                    </td>
+                    <td>
+                      <div class="skeleton p-2 w-full h-4"></div>
+                    </td>
+                }
               }
             </tbody>
           </table>
