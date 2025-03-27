@@ -10,7 +10,7 @@
 
     <div class="w-1/3 h-full flex items-center gap-4 justify-end">
       @if (this.account && this.account.balance) {
-        <span class="font-bold" [ngClass]="+this.account.balance.toString().replace('R$ ', '') < 0 ? 'text-error': 'text-success'">{{this.account.balance}}</span>
+        <span class="font-bold" [ngClass]="+this.account.balance < 0 ? 'text-error': 'text-success'">{{this.formatedAmount}}</span>
       }
 
       <div class="dropdown dropdown-end">
@@ -36,7 +36,8 @@
               <div class="skeleton h-4 w-[90%] shrink-0 rounded"></div>
             }
           </div>
-          <ul tabindex="0" class="flex flex-col gap-1 mt-4">
+          <div class="divider m-0"></div>
+          <ul tabindex="0" class="flex flex-col gap-1">
             <li (click)="languageService.setLanguage(languageService.getLanguage() === 'pt-br' ? 'en' : 'pt-br')">
               <div class="flex pl-2 gap-1.5 justify-between">
                 <div class="flex gap-2">

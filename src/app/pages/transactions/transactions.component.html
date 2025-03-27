@@ -1,48 +1,107 @@
-<div class="flex items-center justify-center min-h-[calc(100vh-4rem)]">
-    <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 w-4/5">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>
-                <label>
-                  <input type="checkbox" class="checkbox" />
-                </label>
-              </th>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Date</th>
-              <th>Transaction type</th>
-              <th>Payment method</th>
-              <th>Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="hover:bg-base-300">
-                <td>
-                    <label>
-                        <input type="checkbox" class="checkbox" />
-                    </label>
-                </td>
-                <td>
-                    <span class="text-sm opacity-80">Unimed</span>
-                </td>
-                <td>
-                    <span class="text-sm opacity-80">Plano de saúde</span>
-                </td>
-                <td>
-                    <span class="text-sm opacity-80">13 de maio de 2025 ás 22h</span>
-                </td>
-                <td>
-                    <span class="text-sm opacity-80">Withdrawn</span>
-                </td>
-                <td>
-                    <span class="text-sm opacity-80">Credit card</span>
-                </td>
-                <td>
-                    <span class="text-sm opacity-80">R$ 200,00</span>
-                </td>
-            </tr>
-          </tbody>
-        </table>
+<div class="flex flex-col gap-2 items-center justify-center min-h-[calc(100vh-4rem)]">
+    <div class="w-4/5 flex flex-col items-center gap-2">
+      <div class="flex items-center gap-2 justify-between w-full">
+        <div class="flex gap-2 w-full">
+
+          <div class="join">            
+            <input [formControl]="selectedName" class="input join-item focus:outline-none focus:border-primary" placeholder="Search by name" />
+            <button (click)="searchByName()" [disabled]="selectedName.value === ''" class="btn join-item">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 join-item">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+              </svg>
+              Search</button>
+          </div>
+
+          @if (selectedName.value) {
+            <button (click)="removeNameFilter()" class="btn btn-error btn-soft">Remove name filter</button>
+          }
+
+          <select (change)="onTransactionTypeChange()" [formControl]="selectedTransactionType" class="select w-60 focus:outline-none focus:border-primary">
+            <option value="" disabled selected>Transaction Type</option>
+            <option value="">None</option>
+            <option value="withdraw">Withdraw</option>
+            <option value="deposit">Deposit</option>
+          </select>
+          
+          <select (change)="onPaymentMethodChange()" [formControl]="selectedPaymentMethod" class="select w-60 focus:outline-none focus:border-primary">
+            <option value="" disabled selected>Payment method</option>
+            <option value="">None</option>
+            <option value="credit_card">Credit card</option>
+            <option value="debit_card">Debit card</option>
+            <option value="account_cash">Account cash</option>
+            <option value="pix">Pix</option>
+          </select>
+        </div>
+        <!-- <ngx-sonner-toaster richColors  /> -->
+        <!-- <button class="btn btn-primary btn-soft" (click)="toast.error('My first toast')">Give me a toast</button> -->
+        <button class="btn btn-primary btn-soft">Make Transaction</button>
       </div>
+      <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 w-full">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>
+                  <label>
+                    <input type="checkbox" class="checkbox" disabled/>
+                  </label>
+                </th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Date</th>
+                <th>Transaction type</th>
+                <th>Payment method</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              @for (transaction of transactions; track $index) {
+                <tr class="hover:bg-base-300">
+                    <td>
+                        <label>
+                            <input type="checkbox" class="checkbox" />
+                        </label>
+                    </td>
+                    <td>
+                        <span class="text-sm opacity-80">{{transaction.name}}</span>
+                    </td>
+                    <td>
+                        <span class="text-sm opacity-80">{{transaction.description}}</span>
+                    </td>
+                    <td>
+                        <span class="text-sm opacity-80">{{formatDate(transaction.date)}}</span>
+                    </td>
+                    <td>
+                        <span class="text-sm opacity-80">{{transaction.type}}</span>
+                    </td>
+                    <td>
+                        <span class="text-sm opacity-80">{{transaction.paymentMethod}}</span>
+                    </td>
+                    <td>
+                        <span class="text-sm opacity-80" 
+                          [ngClass]="transaction.type === 'withdraw' ? 'text-error': 'text-success'">{{formatMoneyToString(transaction.amount)}}</span>
+                    </td>
+                </tr>
+              } @empty {
+                <!-- <button class="btn btn-soft btn-warning" (click)="getTransactions()">Try again</button> -->
+              }
+            </tbody>
+          </table>
+      </div>
+      <div class="self-end flex items-center gap-2">
+        <span class="text-sm mr-4 opacity-65">{{ startIndex }}-{{ endIndex }} of {{ transactionsCount }}</span>
+        <div class="join flex gap-2">
+          <button (click)="previousPage()" [disabled]="page <= 1" class="join-item btn btn-sm btn-soft">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5" />
+            </svg>
+          </button>
+          <button (click)="nextPage()" [disabled]="page * offset >= transactionsCount" class="join-item btn btn-sm btn-ghost btn-soft">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
+            </svg>          
+          </button>
+        </div>
+      </div>
+    </div>
 </div>

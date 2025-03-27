@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { TokenService } from './token.service';
 
 export interface User {
   name: string;
@@ -19,8 +20,11 @@ export interface User {
 })
 export class UserService {
     private http = inject(HttpClient);
+    private tokenService = inject(TokenService);
 
-    getUser(userId: string): Observable<User> {
+    getUser(): Observable<User> {
+        const userDecoded = this.tokenService.decodeToken();
+        const userId = userDecoded?.sub;
         return this.http.get<User>(`${environment.apiUrl}/user/${userId}`);
     }
 }

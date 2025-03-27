@@ -1,6 +1,6 @@
 import { HttpErrorResponse, HttpInterceptorFn, HttpResponse, HttpEvent } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { catchError, switchMap, throwError, of } from 'rxjs';
+import { catchError, switchMap, throwError, of, delay } from 'rxjs';
 import { TokenService } from './token.service';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
@@ -18,6 +18,7 @@ export const httpInterceptor: HttpInterceptorFn = (request, next) => {
     }
 
     return next(request).pipe(
+        delay(200),
         catchError((error: HttpErrorResponse) => {
             if (error.status === 401) {
                 if (!isRefreshing) {

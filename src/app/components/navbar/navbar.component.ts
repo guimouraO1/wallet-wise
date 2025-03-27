@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 import { User, UserService } from '../../services/user.service';
 import { firstValueFrom } from 'rxjs';
 import { Account, AccountService } from '../../services/account.service';
+import { formatMoneyToString } from '../../helpers/format-money';
 
 @Component({
     selector: 'app-navbar',
@@ -27,14 +28,12 @@ export class NavbarComponent implements OnInit {
     accountService = inject(AccountService);
     user: User | undefined;
     account: Account | undefined;
+    formatedAmount: string = '';
 
     async ngOnInit() {
         try {
-            const userDecoded = this.tokenService.decodeToken();
-            if (!userDecoded || !userDecoded.sub) return;
-            const { name, avatarUrl, email, email_already_verified, role } = await firstValueFrom(this.userService.getUser(userDecoded.sub));
+            const { name, avatarUrl, email, email_already_verified, role } = await firstValueFrom(this.userService.getUser());
                 // Está vindo com senha arrumar backend
-
             this.user = {
                 name,
                 avatarUrl,
@@ -43,20 +42,15 @@ export class NavbarComponent implements OnInit {
                 role
             };
 
-            const { balance, id } = await firstValueFrom(this.accountService.getAccount(userDecoded.sub));
-            const amount = this.transformAmountToString(+balance);
-
+            const { balance, id } = await firstValueFrom(this.accountService.getAccount());
+            this.formatedAmount = formatMoneyToString(+balance);
             this.account = {
-                balance: amount,
+                balance,
                 id
             };
         } catch (error) {
             console.error(error);
         }
-    }
-
-    transformAmountToString(balance: number) {
-        return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Math.abs(balance));
     }
 
     toggleSidenav() {
