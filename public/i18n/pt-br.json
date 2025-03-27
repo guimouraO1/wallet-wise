@@ -1,15 +1,84 @@
 {
-    "teste": "teste",
     "components": {
         "navbar": {
             "pages": {
-                "home": "Home",
+                "home": "Início",
                 "transactions": "Transações"
             },
             "options": {
                 "theme": "Tema",
-                "language": "Linguagem",
+                "language": "Idioma",
                 "sign-out": "Sair"
+            }
+        },
+        "makeTransactionsModal": {
+            "title": "Nova transação",
+            "subtitle": "Preencha os detalhes para completar sua transação",
+            "form": {
+                "name": "Nome",
+                "amount": "Valor",
+                "transactionsType": {
+                    "placeholder": "Tipo de Transação",
+                    "withdraw": "Saque",
+                    "deposit": "Depósito"
+                },
+                "paymentMethod": {
+                    "placeholder": "Método de Pagamento",
+                    "creditCard": "Cartão de crédito",
+                    "debitCard": "Cartão de débito",
+                    "accountCash": "Dinheiro na conta",
+                    "pix": "Pix"
+                },
+                "textareaLabel": "Descrição (Opcional)",
+                "textareaPlaceholder": "Descrição",
+                "cancel": "Cancelar",
+                "makeTransaction": "Nova Transação"
+            }
+        }
+    },
+    "pages": {
+        "transactions": {
+            "filters": {
+                "searchByName": {
+                    "placeholder": "Pesquisar por nome",
+                    "button": "Pesquisar",
+                    "remove": "Remover filtro de nome"
+                },
+                "transactionsType": {
+                    "placeholder": "Tipo de Transação",
+                    "none": "Nenhum",
+                    "withdraw": "Saque",
+                    "deposit": "Depósito"
+                },
+                "paymentMethod": {
+                    "placeholder": "Método de Pagamento",
+                    "none": "Nenhum",
+                    "creditCard": "Cartão de crédito",
+                    "debitCard": "Cartão de débito",
+                    "accountCash": "Dinheiro da conta",
+                    "pix": "Pix"
+                }
+            },
+            "tryAgain": "Tentar novamente",
+            "deleteTransactions": "Excluir Transações",
+            "makeTransaction": "Realizar Transação",
+            "table": {
+                "header": {
+                    "name": "Nome",
+                    "description": "Descrição",
+                    "date": "Data",
+                    "transactionType": "Tipo de transação",
+                    "paymentMethod": "Método de pagamento",
+                    "amount": "Valor"
+                },
+                "body": {
+                    "withdraw": "Saque",
+                    "deposit": "Depósito",
+                    "creditCard": "Cartão de crédito",
+                    "debitCard": "Cartão de débito",
+                    "accountCash": "Dinheiro da conta",
+                    "pix": "Pix"
+                }
             }
         }
     }

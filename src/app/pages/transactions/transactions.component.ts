@@ -6,13 +6,14 @@ import { CommonModule } from '@angular/common';
 import { formatMoneyToString } from '../../helpers/format-money';
 import { formatDate } from '../../helpers/formate-date';
 import { toast, NgxSonnerToaster } from 'ngx-sonner';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
 import { MakeTransactinoModalComponent } from '../../components/make-transactino-modal/make-transactino-modal.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-transactions',
-    imports: [CommonModule, ReactiveFormsModule, NgxSonnerToaster, DialogModule],
+    imports: [CommonModule, ReactiveFormsModule, NgxSonnerToaster, DialogModule, TranslateModule],
     templateUrl: './transactions.component.html'
 })
 export class TransactionsComponent implements OnInit {

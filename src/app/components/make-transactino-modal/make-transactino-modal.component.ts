@@ -8,10 +8,11 @@ import { CommonModule } from '@angular/common';
 import { AccountService } from '../../services/account.service';
 import { firstValueFrom } from 'rxjs';
 import { PayloadMakeTransaction, TransactionsService } from '../../services/transactions.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-make-transactino-modal',
-    imports: [NgxMaskDirective, ReactiveFormsModule, FormsModule, NgxSonnerToaster, CommonModule],
+    imports: [NgxMaskDirective, ReactiveFormsModule, FormsModule, NgxSonnerToaster, CommonModule, TranslateModule],
     templateUrl: './make-transactino-modal.component.html'
 })
 export class MakeTransactinoModalComponent {

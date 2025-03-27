@@ -1,5 +1,4 @@
 {
-    "teste": "teste",
     "components": {
         "navbar": {
             "pages": {
@@ -11,6 +10,77 @@
                 "language": "Language",
                 "sign-out": "Sign out"
             }
+        },
+        "makeTransactionsModal": {
+            "title": "New transaction",
+            "subtitle": "Fill in the details to complete your transaction",
+            "form": {
+                "name": "Name",
+                "amount": "Amount",
+                "transactionsType": {
+                    "placeholder": "Transaction Type",
+                    "withdraw": "Withdraw",
+                    "deposit": "Deposit"
+                },
+                "paymentMethod": {
+                    "placeholder": "Payment Method",
+                    "creditCard": "Credit card",
+                    "debitCard": "Debit card",
+                    "accountCash": "Account cash",
+                    "pix": "Pix"
+                },
+                "textareaLabel": "Description (Optional)",
+                "textareaPlaceholder": "Description",
+                "cancel": "Cancel",
+                "makeTransaction": "Make Transaction"
+            }
+        }
+    },
+    "pages": {
+        "transactions": {
+            "filters": {
+                "searchByName": {
+                    "placeholder": "Search by name",
+                    "button": "Search",
+                    "remove": "Remove name filter"
+                },
+                "transactionsType": {
+                    "placeholder": "Transaction Type",
+                    "none": "None",
+                    "withdraw": "Withdraw",
+                    "deposit": "Deposit"
+                },
+                "paymentMethod": {
+                    "placeholder": "Payment Method",
+                    "none": "None",
+                    "creditCard": "Credit card",
+                    "debitCard": "Debit card",
+                    "accountCash": "Account cash",
+                    "pix": "Pix"
+                }
+            },
+            "tryAgain": "Try again",
+            "deleteTransactions": "Delete Transactions",
+            "makeTransaction": "New Transaction",
+            "table": {
+                "header": {
+                    "name": "Name",
+                    "description": "Description",
+                    "date": "Date",
+                    "transactionType": "Transaction type",
+                    "paymentMethod": "Payment method",
+                    "amount":"Amount"
+                },
+                "body": {
+                    "withdraw": "Withdraw",
+                    "deposit": "Deposit",
+                    "creditCard": "Credit card",
+                    "debitCard": "Debit card",
+                    "accountCash": "Account cash",
+                    "pix": "Pix"
+                }
+            }
+
         }
     }
 }
