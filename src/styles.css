@@ -79,3 +79,16 @@
 * {
     font-family: "Poppins", serif;
 }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+@use '@angular/material' as mat;
+
+:root {
+  @include mat.datepicker-overrides((
+    calendar-date-selected-state-text-color: orange,
+    calendar-date-selected-state-background-color: red,
+  ));
+}

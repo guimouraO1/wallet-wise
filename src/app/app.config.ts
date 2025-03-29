@@ -9,6 +9,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { LanguageService } from './services/language.service';
 import { provideEnvironmentNgxMask } from 'ngx-mask';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 const httpLoaderFactory: (http: HttpClient) => TranslateHttpLoader = (http: HttpClient) =>
   new TranslateHttpLoader(http, './i18n/', '.json');
@@ -35,6 +36,7 @@ export const appConfig: ApplicationConfig = {
                 useFactory: httpLoaderFactory,
                 deps: [HttpClient]
             }
-        })])
+        })]),
+        provideAnimations()
     ]
 };

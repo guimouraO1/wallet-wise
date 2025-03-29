@@ -3,12 +3,27 @@
         "navbar": {
             "pages": {
                 "home": "Início",
-                "transactions": "Transações"
+                "transactions": "Transações",
+                "bills": "Contas"
             },
             "options": {
                 "theme": "Tema",
                 "language": "Idioma",
                 "sign-out": "Sair"
+            }
+        },
+        "makeBillModal": {
+            "title": "Nova Conta",
+            "subtitle": "Preencha os detalhes para criar sua conta",
+            "form": {
+                "name": "Nome",
+                "amount": "Valor Total",
+                "cancel": "Cancelar",
+                "makeTransaction": "Criar Conta",
+                "installmentDay": "Dia do pagamento",
+                "installments": "Parcelas",
+                "paidInstallments": "Parcelas pagas",
+                "selectDueDate": "Selecione a data de vencimento"
             }
         },
         "makeTransactionsModal": {
@@ -37,6 +52,36 @@
         }
     },
     "pages": {
+        "bills": {
+            "filters": {
+                "searchByName": {
+                    "placeholder": "Pesquisar por nome",
+                    "button": "Pesquisar",
+                    "remove": "Remover filtro de nome"
+                },
+                "isPaid": {
+                    "placeholder": "Filtro de pagamento",
+                    "none": "Nenhum",
+                    "withdraw": "Está paga",
+                    "deposit": "Não está paga"
+                }
+            },
+            "tryAgain": "Tentar novamente",
+            "deleteBills": "Excluir Contas",
+            "makeBill": "Nova Conta",
+            "table": {
+                "header": {
+                    "name": "Nome",
+                    "description": "Descrição",
+                    "dueDate": "Data de Vencimento",
+                    "installments": "Parcelas",
+                    "amount": "Valor"
+                },
+                "body": {
+
+                }
+            }
+        },
         "transactions": {
             "filters": {
                 "searchByName": {

@@ -3,12 +3,27 @@
         "navbar": {
             "pages": {
                 "home": "Home",
-                "transactions": "Transactions"
+                "transactions": "Transactions",
+                "bills": "Bills"
             },
             "options": {
                 "theme": "Theme",
                 "language": "Language",
                 "sign-out": "Sign out"
+            }
+        },
+        "makeBillModal": {
+            "title": "New Bill",
+            "subtitle": "Fill in the details to create your bill",
+            "form": {
+                "name": "Name",
+                "amount": "Amount Total",
+                "cancel": "Cancel",
+                "makeTransaction": "Make Bill",
+                "installmentDay": "Installment Day",
+                "installments": "Installments",
+                "paidInstallments": "Paid installments",
+                "selectDueDate": "Select due date"
             }
         },
         "makeTransactionsModal": {
@@ -81,6 +96,37 @@
                 }
             }
 
+        },
+        "bills": {
+            "filters": {
+                "searchByName": {
+                    "placeholder": "Search by name",
+                    "button": "Search",
+                    "remove": "Remove name filter"
+                },
+                "isPaid": {
+                    "placeholder": "is Paid Filter",
+                    "none": "None",
+                    "withdraw": "is paid",
+                    "deposit": "is not paid"
+                }
+            },
+            "tryAgain": "Try again",
+            "deleteBills": "Delete Bills",
+            "makeBill": "New Bill",
+            
+            "table": {
+                "header": {
+                    "name": "Name",
+                    "description": "Description",
+                    "dueDate": "Due Date",
+                    "installments": "Installments",
+                    "amount":"Amount"
+                },
+                "body": {
+
+                }
+            }
         }
     }
 }

@@ -26,6 +26,11 @@ export const routes: Routes = [
                 title: 'Wallet Wise - Transactions',
                 path: 'transactions',
                 loadComponent: () => import('./pages/transactions/transactions.component').then((m) => m.TransactionsComponent)
+            },
+            {
+                title: 'Wallet Wise - Bills',
+                path: 'bills',
+                loadComponent: () => import('./pages/bills/bills.component').then((m) => m.BillsComponent)
             }
         ]
     }

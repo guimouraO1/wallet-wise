@@ -47,7 +47,7 @@ export class TransactionsService {
     private http = inject(HttpClient);
 
     getTransactions(data: PayloadTransaction): Observable<TransactionsResponse> {
-        let params = new HttpParams().set('accountId', data.accountId).set('page', data.page.toString()).set('offset', data.offset.toString());
+        let params = new HttpParams().set('page', data.page.toString()).set('offset', data.offset.toString());
 
         if (data.type) {
             params = params.set('type', data.type);
@@ -61,7 +61,7 @@ export class TransactionsService {
             params = params.set('paymentMethod', data.paymentMethod);
         }
 
-        return this.http.get<TransactionsResponse>(`${environment.apiUrl}/transaction`, { params });
+        return this.http.get<TransactionsResponse>(`${environment.apiUrl}/transaction/${data.accountId}`, { params });
     }
 
     makeTransaction(data: PayloadMakeTransaction): Observable<any> {

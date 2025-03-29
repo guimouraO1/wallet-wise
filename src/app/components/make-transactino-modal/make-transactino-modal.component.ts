@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { DialogRef } from '@angular/cdk/dialog';
 import { ThemeService } from '../../services/theme.service';
-import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
+import { NgxMaskDirective } from 'ngx-mask';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { toast, NgxSonnerToaster } from 'ngx-sonner';
 import { CommonModule } from '@angular/common';
@@ -24,7 +24,7 @@ export class MakeTransactinoModalComponent {
 
     makeTransactionForm = new FormGroup({
         name: new FormControl('', [Validators.required, Validators.min(3)]),
-        amount: new FormControl(0, [Validators.required, Validators.min(1)]),
+        amount: new FormControl(0, [Validators.required, Validators.min(0.01)]),
         type: new FormControl('', [Validators.required]),
         paymentMethod: new FormControl('', [Validators.required]),
         accountId: new FormControl(''),
