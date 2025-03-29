@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { DialogRef } from '@angular/cdk/dialog';
 import { ThemeService } from '../../services/theme.service';
 import { NgxMaskDirective } from 'ngx-mask';
@@ -9,6 +9,7 @@ import { AccountService } from '../../services/account.service';
 import { firstValueFrom } from 'rxjs';
 import { PayloadMakeTransaction, TransactionsService } from '../../services/transactions.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { NavbarComponent } from '../navbar/navbar.component';
 
 @Component({
     selector: 'app-make-transactino-modal',
@@ -16,6 +17,7 @@ import { TranslateModule } from '@ngx-translate/core';
     templateUrl: './make-transactino-modal.component.html'
 })
 export class MakeTransactinoModalComponent {
+    @Output() updateAccountAmount = new EventEmitter<number>();
     protected readonly toast = toast;
     dialogRef = inject(DialogRef);
     themeService = inject(ThemeService);
@@ -41,6 +43,7 @@ export class MakeTransactinoModalComponent {
             this.makeTransactionForm.get('accountId')?.setValue(account.id);
 
             await firstValueFrom(this.transactionsService.makeTransaction(this.makeTransactionForm.value as PayloadMakeTransaction));
+            this.accountService.triggerAction();
             this.closeDialog(true);
         } catch (error) {
             toast.error('Error in make Transaction');

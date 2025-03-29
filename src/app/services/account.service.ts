@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { TokenService } from './token.service';
 
 export interface Account {
@@ -18,6 +18,14 @@ export interface Account {
 export class AccountService {
     private http = inject(HttpClient);
     private tokenService = inject(TokenService);
+
+    private triggerActionSubject = new Subject<void>();
+
+    triggerAction$ = this.triggerActionSubject.asObservable();
+
+    triggerAction() {
+        this.triggerActionSubject.next();
+    }
 
     getAccount(): Observable<Account> {
         const userDecoded = this.tokenService.decodeToken();

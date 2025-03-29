@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ThemeService } from '../../services/theme.service';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -8,7 +8,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { LanguageService } from '../../services/language.service';
 import { CommonModule } from '@angular/common';
 import { User, UserService } from '../../services/user.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Subscription } from 'rxjs';
 import { Account, AccountService } from '../../services/account.service';
 import { formatMoneyToString } from '../../helpers/format-money';
 
@@ -17,7 +17,7 @@ import { formatMoneyToString } from '../../helpers/format-money';
     imports: [RouterLink, TranslateModule, ReactiveFormsModule, CommonModule],
     templateUrl: './navbar.component.html'
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
     drawerOpen = new FormControl(false);
     tokenService = inject(TokenService);
     authService = inject(AuthService);
@@ -29,8 +29,22 @@ export class NavbarComponent implements OnInit {
     user: User | undefined;
     account: Account | undefined;
     formatedAmount: string = '';
+    private actionSubscription: Subscription | null = null;
 
     async ngOnInit() {
+        this.actionSubscription = this.accountService.triggerAction$.subscribe(() => {
+            this.getAccount();
+        });
+        this.getAccount();
+    }
+
+    ngOnDestroy() {
+        if (this.actionSubscription) {
+            this.actionSubscription.unsubscribe();
+        }
+    }
+
+    async getAccount() {
         try {
             const { name, avatarUrl, email, email_already_verified, role } = await firstValueFrom(this.userService.getUser());
                 // Está vindo com senha arrumar backend
