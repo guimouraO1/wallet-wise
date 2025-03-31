@@ -11,9 +11,11 @@ import { Dialog, DialogModule } from '@angular/cdk/dialog';
 import { MakeTransactinoModalComponent } from '../../components/make-transactino-modal/make-transactino-modal.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from '../../services/language.service';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-transactions',
+    standalone: true,
     imports: [CommonModule, ReactiveFormsModule, NgxSonnerToaster, DialogModule, TranslateModule],
     templateUrl: './transactions.component.html'
 })
@@ -23,7 +25,10 @@ export class TransactionsComponent implements OnInit {
     accountService = inject(AccountService);
     dialog = inject(Dialog);
     languageService = inject(LanguageService);
-    transactions: Transaction[] | undefined;
+    router = inject(Router);
+    route = inject(ActivatedRoute);
+
+    transactions: Transaction[] = [];
     transactionsCount: number = 0;
     offset: number = 5;
     page: number = 1;
@@ -34,75 +39,80 @@ export class TransactionsComponent implements OnInit {
 
     selectedTransactions: Transaction[] = [];
 
+    isLoading = true;
+    isError = false;
+
     async ngOnInit() {
-        await this.getTransactions();
+        this.route.queryParams.subscribe(params => {
+            this.selectedTransactionType.setValue(params['type'] || '');
+            this.selectedPaymentMethod.setValue(params['paymentMethod'] || '');
+            this.selectedName.setValue(params['name'] || '');
+            this.page = params['page'] ? Number(params['page']) : 1;
+            this.getTransactions();
+        });
     }
 
     toggleAllSelection(event: Event) {
         const isChecked = (event.target as HTMLInputElement).checked;
+        this.selectedTransactions = isChecked ? [...this.transactions] : [];
+    }
 
-        if (isChecked && this.transactionsCount > 0 && this.transactions) {
-            this.selectedTransactions = [...this.transactions];
-        } else {
-            this.selectedTransactions = [];
-        }
+    async resetFilters() {
+        this.router.navigate([], { queryParams: {} });
     }
 
     toggleSelection(transaction: Transaction, event: Event) {
         const isChecked = (event.target as HTMLInputElement).checked;
+        this.selectedTransactions = isChecked
+            ? [...this.selectedTransactions, transaction]
+            : this.selectedTransactions.filter(t => t !== transaction);
+    }
 
-        if (isChecked) {
-            this.selectedTransactions.push(transaction);
-        } else {
-            this.selectedTransactions = this.selectedTransactions.filter((t) => t !== transaction);
-        }
+    addFilterParam(filter: any) {
+        this.router.navigate([], { queryParams: filter, queryParamsHandling: 'merge' });
+    }
 
-        console.log(this.selectedTransactions);
+    async onTransactionTypeChange() {
+        this.page = 1;
+        this.addFilterParam({ type: this.selectedTransactionType.value });
     }
 
     async removeNameFilter() {
         this.selectedName.reset('');
         this.page = 1;
-        await this.getTransactions();
-    }
-
-    async onTransactionTypeChange() {
-        this.page = 1;
-        await this.getTransactions();
+        this.addFilterParam({ name: null });
     }
 
     async onPaymentMethodChange() {
         this.page = 1;
-        await this.getTransactions();
+        this.addFilterParam({ paymentMethod: this.selectedPaymentMethod.value });
     }
 
     async searchByName() {
         this.page = 1;
-        await this.getTransactions();
+        this.addFilterParam({ name: this.selectedName.value });
     }
 
-    formatMoneyToString(amount: number){
+    formatMoneyToString(amount: number) {
         return formatMoneyToString(amount);
     }
 
-    formatDate(date: string){
+    formatDate(date: string) {
         return formatDate(new Date(date), this.languageService);
     }
 
     async nextPage() {
         if ((this.page * this.offset) < this.transactionsCount) {
             this.page++;
+            this.addFilterParam({ page: this.page });
         }
-
-        await this.getTransactions();
     }
 
     async previousPage() {
         if (this.page > 1) {
             this.page--;
+            this.addFilterParam({ page: this.page });
         }
-
-        await this.getTransactions();
     }
 
     get startIndex(): number {
@@ -119,12 +129,10 @@ export class TransactionsComponent implements OnInit {
 
     openDialog(): void {
         const dialogRef = this.dialog.open(MakeTransactinoModalComponent);
-
         dialogRef.closed.pipe(take(1)).subscribe(async (result) => {
             if (!result) return;
-
             this.page = 1;
-            await this.getTransactions();
+            this.getTransactions();
         });
     }
 
@@ -133,10 +141,12 @@ export class TransactionsComponent implements OnInit {
         this.selectedTransactions = [];
     }
 
-    async getTransactions(){
+    async getTransactions() {
+        this.isLoading = true;
+        this.isError = false;
+
         try {
             const account = await firstValueFrom(this.accountService.getAccount());
-
             const data: PayloadTransaction = {
                 accountId: account.id,
                 page: this.page,
@@ -147,11 +157,13 @@ export class TransactionsComponent implements OnInit {
             };
 
             const { transactions, transactionsCount } = await firstValueFrom(this.transactionsService.getTransactions(data));
-
             this.transactions = transactions;
             this.transactionsCount = transactionsCount;
         } catch (error) {
-            toast.error('Error get Transactions');
+            this.transactions = [];
+            this.isError = true;
+            toast.error('Error getting transactions');
         }
+        this.isLoading = false;
     }
 }

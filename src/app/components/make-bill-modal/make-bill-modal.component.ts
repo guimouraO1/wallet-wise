@@ -30,6 +30,7 @@ export class MakeBillModalComponent {
     accountService = inject(AccountService);
     billService = inject(BillService);
 
+    isLoading = false;
     makeBillForm = new FormGroup({
         accountId: new FormControl(''),
         name: new FormControl('', [Validators.required, Validators.minLength(3)]),
@@ -47,6 +48,7 @@ export class MakeBillModalComponent {
     }
 
     async makeBill() {
+        this.isLoading = true;
         try {
             const account = await firstValueFrom(this.accountService.getAccount());
             this.makeBillForm.get('accountId')?.setValue(account.id);
@@ -69,5 +71,7 @@ export class MakeBillModalComponent {
         } catch (error) {
             toast.error('Error in make Transaction');
         }
+
+        this.isLoading = false;
     }
 }

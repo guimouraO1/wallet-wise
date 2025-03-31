@@ -55,7 +55,7 @@
         </label>
       </div>
 
-      <button type="submit" [disabled]="this.signInForm.invalid" class="btn btn-accent btn-wide">Sign-in</button>
+      <button type="submit" [disabled]="this.signInForm.invalid || isLoading" class="btn btn-accent btn-wide">Sign-in</button>
     </form>
   </div>
 

@@ -18,6 +18,7 @@ export class SignInComponent implements OnInit {
     tokenService: TokenService = inject(TokenService);
     router = inject(Router);
 
+    isLoading = false;
     protected readonly toast = toast;
     isPasswordVisible: boolean = false;
 
@@ -42,6 +43,8 @@ export class SignInComponent implements OnInit {
     }
 
     async signIn() {
+        this.isLoading = true;
+
         if (this.signInForm.invalid) return;
         const signInData = this.signInForm.value as SignInForm;
 
@@ -56,5 +59,7 @@ export class SignInComponent implements OnInit {
                 toast.error(error.error.message);
             }
         }
+
+        this.isLoading = false;
     }
 }

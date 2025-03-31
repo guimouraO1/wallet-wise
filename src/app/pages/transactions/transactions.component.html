@@ -1,47 +1,182 @@
 <div class="flex flex-col gap-2 items-center justify-center min-h-[calc(100vh-4rem)]">
+  @if (!isLoading && !isError) { 
+    @for (transaction of transactions; track $index) {
+      <div class="w-4/5 flex flex-col items-center gap-2">
+        <div class="flex items-center gap-2 justify-between w-full">
+          <div class="flex gap-2 w-full">
+
+            <div class="join">            
+              <input [formControl]="selectedName" class="input join-item focus:outline-none focus:border-primary" placeholder="{{'pages.transactions.filters.searchByName.placeholder' | translate }}" />
+              <button (click)="searchByName()" [disabled]="selectedName.value === ''" class="btn join-item">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 join-item">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
+                {{'pages.transactions.filters.searchByName.button' | translate }}</button>
+            </div>
+
+            @if (selectedName.value) {
+              <button (click)="removeNameFilter()" class="btn btn-error btn-soft">{{'pages.transactions.filters.searchByName.remove' | translate }}</button>
+            }
+
+            <select (change)="onTransactionTypeChange()" [formControl]="selectedTransactionType" class="select w-60 focus:outline-none focus:border-primary">
+              <option value="" disabled selected>{{'pages.transactions.filters.transactionsType.placeholder' | translate }}</option>
+              <option value="">{{'pages.transactions.filters.transactionsType.none' | translate }}</option>
+              <option value="withdraw">{{'pages.transactions.filters.transactionsType.withdraw' | translate }}</option>
+              <option value="deposit">{{'pages.transactions.filters.transactionsType.deposit' | translate }}</option>
+            </select>
+            
+            <select (change)="onPaymentMethodChange()" [formControl]="selectedPaymentMethod" class="select w-60 focus:outline-none focus:border-primary">
+              <option value="" disabled selected>{{'pages.transactions.filters.paymentMethod.placeholder' | translate }}</option>
+              <option value="">{{'pages.transactions.filters.paymentMethod.none' | translate }}</option>
+              <option value="credit_card">{{'pages.transactions.filters.paymentMethod.creditCard' | translate }}</option>
+              <option value="debit_card">{{'pages.transactions.filters.paymentMethod.debitCard' | translate }}</option>
+              <option value="account_cash">{{'pages.transactions.filters.paymentMethod.accountCash' | translate }}</option>
+              <option value="pix">{{'pages.transactions.filters.paymentMethod.pix' | translate }}</option>
+            </select>
+          </div>
+
+          @if (selectedTransactions.length > 0) {
+            <button (click)="deleteTransactions()" class="btn btn-error btn-soft">{{'pages.transactions.deleteTransactions' | translate }}</button>
+          }
+
+          <button (click)="makeTransaction()" class="btn btn-primary btn-soft">{{'pages.transactions.makeTransaction' | translate }}</button>
+        </div>
+        <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 w-full">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>
+                    <label>
+                      <input (change)="toggleAllSelection($event)" type="checkbox" class="checkbox" />
+                    </label>
+                  </th>
+                  <th>{{'pages.transactions.table.header.name' | translate }}</th>
+                  <th>{{'pages.transactions.table.header.description' | translate }}</th>
+                  <th>{{'pages.transactions.table.header.date' | translate }}</th>
+                  <th>{{'pages.transactions.table.header.transactionType' | translate }}</th>
+                  <th>{{'pages.transactions.table.header.paymentMethod' | translate }}</th>
+                  <th>{{'pages.transactions.table.header.amount' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                  <tr class="hover:bg-base-300">
+                      <td>
+                          <label>
+                              <input 
+                                [checked]="selectedTransactions.includes(transaction)"
+                                (change)="toggleSelection(transaction, $event)" 
+                                type="checkbox" class="checkbox" 
+                              />
+                          </label>
+                      </td>
+                      <td>
+                          <span class="text-sm opacity-80">{{transaction.name}}</span>
+                      </td>
+                      <td class="max-w-80 truncate">
+                          <span class="text-sm opacity-80">{{transaction.description}}</span>
+                      </td>
+                      <td>
+                          <span class="text-sm opacity-80">{{formatDate(transaction.date)}}</span>
+                      </td>
+                      <td>
+                        @if (transaction.type === 'withdraw') {
+                          <div class="badge badge-soft badge-error text-xs">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>                     
+                            {{'pages.transactions.table.body.withdraw' | translate }}</div>
+                        } @else if (transaction.type === 'deposit') {
+                          <div class="badge badge-soft badge-success text-xs">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
+                            </svg>
+                            {{'pages.transactions.table.body.deposit' | translate }}</div>
+                        }
+                      </td>                    
+                      <td>
+                        @if (transaction.paymentMethod === 'credit_card') {
+                          <div class="badge badge-soft text-xs">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
+                            </svg>                          
+                            {{'pages.transactions.table.body.creditCard' | translate }}</div>
+                        } @else if (transaction.paymentMethod === 'debit_card') {
+                          <div class="badge badge-soft text-xs">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
+                            </svg>                          
+                            {{'pages.transactions.table.body.debitCard' | translate }}</div>
+                        } @else if (transaction.paymentMethod === 'account_cash') {
+                          <div class="badge badge-soft text-xs">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />
+                            </svg>                                                  
+                            {{'pages.transactions.table.body.accountCash' | translate }}</div>
+                        } @else if (transaction.paymentMethod === 'pix') {
+                          <div class="badge badge-soft text-xs">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
+                            </svg>                                                                           
+                            {{'pages.transactions.table.body.pix' | translate }}</div>
+                        }
+                      </td>
+                      <td>
+                          <span class="text-sm opacity-80" 
+                            [ngClass]="transaction.type === 'withdraw' ? 'text-error': 'text-success'">{{formatMoneyToString(transaction.amount)}}</span>
+                      </td>
+                  </tr>
+              </tbody>
+            </table>
+        </div>
+        <div class="self-end flex items-center gap-2">
+          <span class="text-sm mr-4 opacity-65">{{ startIndex }}-{{ endIndex }} of {{ transactionsCount }}</span>
+          <div class="join flex gap-2">
+            <button (click)="previousPage()" [disabled]="page <= 1" class="join-item btn btn-sm btn-soft">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5" />
+              </svg>
+            </button>
+            <button (click)="nextPage()" [disabled]="page * offset >= transactionsCount" class="join-item btn btn-sm btn-ghost btn-soft">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
+              </svg>          
+            </button>
+          </div>
+        </div>
+      </div>
+    } 
+    @empty {
+      @if (selectedTransactionType.value && selectedTransactionType.value !== null || selectedName.value || selectedPaymentMethod.value && selectedPaymentMethod.value !== null) {
+        <div class="flex flex-col gap-1 items-center">
+          <span class="text-5xl font-bold">Vimos que não tem nenhuma transaction para esses filtros</span>
+          <span class="text-md opacity-50">Tente retirar os filtros</span>
+          <button (click)="resetFilters()" class="btn btn-secondary btn-soft btn-wide">Retirar filtros</button>
+        </div>
+      } @else {
+        <div class="flex flex-col gap-1 items-center">
+          <span class="text-5xl font-bold">Vimos que não tem nenhuma transaction</span>
+          <span class="text-md opacity-50">Tente fazer a sua primeira transação!</span>
+          <button (click)="makeTransaction()" class="btn btn-primary btn-soft btn-wide">Make first transaction</button>
+        </div>
+      }
+    }
+  } 
+  @else if (isError) {
+    <div class="flex flex-col gap-1 items-center">
+      <span class="text-5xl font-bold">Houve um erro ao tentar pegar suas trasações</span>
+      <span class="text-md opacity-50">Tente novamente</span>
+      <button (click)="getTransactions()" class="btn btn-error btn-soft btn-wide">{{'pages.transactions.tryAgain' | translate }}</button>
+    </div>
+  } 
+  @else {
     <div class="w-4/5 flex flex-col items-center gap-2">
       <div class="flex items-center gap-2 justify-between w-full">
         <div class="flex gap-2 w-full">
-
-          <div class="join">            
-            <input [formControl]="selectedName" class="input join-item focus:outline-none focus:border-primary" placeholder="{{'pages.transactions.filters.searchByName.placeholder' | translate }}" />
-            <button (click)="searchByName()" [disabled]="selectedName.value === ''" class="btn join-item">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 join-item">
-                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-              </svg>
-              {{'pages.transactions.filters.searchByName.button' | translate }}</button>
-          </div>
-
-          @if (selectedName.value) {
-            <button (click)="removeNameFilter()" class="btn btn-error btn-soft">{{'pages.transactions.filters.searchByName.remove' | translate }}</button>
-          }
-
-          <select (change)="onTransactionTypeChange()" [formControl]="selectedTransactionType" class="select w-60 focus:outline-none focus:border-primary">
-            <option value="" disabled selected>{{'pages.transactions.filters.transactionsType.placeholder' | translate }}</option>
-            <option value="">{{'pages.transactions.filters.transactionsType.none' | translate }}</option>
-            <option value="withdraw">{{'pages.transactions.filters.transactionsType.withdraw' | translate }}</option>
-            <option value="deposit">{{'pages.transactions.filters.transactionsType.deposit' | translate }}</option>
-          </select>
-          
-          <select (change)="onPaymentMethodChange()" [formControl]="selectedPaymentMethod" class="select w-60 focus:outline-none focus:border-primary">
-            <option value="" disabled selected>{{'pages.transactions.filters.paymentMethod.placeholder' | translate }}</option>
-            <option value="">{{'pages.transactions.filters.paymentMethod.none' | translate }}</option>
-            <option value="credit_card">{{'pages.transactions.filters.paymentMethod.creditCard' | translate }}</option>
-            <option value="debit_card">{{'pages.transactions.filters.paymentMethod.debitCard' | translate }}</option>
-            <option value="account_cash">{{'pages.transactions.filters.paymentMethod.accountCash' | translate }}</option>
-            <option value="pix">{{'pages.transactions.filters.paymentMethod.pix' | translate }}</option>
-          </select>
+          <div class="skeleton p-2 w-60 h-9"></div>
+          <div class="skeleton p-2 w-60 h-9"></div>
+          <div class="skeleton p-2 w-60 h-9"></div>
         </div>
-
-        @if (transactionsCount <= 0) {
-          <button (click)="getTransactions()" class="btn btn-error btn-soft">{{'pages.transactions.tryAgain' | translate }}</button>
-        }
-
-        @if (selectedTransactions.length > 0) {
-          <button (click)="deleteTransactions()" class="btn btn-error btn-soft">{{'pages.transactions.deleteTransactions' | translate }}</button>
-        }
-
-        <button (click)="makeTransaction()" class="btn btn-primary btn-soft">{{'pages.transactions.makeTransaction' | translate }}</button>
+        <div class="skeleton p-2 w-60 h-9"></div>
       </div>
       <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 w-full">
           <table class="table">
@@ -52,85 +187,16 @@
                     <input (change)="toggleAllSelection($event)" type="checkbox" class="checkbox" />
                   </label>
                 </th>
-                <th>{{'pages.transactions.table.header.name' | translate }}</th>
-                <th>{{'pages.transactions.table.header.description' | translate }}</th>
-                <th>{{'pages.transactions.table.header.date' | translate }}</th>
-                <th>{{'pages.transactions.table.header.transactionType' | translate }}</th>
-                <th>{{'pages.transactions.table.header.paymentMethod' | translate }}</th>
-                <th>{{'pages.transactions.table.header.amount' | translate }}</th>
+                <th><div class="skeleton p-2 w-40 h-6"></div></th>
+                <th><div class="skeleton p-2 w-40 h-6"></div></th>
+                <th><div class="skeleton p-2 w-40 h-6"></div></th>
+                <th><div class="skeleton p-2 w-40 h-6"></div></th>
+                <th><div class="skeleton p-2 w-40 h-6"></div></th>
+                <th><div class="skeleton p-2 w-40 h-6"></div></th>
               </tr>
             </thead>
             <tbody>
-              
-              @for (transaction of transactions; track $index) {
-                <tr class="hover:bg-base-300">
-                    <td>
-                        <label>
-                            <input 
-                              [checked]="selectedTransactions.includes(transaction)"
-                              (change)="toggleSelection(transaction, $event)" 
-                              type="checkbox" class="checkbox" 
-                            />
-                        </label>
-                    </td>
-                    <td>
-                        <span class="text-sm opacity-80">{{transaction.name}}</span>
-                    </td>
-                    <td class="max-w-80 truncate">
-                        <span class="text-sm opacity-80">{{transaction.description}}</span>
-                    </td>
-                    <td>
-                        <span class="text-sm opacity-80">{{formatDate(transaction.date)}}</span>
-                    </td>
-                    <td>
-                      @if (transaction.type === 'withdraw') {
-                        <div class="badge badge-soft badge-error text-xs">
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                          </svg>                     
-                          {{'pages.transactions.table.body.withdraw' | translate }}</div>
-                      } @else if (transaction.type === 'deposit') {
-                        <div class="badge badge-soft badge-success text-xs">
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
-                          </svg>
-                          {{'pages.transactions.table.body.deposit' | translate }}</div>
-                      }
-                    </td>                    
-                    <td>
-                      @if (transaction.paymentMethod === 'credit_card') {
-                        <div class="badge badge-soft text-xs">
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
-                          </svg>                          
-                          {{'pages.transactions.table.body.creditCard' | translate }}</div>
-                      } @else if (transaction.paymentMethod === 'debit_card') {
-                        <div class="badge badge-soft text-xs">
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
-                          </svg>                          
-                          {{'pages.transactions.table.body.debitCard' | translate }}</div>
-                      } @else if (transaction.paymentMethod === 'account_cash') {
-                        <div class="badge badge-soft text-xs">
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />
-                          </svg>                                                  
-                          {{'pages.transactions.table.body.accountCash' | translate }}</div>
-                      } @else if (transaction.paymentMethod === 'pix') {
-                        <div class="badge badge-soft text-xs">
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
-                          </svg>                                                                           
-                          {{'pages.transactions.table.body.pix' | translate }}</div>
-                      }
-                    </td>
-                    <td>
-                        <span class="text-sm opacity-80" 
-                          [ngClass]="transaction.type === 'withdraw' ? 'text-error': 'text-success'">{{formatMoneyToString(transaction.amount)}}</span>
-                    </td>
-                </tr>
-              } @empty {
-                @for (item of [1,2,3,4,5]; track $index) {
+                @for (item of [].constructor(5); track $index) {
                   <tr class="hover:bg-base-300">
                     <td>
                         <label>
@@ -156,26 +222,12 @@
                       <div class="skeleton p-2 w-full h-4"></div>
                     </td>
                 }
-              }
+
             </tbody>
           </table>
       </div>
-      <div class="self-end flex items-center gap-2">
-        <span class="text-sm mr-4 opacity-65">{{ startIndex }}-{{ endIndex }} of {{ transactionsCount }}</span>
-        <div class="join flex gap-2">
-          <button (click)="previousPage()" [disabled]="page <= 1" class="join-item btn btn-sm btn-soft">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5" />
-            </svg>
-          </button>
-          <button (click)="nextPage()" [disabled]="page * offset >= transactionsCount" class="join-item btn btn-sm btn-ghost btn-soft">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
-            </svg>          
-          </button>
-        </div>
-      </div>
+      <div class="skeleton p-2 w-60 h-9 self-end"></div>
     </div>
+  }
 </div>
-
 <ngx-sonner-toaster richColors  />

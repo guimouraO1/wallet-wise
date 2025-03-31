@@ -1,6 +1,6 @@
 import { HttpErrorResponse, HttpInterceptorFn, HttpResponse, HttpEvent } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { catchError, switchMap, throwError, of, delay } from 'rxjs';
+import { catchError, switchMap, throwError, of, delay, firstValueFrom } from 'rxjs';
 import { TokenService } from './token.service';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
@@ -18,15 +18,16 @@ export const httpInterceptor: HttpInterceptorFn = (request, next) => {
     }
 
     return next(request).pipe(
-        delay(200),
+        // delay(500),
         catchError((error: HttpErrorResponse) => {
             if (error.status === 401) {
-                if (request.url.includes('/sign-in')) {
+                if (request.url.includes('/sign-in') || request.url.includes('/sign-out')) {
                     return throwError(() => error);
                 }
 
                 if (!isRefreshing) {
                     isRefreshing = true;
+
                     return authService.refreshToken().pipe(
                         switchMap((response) => {
                             tokenService.setToken(response.token);
@@ -40,13 +41,15 @@ export const httpInterceptor: HttpInterceptorFn = (request, next) => {
 
                             return next(newRequest);
                         }),
+
                         catchError(() => {
                             isRefreshing = false;
                             authService.setIsUserAuthenticated(false);
                             router.navigate(['sign-in']);
 
-                            authService.signOut();
-                            return of(new HttpResponse({ status: 401 }));
+                            return authService.signOut().pipe(
+                                switchMap(() => of(new HttpResponse({ status: 401 })))
+                            );
                         })
                     );
                 }

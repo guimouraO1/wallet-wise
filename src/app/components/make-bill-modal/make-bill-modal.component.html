@@ -69,7 +69,7 @@
     <div class="w-full">
         <div class="flex gap-2 items-end justify-end w-full">
             <button (click)="closeDialog()" class="btn btn-error btn-soft">{{ 'components.makeBillModal.form.cancel' | translate }}</button>
-            <button [disabled]="this.makeBillForm.invalid" (click)="makeBill()" class="btn btn-success btn-soft">{{ 'components.makeBillModal.form.makeTransaction' | translate }}</button>
+            <button [disabled]="this.makeBillForm.invalid || isLoading" (click)="makeBill()" class="btn btn-success btn-soft">{{ 'components.makeBillModal.form.makeTransaction' | translate }}</button>
         </div>
     </div>
     <ngx-sonner-toaster richColors  />
