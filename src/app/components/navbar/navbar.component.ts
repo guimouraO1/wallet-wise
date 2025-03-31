@@ -71,11 +71,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
         this.drawerOpen.setValue(false);
     }
 
-    signOut() {
+    async signOut() {
         this.toggleSidenav();
         this.tokenService.clearAccessToken();
         this.authService.setIsUserAuthenticated(false);
-        this.authService.signOut();
+        await firstValueFrom(this.authService.signOut());
         this.router.navigate(['/sign-in']);
     }
 }

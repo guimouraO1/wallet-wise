@@ -21,6 +21,10 @@ export const httpInterceptor: HttpInterceptorFn = (request, next) => {
         delay(200),
         catchError((error: HttpErrorResponse) => {
             if (error.status === 401) {
+                if (request.url.includes('/sign-in')) {
+                    return throwError(() => error);
+                }
+
                 if (!isRefreshing) {
                     isRefreshing = true;
                     return authService.refreshToken().pipe(
