@@ -1,87 +1,111 @@
-<div class="flex items-center min-h-[calc(100vh-4rem)] w-full">
-    <div class="grid grid-cols-2 grid-rows-2 w-full min-h-[calc(100vh-4rem)] px-40 p-10">
-        <div class="flex items-center justify-center">
-            <div class="stats shadow">
-                <div class="stat">
-                  <div class="stat-figure text-primary">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      class="inline-block h-8 w-8 stroke-current">
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                    </svg>
-                  </div>
-                  <div class="stat-title">Total Likes</div>
-                  <div class="stat-value text-primary">25.6K</div>
-                  <div class="stat-desc">21% more than last month</div>
-                </div>
-              
-                <div class="stat">
-                  <div class="stat-figure text-secondary">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      class="inline-block h-8 w-8 stroke-current">
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                    </svg>
-                  </div>
-                  <div class="stat-title">Page Views</div>
-                  <div class="stat-value text-secondary">2.6M</div>
-                  <div class="stat-desc">21% more than last month</div>
-                </div>
-              
-                <div class="stat">
-                  <div class="stat-figure text-secondary">
-                    <div class="avatar online">
-                      <div class="w-16 rounded-full">
-                        <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
-                      </div>
-                    </div>
-                  </div>
-                  <div class="stat-value">86%</div>
-                  <div class="stat-title">Tasks done</div>
-                  <div class="stat-desc text-secondary">31 tasks remaining</div>
-                </div>
-              </div>
+<div class="flex min-h-[calc(100vh-4rem)] w-full gap-2">
+  <div class="w-full flex flex-col items-center justify-center gap-4 flex-wrap min-h-[calc(100vh-4rem)]">
+    <div class="flex w-full flex-wrap items-center justify-center gap-4 px-70">
+      <div class="card w-80 border border-base-300 card-lg bg-base-100">
+        <div class="card-body">
+          <div class="w-full flex justify-between items-center">
+            <span class="card-title text-sm">Transactions (Month)</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+            </svg>
+          </div>
+          <span class="text-4xl font-bold">30</span>
+          <span class="text-sm text-base-content/40">+19% from last month</span>
         </div>
-
-        <div class="flex items-center justify-center w-full h-full">
-            <ngx-charts-pie-chart class="my-4"
-                                  [results]="data"
-                                  [view]="[600, 250]"
-                                  [scheme]="'natural'"
-                                  [legend]="true"
-                                  [labels]="false"
-                                  [gradient]="true"
-                                  [legendPosition]="legendPosition.Below"
-                                  >
-            </ngx-charts-pie-chart>
+      </div>
+      <div class="card w-80 border border-base-300 card-lg bg-base-100">
+        <div class="card-body">
+          <div class="w-full flex justify-between items-center">
+            <span class="card-title text-sm">Bills (Month)</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+            </svg>
+          </div>
+          <span class="text-4xl font-bold">20</span>
+          <span class="text-sm text-base-content/40">+10% from last month</span>
         </div>
-        <div class="flex items-center justify-center w-full h-full">
-            <ngx-charts-bar-vertical class="fill-base-content"
-                [results]="data"
-                [view]="[600, 300]"
-                [showDataLabel]="false"
-                [legend]="true"
-                [scheme]="'natural'"
-                [legendPosition]="legendPosition.Below"
-                [gradient]="false"
-                [yAxis]="true"
-                >
-            </ngx-charts-bar-vertical>
+      </div>
+      <div class="card w-80 border border-base-300 card-lg bg-base-100">
+        <div class="card-body">
+          <div class="w-full flex justify-between items-center">
+            <span class="card-title text-sm">Money movimented (Month)</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+            </svg>
+          </div>
+          <span class="text-4xl font-bold">$45,231.89</span>
+          <span class="text-sm text-base-content/40">+19% from last month</span>
         </div>
-        <div>
-            
+      </div>
+      <div class="card w-80 border border-base-300 card-lg bg-base-100">
+        <div class="card-body">
+          <div class="w-full flex justify-between items-center">
+            <span class="card-title text-sm">Transactions (Month)</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+            </svg>
+          </div>
+          <span class="text-4xl font-bold">$45,231.89</span>
+          <span class="text-sm text-base-content/40">+19% from last month</span>
         </div>
+      </div>
     </div>
+    <div class="flex flex-row w-full flex-wrap items-center justify-between gap-4 px-70">
+      <div class="flex items-center justify-center h-full">
+        <ngx-charts-bar-vertical class="fill-base-content"
+            [results]="data"
+            [view]="[600, 300]"
+            [showDataLabel]="false"
+            [legend]="true"
+            [scheme]="colorScheme"
+            [gradient]="false"
+            [yAxis]="true"
+            >
+        </ngx-charts-bar-vertical>
+      </div>
+
+      <div class="flex flex-col w-[50%] p-10 h-120 gap-2">
+        <div class="self-end flex gap-2">
+          <label class="floating-label">
+            <span>Lembrete</span>
+            <input [formControl]="todoInput" type="text" placeholder="mail@site.com" class="input input-md focus:outline-none focus:border-success" />
+          </label>
+          <button [disabled]="todoInput.invalid" (click)="addToDo()" class="btn btn-success btn-soft">Adicionar lembrete</button>
+        </div>
+        
+        <div class="flex items-center justify-center w-full h-full gap-10">
+          <div class="flex flex-col gap-2 h-full border border-base-300 p-4 rounded w-full">
+            <span class="self-start font-bold">To do</span>  
+            <div
+              cdkDropList
+              #todoList="cdkDropList"
+              [cdkDropListData]="todo"
+              [cdkDropListConnectedTo]="[doneList]"
+              class="flex flex-col gap-1 h-full overflow-auto px-2"
+              (cdkDropListDropped)="drop($event)">
+              @for (item of todo; track item) {
+                <button class="!btn !btn-primary !btn-soft" cdkDrag>{{item}}</button>
+              }
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-2 h-full border border-base-300 p-4 rounded w-full">
+            <span class="self-start font-bold">Done</span>
+            <div
+              cdkDropList
+              #doneList="cdkDropList"
+              [cdkDropListData]="done"
+              [cdkDropListConnectedTo]="[todoList]"
+              class="flex flex-col gap-1 h-full overflow-auto px-2"
+              (cdkDropListDropped)="drop($event)">
+              @for (item of done; track item) {
+                <button class="!btn !btn-primary !btn-soft" cdkDrag>{{item}}</button>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>

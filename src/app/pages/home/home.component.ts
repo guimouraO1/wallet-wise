@@ -1,22 +1,24 @@
 import { Component } from '@angular/core';
-import { LegendPosition, NgxChartsModule } from '@swimlane/ngx-charts';
-import { Color, ScaleType } from '@swimlane/ngx-charts';
-
-export class foo {
-    colorScheme: Color = {
-        name: 'myScheme',
-        selectable: true,
-        group: ScaleType.Ordinal,
-        domain: ['#f00', '#0f0', '#0ff']
-    };
-}
+import { Color, NgxChartsModule, ScaleType } from '@swimlane/ngx-charts';
+import {
+    CdkDragDrop,
+    moveItemInArray,
+    transferArrayItem,
+    CdkDrag,
+    CdkDropList
+  } from '@angular/cdk/drag-drop';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
     selector: 'app-home',
-    imports: [NgxChartsModule],
+    imports: [NgxChartsModule, CdkDropList, CdkDrag, ReactiveFormsModule],
     templateUrl: './home.component.html'
 })
 export class HomeComponent {
+    done: string[] = [];
+    todo: string[] = [];
+    todoInput = new FormControl<string>('', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]);
+
     data = [
         { 'name': 'Julho', 'value': 4800 },
         { 'name': 'Agosto', 'value': 6000 },
@@ -26,25 +28,29 @@ export class HomeComponent {
         { 'name': 'Dezembro', 'value': 5200 }
     ];
 
-    gradient: boolean = true;
-    legendPosition = LegendPosition;
-
     colorScheme: Color = {
-        domain: ['#5B8EEA', '#F4A600', '#64D78A', '#E35C5C'],
+        domain: ['#81a1c1', '#a3be8d', '#bf616a', '#ebcb8b', '#00baa6', '#8c4fff'],
         name: 'testando',
         selectable: false,
         group: ScaleType.Time
     };
 
-    onSelect(data: any): void {
-        console.log('Item clicked', JSON.parse(JSON.stringify(data)));
+    drop(event: CdkDragDrop<string[]>) {
+        if (event.previousContainer === event.container) {
+            moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+        } else {
+            transferArrayItem(
+          event.previousContainer.data,
+          event.container.data,
+          event.previousIndex,
+          event.currentIndex
+        );
+        }
     }
 
-    onActivate(data: any): void {
-        console.log('Activate', JSON.parse(JSON.stringify(data)));
-    }
-
-    onDeactivate(data: any): void {
-        console.log('Deactivate', JSON.parse(JSON.stringify(data)));
+    addToDo() {
+        if (!this.todoInput.value) return;
+        this.todo.push(this.todoInput.value);
+        this.todoInput.reset('');
     }
 }
