@@ -1,10 +1,8 @@
 <div class="flex flex-col gap-2 items-center justify-center min-h-[calc(100vh-4rem)]">
-  @if (!isLoading && !isError) { 
-    @for (transaction of transactions; track $index) {
+  @if (!isLoading && !isError && transactions.length > 0) { 
       <div class="w-4/5 flex flex-col items-center gap-2">
         <div class="flex items-center gap-2 justify-between w-full">
           <div class="flex gap-2 w-full">
-
             <div class="join">            
               <input [formControl]="selectedName" class="input join-item focus:outline-none focus:border-primary" placeholder="{{'pages.transactions.filters.searchByName.placeholder' | translate }}" />
               <button (click)="searchByName()" [disabled]="selectedName.value === ''" class="btn join-item">
@@ -58,6 +56,7 @@
                   <th>{{'pages.transactions.table.header.amount' | translate }}</th>
                 </tr>
               </thead>
+              @for (transaction of transactions; track $index) {
               <tbody>
                   <tr class="hover:bg-base-300">
                       <td>
@@ -126,6 +125,9 @@
                       </td>
                   </tr>
               </tbody>
+            } @empty {
+
+            }
             </table>
         </div>
         <div class="self-end flex items-center gap-2">
@@ -144,28 +146,27 @@
           </div>
         </div>
       </div>
-    } 
-    @empty {
-      @if (selectedTransactionType.value && selectedTransactionType.value !== null || selectedName.value || selectedPaymentMethod.value && selectedPaymentMethod.value !== null) {
-        <div class="flex flex-col gap-1 items-center">
-          <span class="text-5xl font-bold">Vimos que não tem nenhuma transaction para esses filtros</span>
-          <span class="text-md opacity-50">Tente retirar os filtros</span>
-          <button (click)="resetFilters()" class="btn btn-secondary btn-soft btn-wide">Retirar filtros</button>
-        </div>
-      } @else {
-        <div class="flex flex-col gap-1 items-center">
-          <span class="text-5xl font-bold">Vimos que não tem nenhuma transaction</span>
-          <span class="text-md opacity-50">Tente fazer a sua primeira transação!</span>
-          <button (click)="makeTransaction()" class="btn btn-primary btn-soft btn-wide">Make first transaction</button>
-        </div>
-      }
-    }
   } 
+  @else if (transactions.length <= 0 && !isError && !isLoading) {
+    @if (selectedTransactionType.value && selectedTransactionType.value !== null || selectedName.value || selectedPaymentMethod.value && selectedPaymentMethod.value !== null) {
+      <div class="flex flex-col gap-1 items-center">
+        <span class="text-5xl font-bold">{{'pages.transactions.conditions.firstTransaction.title' | translate }}</span>
+        <span class="text-md opacity-50">{{'pages.transactions.conditions.firstTransaction.subtitle' | translate }}</span>
+        <button (click)="resetFilters()" class="btn btn-secondary btn-soft btn-wide">{{'pages.transactions.conditions.firstTransaction.button' | translate }}</button>
+      </div>
+    } @else {
+      <div class="flex flex-col gap-1 items-center">
+        <span class="text-5xl font-bold">{{'pages.transactions.conditions.noTransactionsForFilters.title' | translate }}</span>
+        <span class="text-md opacity-50">{{'pages.transactions.conditions.noTransactionsForFilters.subtitle' | translate }}</span>
+        <button (click)="makeTransaction()" class="btn btn-primary btn-soft btn-wide">{{'pages.transactions.conditions.noTransactionsForFilters.button' | translate }}</button>
+      </div>
+    }
+  }
   @else if (isError) {
     <div class="flex flex-col gap-1 items-center">
-      <span class="text-5xl font-bold">Houve um erro ao tentar pegar suas trasações</span>
-      <span class="text-md opacity-50">Tente novamente</span>
-      <button (click)="getTransactions()" class="btn btn-error btn-soft btn-wide">{{'pages.transactions.tryAgain' | translate }}</button>
+      <span class="text-5xl font-bold">{{'pages.transactions.conditions.isError.title' | translate }}</span>
+      <span class="text-md opacity-50">{{'pages.transactions.conditions.isError.subtitle' | translate }}</span>
+      <button (click)="getTransactions()" class="btn btn-error btn-soft btn-wide">{{'pages.transactions.conditions.isError.button' | translate }}</button>
     </div>
   } 
   @else {

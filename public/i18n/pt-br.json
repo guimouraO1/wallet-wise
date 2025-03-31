@@ -124,6 +124,23 @@
                     "accountCash": "Dinheiro da conta",
                     "pix": "Pix"
                 }
+            },
+            "conditions": {
+                "firstTransaction": {
+                    "title": "Ops! Nada por aqui...",
+                    "subtitle": "Talvez os filtros estejam muito restritos. Tente ajustá-los ou removê-los",
+                    "button": "Ver todas as transações"
+                },
+                "noTransactionsForFilters": {
+                    "title": "Sua jornada começa aqui!",
+                    "subtitle": "Faça sua primeira transação e comece a acompanhar suas movimentações",
+                    "button": "Iniciar transação"
+                },
+                "isError": {
+                    "title": "Algo deu errado...",
+                    "subtitle": "Não se preocupe! Você pode tentar novamente",
+                    "button": "Tentar novamente"
+                }
             }
         }
     }

@@ -94,8 +94,24 @@
                     "accountCash": "Account cash",
                     "pix": "Pix"
                 }
+            },
+            "conditions": {
+                "firstTransaction": {
+                    "title": "Oops! Nothing here...",
+                    "subtitle": "Maybe the filters are too restrictive. Try adjusting or removing them",
+                    "button": "View all transactions"
+                },
+                "noTransactionsForFilters": {
+                    "title": "Your journey starts here!",
+                    "subtitle": "Make your first transaction and start tracking your movements",
+                    "button": "Start transaction"
+                },
+                "isError": {
+                    "title": "Something went wrong...",
+                    "subtitle": "Don't worry! You can try again",
+                    "button": "Try again"
+                }
             }
-
         },
         "bills": {
             "filters": {
