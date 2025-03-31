@@ -75,7 +75,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
         this.toggleSidenav();
         this.tokenService.clearAccessToken();
         this.authService.setIsUserAuthenticated(false);
-        await firstValueFrom(this.authService.signOut()).catch();
         this.router.navigate(['/sign-in']);
+
+        await firstValueFrom(this.authService.signOut()).catch();
     }
 }
