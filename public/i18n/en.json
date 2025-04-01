@@ -26,6 +26,12 @@
                 "selectDueDate": "Select due date"
             }
         },
+        "deleteTransactionsModal": {
+            "title": "Delete Transactions",
+            "subtitle": "Are you sure you want to delete the selected transactions?",
+            "cancel": "Cancel",
+            "confirm": "Delete transactions"
+        },
         "makeTransactionsModal": {
             "title": "New transaction",
             "subtitle": "Fill in the details to complete your transaction",
@@ -84,7 +90,7 @@
                     "date": "Date",
                     "transactionType": "Transaction type",
                     "paymentMethod": "Payment method",
-                    "amount":"Amount"
+                    "amount": "Amount"
                 },
                 "body": {
                     "withdraw": "Withdraw",
@@ -130,18 +136,38 @@
             "tryAgain": "Try again",
             "deleteBills": "Delete Bills",
             "makeBill": "New Bill",
-            
             "table": {
                 "header": {
                     "name": "Name",
                     "description": "Description",
                     "dueDate": "Due Date",
                     "installments": "Installments",
-                    "amount":"Amount"
+                    "amount": "Amount"
                 },
-                "body": {
-
-                }
+                "body": {}
+            }
+        },
+        "home": {
+            "filters": {
+                "date": "Select date"
+            },
+            "cards": {
+                "transactionsCount": "Transactions (Month)",
+                "transactionsCountPorcentage": "from last month",
+                "transactions": "Money movimented (Month)",
+                "transactionsPorcentage": "from last month"
+            },
+            "commingSoon": "Comming soon",
+            "noTransactions": {
+                "title": "Looks like it's still empty around here!",
+                "subtitle": "How about getting started right now?",
+                "transactions": "Log a transaction",
+                "bills": "Create an installment bill"
+            },
+            "isError": {
+            "title": "Something went wrong",
+            "subtitle": "We couldn't complete the action. Please try again.",
+            "button": "Try again"
             }
         }
     }

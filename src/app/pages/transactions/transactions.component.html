@@ -3,9 +3,10 @@
       <div class="w-4/5 flex flex-col items-center gap-2">
         <div class="flex items-center gap-2 justify-between w-full">
           <div class="flex gap-2 w-full">
+            
             <div class="join">            
-              <input [formControl]="selectedName" class="input join-item focus:outline-none focus:border-primary" placeholder="{{'pages.transactions.filters.searchByName.placeholder' | translate }}" />
-              <button (click)="searchByName()" [disabled]="selectedName.value === ''" class="btn join-item">
+              <input [formControl]="selectedName" class="input join-item border-neutral/10 focus:outline-none focus:border-neutral" placeholder="{{'pages.transactions.filters.searchByName.placeholder' | translate }}" />
+              <button (click)="searchByName()" [disabled]="selectedName.value === ''" class="btn btn-neutral btn-soft join-item">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 join-item">
                   <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                 </svg>
@@ -75,7 +76,7 @@
                           <span class="text-sm opacity-80">{{transaction.description}}</span>
                       </td>
                       <td>
-                          <span class="text-sm opacity-80">{{formatDate(transaction.date)}}</span>
+                          <span class="text-sm opacity-80">{{formatDate(transaction.createdAt.toString())}}</span>
                       </td>
                       <td>
                         @if (transaction.type === 'withdraw') {

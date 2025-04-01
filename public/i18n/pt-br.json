@@ -26,6 +26,12 @@
                 "selectDueDate": "Selecione a data de vencimento"
             }
         },
+        "deleteTransactionsModal": {
+            "title": "Deletar Transações",
+            "subtitle": "Tem certeza de que deseja deletar as transações selecionadas?",
+            "cancel": "Cancelar",
+            "confirm": "Deletar transações"
+        },
         "makeTransactionsModal": {
             "title": "Nova transação",
             "subtitle": "Preencha os detalhes para completar sua transação",
@@ -77,9 +83,7 @@
                     "installments": "Parcelas",
                     "amount": "Valor"
                 },
-                "body": {
-
-                }
+                "body": {}
             }
         },
         "transactions": {
@@ -141,6 +145,29 @@
                     "subtitle": "Não se preocupe! Você pode tentar novamente",
                     "button": "Tentar novamente"
                 }
+            }
+        },
+        "home": {
+            "filters": {
+                "date": "Selecionar data"
+            },
+            "cards": {
+                "transactionsCount": "Transações (Mês)",
+                "transactionsCountPorcentage": "do mês passado",
+                "transactions": "Dinheiro movimentado (Mês)",
+                "transactionsPorcentage": "do mês passado"
+            },
+            "commingSoon": "Em breve",
+            "noTransactions": {
+                "title": "Parece que ainda está tudo vazio por aqui!",
+                "subtitle": "Que tal começar agora mesmo?",
+                "transactions": "Registrar uma transação",
+                "bills": "Criar uma conta parcelada"
+            },
+            "isError": {
+                "title": "Algo deu errado",
+                "subtitle": "Não foi possível concluir a ação. Por favor, tente novamente",
+                "button": "Tentar novamente" 
             }
         }
     }

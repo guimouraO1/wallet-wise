@@ -8,10 +8,11 @@ import { formatDate } from '../../helpers/formate-date';
 import { toast, NgxSonnerToaster } from 'ngx-sonner';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
-import { MakeTransactinoModalComponent } from '../../components/make-transactino-modal/make-transactino-modal.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from '../../services/language.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { MakeTransactionsModalComponent } from '../../components/make-transactions-modal/make-transactions-modal.component';
+import { DeleteTransactionsModalComponent } from '../../components/delete-transactions-modal/delete-transactions-modal.component';
 
 @Component({
     selector: 'app-transactions',
@@ -48,8 +49,9 @@ export class TransactionsComponent implements OnInit {
             this.selectedPaymentMethod.setValue(params['paymentMethod'] || '');
             this.selectedName.setValue(params['name'] || '');
             this.page = params['page'] ? Number(params['page']) : 1;
-            this.getTransactions();
         });
+
+        await this.getTransactions();
     }
 
     toggleAllSelection(event: Event) {
@@ -59,6 +61,7 @@ export class TransactionsComponent implements OnInit {
 
     async resetFilters() {
         this.router.navigate([], { queryParams: {} });
+        await this.getTransactions();
     }
 
     toggleSelection(transaction: Transaction, event: Event) {
@@ -68,29 +71,30 @@ export class TransactionsComponent implements OnInit {
             : this.selectedTransactions.filter(t => t !== transaction);
     }
 
-    addFilterParam(filter: any) {
+    async addFilterParam(filter: any) {
         this.router.navigate([], { queryParams: filter, queryParamsHandling: 'merge' });
+        await this.getTransactions();
     }
 
     async onTransactionTypeChange() {
         this.page = 1;
-        this.addFilterParam({ type: this.selectedTransactionType.value });
+        await this.addFilterParam({ type: this.selectedTransactionType.value });
     }
 
     async removeNameFilter() {
         this.selectedName.reset('');
         this.page = 1;
-        this.addFilterParam({ name: null });
+        await this.addFilterParam({ name: null });
     }
 
     async onPaymentMethodChange() {
         this.page = 1;
-        this.addFilterParam({ paymentMethod: this.selectedPaymentMethod.value });
+        await this.addFilterParam({ paymentMethod: this.selectedPaymentMethod.value });
     }
 
     async searchByName() {
         this.page = 1;
-        this.addFilterParam({ name: this.selectedName.value });
+        await this.addFilterParam({ name: this.selectedName.value });
     }
 
     formatMoneyToString(amount: number) {
@@ -104,14 +108,14 @@ export class TransactionsComponent implements OnInit {
     async nextPage() {
         if ((this.page * this.offset) < this.transactionsCount) {
             this.page++;
-            this.addFilterParam({ page: this.page });
+            await this.addFilterParam({ page: this.page });
         }
     }
 
     async previousPage() {
         if (this.page > 1) {
             this.page--;
-            this.addFilterParam({ page: this.page });
+            await this.addFilterParam({ page: this.page });
         }
     }
 
@@ -128,7 +132,7 @@ export class TransactionsComponent implements OnInit {
     }
 
     openDialog(): void {
-        const dialogRef = this.dialog.open(MakeTransactinoModalComponent);
+        const dialogRef = this.dialog.open(MakeTransactionsModalComponent);
         dialogRef.closed.pipe(take(1)).subscribe(async (result) => {
             if (!result) return;
             this.page = 1;
@@ -136,9 +140,35 @@ export class TransactionsComponent implements OnInit {
         });
     }
 
-    deleteTransactions() {
-        toast.error('No delete function at all');
+    async deleteTransactions() {
+
+        if (!this.selectedTransactions) return;
+
+        const dialogRef = this.dialog.open(DeleteTransactionsModalComponent);
+        const result = await firstValueFrom(dialogRef.closed);
+        if (!result) {
+            this.isLoading = false;
+            return;
+        }
+
+        this.isLoading = true;
+        this.isError = false;
+
+        try {
+            const account = await firstValueFrom(this.accountService.getAccount());
+
+            for (const transaction of this.selectedTransactions) {
+                await firstValueFrom(this.transactionsService.deleteTransaction(transaction.id, account.id));
+            }
+
+            await this.getTransactions();
+        } catch (error) {
+            this.isError = true;
+            toast.error('Error deleting transactions');
+        }
+
         this.selectedTransactions = [];
+        this.isLoading = false;
     }
 
     async getTransactions() {
