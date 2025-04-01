@@ -1,6 +1,6 @@
-import { HttpErrorResponse, HttpInterceptorFn, HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { BehaviorSubject, catchError, filter, of, switchMap, take, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, filter, switchMap, take, throwError } from 'rxjs';
 import { TokenService } from './token.service';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
@@ -19,51 +19,45 @@ export const httpInterceptor: HttpInterceptorFn = (request, next) => {
     }
 
     return next(request).pipe(
-        catchError((error: HttpErrorResponse) => {
-            if (error.status === 401) {
-                if (request.url.includes('/sign-in') || request.url.includes('/sign-out')) {
-                    return throwError(() => error);
-                }
-
-                if (!isRefreshing) {
-                    isRefreshing = true;
-                    refreshTokenSubject.next(null);
-
-                    return authService.refreshToken().pipe(
-                        switchMap((response) => {
-                            tokenService.setToken(response.token);
-                            authService.setIsUserAuthenticated(true);
-                            isRefreshing = false;
-                            refreshTokenSubject.next(response.token);
-
-                            const newRequest = request.clone({
-                                setHeaders: { Authorization: `Bearer ${response.token}` }
-                            });
-
-                            return next(newRequest);
-                        }),
-                        catchError(() => {
-                            isRefreshing = false;
-                            authService.setIsUserAuthenticated(false);
-                            router.navigate(['sign-in']);
-                            return authService.signOut().pipe(switchMap(() => of(new HttpResponse({ status: 401 }))));
-                        })
-                    );
-                } else {
-                    return refreshTokenSubject.pipe(
-                        filter(token => token !== null),
-                        take(1),
-                        switchMap((newToken) => {
-                            const newRequest = request.clone({
-                                setHeaders: { Authorization: `Bearer ${newToken}` }
-                            });
-                            return next(newRequest);
-                        })
-                    );
-                }
-            }
-
+    catchError((error: HttpErrorResponse) => {
+        if (error.status !== 401) {
             return throwError(() => error);
-        })
-    );
+        }
+
+        if (request.url.includes('/sign-in') || request.url.includes('/sign-out')) {
+            return throwError(() => error);
+        }
+
+        if (!isRefreshing) {
+            isRefreshing = true;
+            refreshTokenSubject.next(null);
+
+            return authService.refreshToken().pipe(
+          switchMap(response => {
+              isRefreshing = false;
+              tokenService.setToken(response.token);
+              authService.setIsUserAuthenticated(true);
+              refreshTokenSubject.next(response.token);
+
+              return next(request.clone({ setHeaders: { Authorization: `Bearer ${response.token}` } }));
+          }),
+          catchError(err => {
+              isRefreshing = false;
+              tokenService.clearAccessToken();
+              authService.setIsUserAuthenticated(false);
+              router.navigate(['sign-in']);
+              return throwError(() => err);
+          })
+        );
+        } else {
+            return refreshTokenSubject.pipe(
+          filter(newToken => newToken != null),
+          take(1),
+          switchMap(newToken => {
+              return next(request.clone({ setHeaders: { Authorization: `Bearer ${newToken}` } }));
+          })
+        );
+        }
+    })
+  );
 };
