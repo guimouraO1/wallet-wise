@@ -167,7 +167,18 @@
             "isError": {
                 "title": "Algo deu errado",
                 "subtitle": "Não foi possível concluir a ação. Por favor, tente novamente",
-                "button": "Tentar novamente" 
+                "button": "Tentar novamente"
+            }
+        },
+        "sign-in": {
+            "form": {
+                "title": "Bem-vindo de volta!",
+                "subtitle": "Tudo o que você precisa para gerenciar seu dinheiro",
+                "email": "E-mail",
+                "emailPlaceholder": "seu@email.com",
+                "password": "Senha",
+                "passwordPlaceholder": "Sua senha",
+                "button": "Entrar"
             }
         }
     }

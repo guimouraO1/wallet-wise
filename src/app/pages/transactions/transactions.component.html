@@ -17,14 +17,14 @@
               <button (click)="removeNameFilter()" class="btn btn-error btn-soft">{{'pages.transactions.filters.searchByName.remove' | translate }}</button>
             }
 
-            <select (change)="onTransactionTypeChange()" [formControl]="selectedTransactionType" class="select w-60 focus:outline-none focus:border-primary">
+            <select (change)="onTransactionTypeChange()" [formControl]="selectedTransactionType" class="select w-60 focus:outline-none focus:border-neutral">
               <option value="" disabled selected>{{'pages.transactions.filters.transactionsType.placeholder' | translate }}</option>
               <option value="">{{'pages.transactions.filters.transactionsType.none' | translate }}</option>
               <option value="withdraw">{{'pages.transactions.filters.transactionsType.withdraw' | translate }}</option>
               <option value="deposit">{{'pages.transactions.filters.transactionsType.deposit' | translate }}</option>
             </select>
             
-            <select (change)="onPaymentMethodChange()" [formControl]="selectedPaymentMethod" class="select w-60 focus:outline-none focus:border-primary">
+            <select (change)="onPaymentMethodChange()" [formControl]="selectedPaymentMethod" class="select w-60 focus:outline-none focus:border-neutral">
               <option value="" disabled selected>{{'pages.transactions.filters.paymentMethod.placeholder' | translate }}</option>
               <option value="">{{'pages.transactions.filters.paymentMethod.none' | translate }}</option>
               <option value="credit_card">{{'pages.transactions.filters.paymentMethod.creditCard' | translate }}</option>
@@ -38,7 +38,7 @@
             <button (click)="deleteTransactions()" class="btn btn-error btn-soft">{{'pages.transactions.deleteTransactions' | translate }}</button>
           }
 
-          <button (click)="makeTransaction()" class="btn btn-primary btn-soft">{{'pages.transactions.makeTransaction' | translate }}</button>
+          <button (click)="makeTransaction()" class="btn btn-neutral btn-soft">{{'pages.transactions.makeTransaction' | translate }}</button>
         </div>
         <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 w-full">
             <table class="table">
@@ -159,7 +159,7 @@
       <div class="flex flex-col gap-1 items-center">
         <span class="text-5xl font-bold">{{'pages.transactions.conditions.noTransactionsForFilters.title' | translate }}</span>
         <span class="text-md opacity-50">{{'pages.transactions.conditions.noTransactionsForFilters.subtitle' | translate }}</span>
-        <button (click)="makeTransaction()" class="btn btn-primary btn-soft btn-wide">{{'pages.transactions.conditions.noTransactionsForFilters.button' | translate }}</button>
+        <button (click)="makeTransaction()" class="btn btn-neutral btn-soft btn-wide">{{'pages.transactions.conditions.noTransactionsForFilters.button' | translate }}</button>
       </div>
     }
   }

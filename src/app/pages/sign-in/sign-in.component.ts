@@ -6,10 +6,11 @@ import { firstValueFrom } from 'rxjs';
 import { TokenService } from '../../services/token.service';
 import { Router } from '@angular/router';
 import { toast, NgxSonnerToaster } from 'ngx-sonner';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-sign-in',
-    imports: [ReactiveFormsModule, NgxSonnerToaster],
+    imports: [ReactiveFormsModule, NgxSonnerToaster, TranslateModule],
     templateUrl: './sign-in.component.html'
 })
 export class SignInComponent implements OnInit {

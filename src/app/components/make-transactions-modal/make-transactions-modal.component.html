@@ -4,7 +4,7 @@
         <span class="text-sm opacity-60">{{ 'components.makeTransactionsModal.subtitle' | translate }}</span>
         <div class="w-full grid grid-cols-2 gap-2 pt-2">
 
-            <label class="input w-full" 
+            <label class="input w-full focus-within:outline-none focus-within:border-neutral" 
                 [ngClass]="this.makeTransactionForm.get('name')?.errors && this.makeTransactionForm.get('name')?.dirty ? 'border-error !outline-error' : ''">
                 <span class="label w-40">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
@@ -15,7 +15,7 @@
                 <input formControlName="name" maxlength="50" class="input focus:outline-none w-full" />
             </label>
 
-            <label class="input w-full" 
+            <label class="input w-full focus-within:outline-none focus-within:border-neutral" 
                 [ngClass]="this.makeTransactionForm.get('amount')?.errors && this.makeTransactionForm.get('amount')?.dirty ? 'border-error !outline-error' : ''">
                 <span class="label w-40">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
@@ -23,17 +23,17 @@
                       </svg>                      
                       {{ 'components.makeTransactionsModal.form.amount' | translate }}</span>
                 <input formControlName="amount" prefix="R$ " mask="separator.2" thousandSeparator="," decimalMarker="." maxlength="14" 
-                class="input join-item focus:outline-none focus:border-primary w-full">
+                class="input join-item focus:outline-none focus:border-neutral w-full">
             </label>
 
-            <select formControlName="type" class="select focus:outline-none focus:border-primary w-full">
+            <select formControlName="type" class="select focus:outline-none focus:border-neutral w-full">
                 <option value="" disabled selected>{{ 'components.makeTransactionsModal.form.transactionsType.placeholder' | translate }}</option>
                 <option value="withdraw">{{ 'components.makeTransactionsModal.form.transactionsType.withdraw' | translate }}</option>
                 <option value="deposit">{{ 'components.makeTransactionsModal.form.transactionsType.deposit' | translate }}</option>
             </select>
 
             
-            <select formControlName="paymentMethod" class="select focus:outline-none focus:border-primary w-full">
+            <select formControlName="paymentMethod" class="select focus:outline-none focus:border-neutral w-full">
                 <option value="" disabled selected>{{ 'components.makeTransactionsModal.form.paymentMethod.placeholder' | translate }}</option>
                 <option value="credit_card">{{ 'components.makeTransactionsModal.form.paymentMethod.creditCard' | translate }}</option>
                 <option value="debit_card">{{ 'components.makeTransactionsModal.form.paymentMethod.debitCard' | translate }}</option>
@@ -43,7 +43,7 @@
         </div>
         <fieldset class="fieldset w-full">
             <legend class="fieldset-legend">{{ 'components.makeTransactionsModal.form.textareaLabel' | translate }}</legend>
-            <textarea formControlName="description" maxlength="200" class="textarea max-h-24 min-h-24 w-full focus:outline-none focus:border-primary" 
+            <textarea formControlName="description" maxlength="200" class="textarea max-h-24 min-h-24 w-full focus:outline-none focus:border-neutral" 
                 placeholder="{{ 'components.makeTransactionsModal.form.textareaPlaceholder' | translate }}"></textarea>
         </fieldset>
     </div>

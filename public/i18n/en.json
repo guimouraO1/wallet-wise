@@ -169,6 +169,17 @@
             "subtitle": "We couldn't complete the action. Please try again.",
             "button": "Try again"
             }
+        },
+        "sign-in": {
+            "form": {
+                "title": "Welcome back!",
+                "subtitle": "Everything you need to manage your money",
+                "email": "E-mail",
+                "emailPlaceholder": "your@mail.com",
+                "password": "Password",
+                "passwordPlaceholder": "Your password",
+                "button": "Sign-in"
+            }
         }
     }
 }
