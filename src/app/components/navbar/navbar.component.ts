@@ -1,6 +1,6 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ThemeService } from '../../services/theme.service';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { TokenService } from '../../services/token.service';
 import { TranslateModule } from '@ngx-translate/core';
@@ -14,7 +14,7 @@ import { formatMoneyToString } from '../../helpers/format-money';
 
 @Component({
     selector: 'app-navbar',
-    imports: [RouterLink, TranslateModule, ReactiveFormsModule, CommonModule],
+    imports: [RouterLink, TranslateModule, ReactiveFormsModule, CommonModule, RouterLinkActive],
     templateUrl: './navbar.component.html'
 })
 export class NavbarComponent implements OnInit, OnDestroy {

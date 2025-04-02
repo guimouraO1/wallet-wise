@@ -41,7 +41,7 @@ export class AuthService {
         this.isUserAuthenticated.next(value);
     }
 
-    refreshToken() {
+    refreshToken(): Observable<TokenResponse> {
         return this.http.post<TokenResponse>(`${environment.apiUrl}/refresh-token`, {}, { withCredentials: true });
     }
 

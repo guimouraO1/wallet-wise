@@ -54,7 +54,6 @@ export class HomeComponent implements OnInit {
     async getTransactionsInPeriod() {
         this.isLoading = true;
         this.isError = false;
-        console.log(this.thisMonth.value, this.thisMonthInit.value, this.oneMonthAgo.value);
         try {
             const account = await firstValueFrom(this.accountService.getAccount());
             const { transactions, transactionsCount } = await firstValueFrom(this.transactionsService.getTransactionsInPeriod(account.id,
