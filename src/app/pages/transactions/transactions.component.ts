@@ -5,7 +5,7 @@ import { AccountService } from '../../services/account.service';
 import { CommonModule } from '@angular/common';
 import { formatMoneyToString } from '../../helpers/format-money';
 import { formatDate } from '../../helpers/formate-date';
-import { toast, NgxSonnerToaster } from 'ngx-sonner';
+import { toast } from 'ngx-sonner';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
 import { TranslateModule } from '@ngx-translate/core';
@@ -17,7 +17,7 @@ import { DeleteTransactionsModalComponent } from '../../components/delete-transa
 @Component({
     selector: 'app-transactions',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, NgxSonnerToaster, DialogModule, TranslateModule],
+    imports: [CommonModule, ReactiveFormsModule, DialogModule, TranslateModule],
     templateUrl: './transactions.component.html'
 })
 export class TransactionsComponent implements OnInit {
@@ -141,7 +141,6 @@ export class TransactionsComponent implements OnInit {
     }
 
     async deleteTransactions() {
-
         if (!this.selectedTransactions) return;
 
         const dialogRef = this.dialog.open(DeleteTransactionsModalComponent);

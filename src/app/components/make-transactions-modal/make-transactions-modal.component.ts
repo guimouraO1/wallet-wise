@@ -3,7 +3,7 @@ import { DialogRef } from '@angular/cdk/dialog';
 import { ThemeService } from '../../services/theme.service';
 import { NgxMaskDirective } from 'ngx-mask';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { toast, NgxSonnerToaster } from 'ngx-sonner';
+import { toast } from 'ngx-sonner';
 import { CommonModule } from '@angular/common';
 import { AccountService } from '../../services/account.service';
 import { firstValueFrom } from 'rxjs';
@@ -12,7 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-make-transactino-modal',
-    imports: [NgxMaskDirective, ReactiveFormsModule, FormsModule, NgxSonnerToaster, CommonModule, TranslateModule],
+    imports: [NgxMaskDirective, ReactiveFormsModule, FormsModule, CommonModule, TranslateModule],
     templateUrl: './make-transactions-modal.component.html'
 })
 export class MakeTransactionsModalComponent {
@@ -22,6 +22,8 @@ export class MakeTransactionsModalComponent {
     themeService = inject(ThemeService);
     accountService = inject(AccountService);
     transactionsService = inject(TransactionsService);
+
+    isLoading = false;
 
     makeTransactionForm = new FormGroup({
         name: new FormControl('', [Validators.required, Validators.min(3)]),
@@ -37,6 +39,7 @@ export class MakeTransactionsModalComponent {
     }
 
     async makeTransaction() {
+        this.isLoading = true;
         try {
             const account = await firstValueFrom(this.accountService.getAccount());
             this.makeTransactionForm.get('accountId')?.setValue(account.id);
@@ -45,7 +48,8 @@ export class MakeTransactionsModalComponent {
             this.accountService.triggerAction();
             this.closeDialog(true);
         } catch (error) {
-            toast.error('Error in make Transaction');
+            toast.error('Failed to create transaction');
         }
+        this.isLoading = false;
     }
 }

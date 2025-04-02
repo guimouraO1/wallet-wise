@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { formatDate } from '../../helpers/formate-date';
 import { Component, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { NgxSonnerToaster, toast } from 'ngx-sonner';
+import { toast } from 'ngx-sonner';
 import { take, firstValueFrom } from 'rxjs';
 import { formatMoneyToString } from '../../helpers/format-money';
 import { AccountService } from '../../services/account.service';
@@ -14,7 +14,7 @@ import { MakeBillModalComponent } from '../../components/make-bill-modal/make-bi
 
 @Component({
     selector: 'app-bills',
-    imports: [CommonModule, ReactiveFormsModule, NgxSonnerToaster, DialogModule, TranslateModule],
+    imports: [CommonModule, ReactiveFormsModule, DialogModule, TranslateModule],
     templateUrl: './bills.component.html'
 })
 export class BillsComponent {

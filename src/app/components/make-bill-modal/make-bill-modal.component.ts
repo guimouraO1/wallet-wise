@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { DialogRef } from '@angular/cdk/dialog';
 import { ThemeService } from '../../services/theme.service';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { toast, NgxSonnerToaster } from 'ngx-sonner';
+import { toast } from 'ngx-sonner';
 import { CommonModule } from '@angular/common';
 import { AccountService } from '../../services/account.service';
 import { firstValueFrom } from 'rxjs';
@@ -16,7 +16,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 
 @Component({
     selector: 'app-make-bill-modal',
-    imports: [ReactiveFormsModule, FormsModule, NgxSonnerToaster,
+    imports: [ReactiveFormsModule, FormsModule,
         CommonModule, TranslateModule, NgxMaskDirective, MatFormFieldModule, MatInputModule, MatDatepickerModule],
     templateUrl: './make-bill-modal.component.html',
     providers: [provideNativeDateAdapter()],

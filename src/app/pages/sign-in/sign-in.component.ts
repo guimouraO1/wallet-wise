@@ -5,12 +5,12 @@ import { AuthService, SignInForm } from '../../services/auth.service';
 import { firstValueFrom } from 'rxjs';
 import { TokenService } from '../../services/token.service';
 import { Router } from '@angular/router';
-import { toast, NgxSonnerToaster } from 'ngx-sonner';
+import { toast } from 'ngx-sonner';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-sign-in',
-    imports: [ReactiveFormsModule, NgxSonnerToaster, TranslateModule],
+    imports: [ReactiveFormsModule, TranslateModule],
     templateUrl: './sign-in.component.html'
 })
 export class SignInComponent implements OnInit {
@@ -57,8 +57,12 @@ export class SignInComponent implements OnInit {
             this.router.navigate(['home']);
         } catch (error: any) {
             if (error.status === 401) {
+                this.isLoading = false;
                 toast.error(error.error.message);
+                return;
             }
+
+            toast.error(error.message);
         }
 
         this.isLoading = false;

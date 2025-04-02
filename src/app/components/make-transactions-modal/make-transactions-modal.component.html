@@ -50,8 +50,7 @@
     <div class="w-full">
         <div class="flex gap-2 items-end justify-end w-full">
             <button (click)="closeDialog()" class="btn btn-error btn-soft">{{ 'components.makeTransactionsModal.form.cancel' | translate }}</button>
-            <button [disabled]="this.makeTransactionForm.invalid" (click)="makeTransaction()" class="btn btn-success btn-soft">{{ 'components.makeTransactionsModal.form.makeTransaction' | translate }}</button>
+            <button [disabled]="this.makeTransactionForm.invalid || isLoading" (click)="makeTransaction()" class="btn btn-success btn-soft">{{ 'components.makeTransactionsModal.form.makeTransaction' | translate }}</button>
         </div>
     </div>
-    <ngx-sonner-toaster richColors  />
 </div>
