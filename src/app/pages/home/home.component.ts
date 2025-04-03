@@ -81,6 +81,7 @@ export class HomeComponent implements OnInit {
     calculatePercentageDifference(currentCount: number, previousCount: number) {
         if (previousCount === 0) {
             return currentCount === 0 ? '0' : (currentCount * 100).toFixed(2).toString();;
+
         } else if (currentCount === 0) {
             return (-previousCount * 100).toFixed(2).toString();
         } else {
