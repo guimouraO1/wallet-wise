@@ -84,9 +84,11 @@
   }
   @else if (transactions && transactions.length > 0) { 
       <div class="w-4/5 flex flex-col items-center gap-2">
+        <!-- filters -->
         <div class="flex items-center gap-2 justify-between w-full flex-wrap md:flex-nowrap">
           <div class="flex gap-2 w-full flex-wrap md:flex-nowrap">
-            <div class="join">            
+            
+            <div class="join w-full md:w-60">            
               <input [formControl]="selectedName" class="input join-item border-neutral/10 focus:outline-none focus:border-neutral" placeholder="{{'pages.transactions.filters.searchByName.placeholder' | translate }}" />
               <button (click)="searchByName()" [disabled]="selectedName.value === ''" class="btn btn-neutral btn-soft join-item">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 join-item">
@@ -96,17 +98,17 @@
             </div>
 
             @if (selectedName.value) {
-              <button (click)="removeNameFilter()" class="btn btn-error btn-soft">{{'pages.transactions.filters.searchByName.remove' | translate }}</button>
+              <button (click)="removeNameFilter()" class="btn btn-error btn-soft w-full md:w-60">{{'pages.transactions.filters.searchByName.remove' | translate }}</button>
             }
 
-            <select (change)="onTransactionTypeChange()" [formControl]="selectedTransactionType" class="select w-60 focus:outline-none focus:border-neutral">
+            <select (change)="onTransactionTypeChange()" [formControl]="selectedTransactionType" class="select w-full md:w-60 focus:outline-none focus:border-neutral">
               <option value="" disabled selected>{{'pages.transactions.filters.transactionsType.placeholder' | translate }}</option>
               <option value="">{{'pages.transactions.filters.transactionsType.none' | translate }}</option>
               <option value="withdraw">{{'pages.transactions.filters.transactionsType.withdraw' | translate }}</option>
               <option value="deposit">{{'pages.transactions.filters.transactionsType.deposit' | translate }}</option>
             </select>
             
-            <select (change)="onPaymentMethodChange()" [formControl]="selectedPaymentMethod" class="select w-60 focus:outline-none focus:border-neutral">
+            <select (change)="onPaymentMethodChange()" [formControl]="selectedPaymentMethod" class="select w-full md:w-60 focus:outline-none focus:border-neutral">
               <option value="" disabled selected>{{'pages.transactions.filters.paymentMethod.placeholder' | translate }}</option>
               <option value="">{{'pages.transactions.filters.paymentMethod.none' | translate }}</option>
               <option value="credit_card">{{'pages.transactions.filters.paymentMethod.creditCard' | translate }}</option>
@@ -117,11 +119,14 @@
           </div>
 
           @if (selectedTransactions.length > 0) {
-            <button (click)="deleteTransactions()" class="btn btn-error btn-soft">{{'pages.transactions.deleteTransactions' | translate }}</button>
+            <button (click)="deleteTransactions()" class="btn btn-error btn-soft w-full md:w-60">{{'pages.transactions.deleteTransactions' | translate }}</button>
           }
-
-          <button (click)="makeTransaction()" class="btn btn-neutral btn-soft">{{'pages.transactions.makeTransaction' | translate }}</button>
+          <button (click)="makeTransaction()" class="btn btn-neutral btn-soft w-full md:w-60">{{'pages.transactions.makeTransaction' | translate }}</button>
         </div>
+        <!-- filters -->
+        
+
+        <!-- table -->
         <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 w-full">
             <table class="table">
               <thead>
@@ -213,6 +218,9 @@
             }
             </table>
         </div>
+        <!-- table -->
+
+        <!-- pagination -->
         <div class="self-end flex items-center gap-2">
           <span class="text-sm mr-4 opacity-65">{{ startIndex }}-{{ endIndex }} of {{ transactionsCount }}</span>
           <div class="join flex gap-2">
@@ -228,6 +236,7 @@
             </button>
           </div>
         </div>
+        <!-- pagination -->
       </div>
-  } 
+  }
 </div>
