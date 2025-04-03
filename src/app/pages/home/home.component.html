@@ -1,40 +1,40 @@
 <div class="flex min-h-[calc(100vh-4rem)] w-full gap-2">
   @if (isLoading) {
-    <div class="w-full flex flex-col items-center justify-center gap-4 flex-wrap min-h-[calc(100vh-4rem)]">
-      <div class="flex w-full gap-2 items-center justify-end px-74">
+    <div class="w-full flex flex-col items-center p-2 justify-center gap-4 flex-wrap min-h-[calc(100vh-4rem)]">
+      <div class="flex w-full gap-2 items-center justify-center md:justify-end md:px-74">
         <div class="skeleton p-2 w-80 h-10"></div>
       </div>
-      <div class="flex w-full flex-wrap items-center justify-center gap-4 px-70">
+      <div class="flex w-full flex-wrap items-center justify-center gap-4 md:px-70">
         <div class="skeleton p-2 w-80 h-42"></div>
         <div class="skeleton p-2 w-80 h-42"></div>
         <div class="skeleton p-2 w-80 h-42"></div>
         <div class="skeleton p-2 w-80 h-42"></div>
       </div>
-      <div class="px-74 w-full">
+      <div class="md:px-74 w-full">
         <div class="skeleton p-2 w-full h-90"></div>
       </div>
     </div>
   } 
   @else if (isError) {
     <div class="flex flex-col gap-1 items-center justify-center min-h-[calc(100vh-4rem)] w-full">
-      <span class="text-5xl font-bold">{{'pages.home.isError.title' | translate }}</span>
-      <span class="text-md opacity-50">{{'pages.home.isError.subtitle' | translate }}</span>
+      <span class="text-2xl md:text-5xl font-bold">{{'pages.home.isError.title' | translate }}</span>
+      <span class="text-sm md:text-md opacity-50">{{'pages.home.isError.subtitle' | translate }}</span>
       <button (click)="getTransactionsInPeriod()" class="btn btn-error btn-soft btn-wide">{{'pages.home.isError.button' | translate }}</button>
     </div>
   }
   @else if (transactionsCount && transactionsCount <= 0) {
     <div class="flex flex-col gap-1 items-center justify-center min-h-[calc(100vh-4rem)] w-full">
-      <span class="text-5xl font-bold">{{'pages.home.noTransactions.title' | translate }}</span>
-      <span class="text-md opacity-50">{{'pages.home.noTransactions.subtitle' | translate }}</span>
-      <div class="flex gap-2 w-full items-center justify-center">
+      <span class="text-xl md:text-5xl font-bold">{{'pages.home.noTransactions.title' | translate }}</span>
+      <span class="text-sm md:text-md opacity-50">{{'pages.home.noTransactions.subtitle' | translate }}</span>
+      <div class="flex flex-col md:flex-row gap-2 w-full items-center justify-center">
         <button routerLink="/transactions" class="btn btn-accent btn-soft btn-wide">{{'pages.home.noTransactions.transactions' | translate }}</button>
         <button routerLink="/bills" class="btn btn-neutral btn-soft btn-wide">{{'pages.home.noTransactions.bills' | translate }}</button>
       </div>
     </div>
   } 
   @else {
-    <div class="w-full flex flex-col items-center justify-center gap-4 flex-wrap min-h-[calc(100vh-4rem)]">
-      <div class="flex w-full gap-2 items-center justify-end px-74">
+    <div class="w-full flex flex-col items-center justify-center gap-4 p-2 flex-wrap min-h-[calc(100vh-4rem)]">
+      <div class="flex w-full gap-2 items-center justify-center md:justify-end md:px-74">
         <label class="input">
           <span class="label">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
@@ -43,7 +43,7 @@
             <input type="date" [formControl]="thisMonth" (change)="onChangeDate()"/>
         </label>
       </div>
-      <div class="flex w-full flex-wrap items-center justify-center gap-4 px-70">
+      <div class="flex w-full flex-wrap items-center justify-center gap-4 md:px-70">
         <div class="card w-80 border border-base-300 card-lg bg-base-100 max-h-42">
           <div class="card-body">
             <div class="w-full flex justify-between items-center">
@@ -75,7 +75,7 @@
           <button class="btn btn-soft btn-neutral">{{'pages.home.commingSoon' | translate }}</button>
         </div>
       </div>
-      <div class="px-74 w-full">
+      <div class="md:px-74 w-full">
         <div class="skeleton p-2 w-full h-90 flex items-center justify-center">
           <button class="btn btn-soft btn-neutral">{{'pages.home.commingSoon' | translate }}</button>
         </div>

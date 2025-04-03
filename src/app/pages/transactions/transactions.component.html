@@ -1,9 +1,91 @@
 <div class="flex flex-col gap-2 items-center justify-center min-h-[calc(100vh-4rem)]">
-  @if (!isLoading && !isError && transactions.length > 0) { 
+  @if (isLoading) {
+    <div class="w-4/5 flex flex-col items-center gap-2">
+      <div class="flex flex-wrap md:flex-nowrap md:flex-row items-center gap-2 justify-between w-full">
+        <div class="flex gap-2 w-full">
+          <div class="skeleton p-2 w-60 h-9"></div>
+          <div class="skeleton p-2 w-60 h-9"></div>
+          <div class="skeleton p-2 w-60 h-9"></div>
+        </div>
+        <div class="skeleton p-2 w-60 h-9"></div>
+      </div>
+      <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 w-full">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>
+                  <label>
+                    <input disabled type="checkbox" class="checkbox" />
+                  </label>
+                </th>
+                <th><div class="skeleton p-2 w-40 h-6"></div></th>
+                <th><div class="skeleton p-2 w-40 h-6"></div></th>
+                <th><div class="skeleton p-2 w-40 h-6"></div></th>
+                <th><div class="skeleton p-2 w-40 h-6"></div></th>
+                <th><div class="skeleton p-2 w-40 h-6"></div></th>
+                <th><div class="skeleton p-2 w-40 h-6"></div></th>
+              </tr>
+            </thead>
+            <tbody>
+                @for (item of [].constructor(5); track $index) {
+                  <tr class="hover:bg-base-300">
+                    <td>
+                        <label>
+                            <input disabled type="checkbox" class="checkbox" />
+                        </label>
+                    </td>
+                    <td>
+                        <div class="skeleton p-2 w-full h-4"></div>
+                    </td>
+                    <td>
+                      <div class="skeleton p-2 w-full h-4"></div>
+                    </td>
+                    <td>
+                      <div class="skeleton p-2 w-full h-4"></div>
+                    </td>
+                    <td>
+                      <div class="skeleton p-2 w-full h-4"></div>
+                    </td>
+                    <td>
+                      <div class="skeleton p-2 w-full h-4"></div>
+                    </td>
+                    <td>
+                      <div class="skeleton p-2 w-full h-4"></div>
+                    </td>
+                }
+
+            </tbody>
+          </table>
+      </div>
+      <div class="skeleton p-2 w-60 h-9 self-end"></div>
+    </div>
+  } 
+  @else if (isError) {
+    <div class="flex flex-col gap-1 items-center">
+      <span class="text-2xl md:text-5xl font-bold">{{'pages.transactions.conditions.isError.title' | translate }}</span>
+      <span class="text-sm md:text-md opacity-50">{{'pages.transactions.conditions.isError.subtitle' | translate }}</span>
+      <button (click)="getTransactions()" class="btn btn-error btn-soft btn-wide">{{'pages.transactions.conditions.isError.button' | translate }}</button>
+    </div>
+  }
+  @else if (transactionsCount && transactionsCount <= 0) {
+    @if (selectedTransactionType.value || selectedName.value || selectedPaymentMethod.value) {  
+      <div class="flex flex-col gap-1 items-center text-center">
+        <span class="text-2xl md:text-5xl font-bold">{{'pages.transactions.conditions.firstTransaction.title' | translate }}</span>
+        <span class="text-sm md:text-md opacity-50">{{'pages.transactions.conditions.firstTransaction.subtitle' | translate }}</span>
+        <button (click)="resetFilters()" class="btn btn-secondary btn-soft btn-wide">{{'pages.transactions.conditions.firstTransaction.button' | translate }}</button>
+      </div>
+    } @else {
+      <div class="flex flex-col gap-1 items-center text-center">
+        <span class="text-2xl md:text-5xl font-bold">{{'pages.transactions.conditions.noTransactionsForFilters.title' | translate }}</span>
+        <span class="text-sm md:text-md opacity-50">{{'pages.transactions.conditions.noTransactionsForFilters.subtitle' | translate }}</span>
+        <button (click)="makeTransaction()" class="btn btn-neutral btn-soft btn-wide">{{'pages.transactions.conditions.noTransactionsForFilters.button' | translate }}</button>
+      </div>
+    }
+  }
+  @else if (transactions && transactions.length > 0) { 
       <div class="w-4/5 flex flex-col items-center gap-2">
-        <div class="flex items-center gap-2 justify-between w-full">
-          <div class="flex gap-2 w-full">
-            
+        <div class="flex items-center gap-2 justify-between w-full flex-wrap md:flex-nowrap">
+          <div class="flex gap-2 w-full flex-wrap md:flex-nowrap">
             <div class="join">            
               <input [formControl]="selectedName" class="input join-item border-neutral/10 focus:outline-none focus:border-neutral" placeholder="{{'pages.transactions.filters.searchByName.placeholder' | translate }}" />
               <button (click)="searchByName()" [disabled]="selectedName.value === ''" class="btn btn-neutral btn-soft join-item">
@@ -148,87 +230,4 @@
         </div>
       </div>
   } 
-  @else if (transactions.length <= 0 && !isError && !isLoading) {
-    @if (selectedTransactionType.value && selectedTransactionType.value !== null || selectedName.value || selectedPaymentMethod.value && selectedPaymentMethod.value !== null) {
-      <div class="flex flex-col gap-1 items-center">
-        <span class="text-5xl font-bold">{{'pages.transactions.conditions.firstTransaction.title' | translate }}</span>
-        <span class="text-md opacity-50">{{'pages.transactions.conditions.firstTransaction.subtitle' | translate }}</span>
-        <button (click)="resetFilters()" class="btn btn-secondary btn-soft btn-wide">{{'pages.transactions.conditions.firstTransaction.button' | translate }}</button>
-      </div>
-    } @else {
-      <div class="flex flex-col gap-1 items-center">
-        <span class="text-5xl font-bold">{{'pages.transactions.conditions.noTransactionsForFilters.title' | translate }}</span>
-        <span class="text-md opacity-50">{{'pages.transactions.conditions.noTransactionsForFilters.subtitle' | translate }}</span>
-        <button (click)="makeTransaction()" class="btn btn-neutral btn-soft btn-wide">{{'pages.transactions.conditions.noTransactionsForFilters.button' | translate }}</button>
-      </div>
-    }
-  }
-  @else if (isError) {
-    <div class="flex flex-col gap-1 items-center">
-      <span class="text-5xl font-bold">{{'pages.transactions.conditions.isError.title' | translate }}</span>
-      <span class="text-md opacity-50">{{'pages.transactions.conditions.isError.subtitle' | translate }}</span>
-      <button (click)="getTransactions()" class="btn btn-error btn-soft btn-wide">{{'pages.transactions.conditions.isError.button' | translate }}</button>
-    </div>
-  } 
-  @else {
-    <div class="w-4/5 flex flex-col items-center gap-2">
-      <div class="flex items-center gap-2 justify-between w-full">
-        <div class="flex gap-2 w-full">
-          <div class="skeleton p-2 w-60 h-9"></div>
-          <div class="skeleton p-2 w-60 h-9"></div>
-          <div class="skeleton p-2 w-60 h-9"></div>
-        </div>
-        <div class="skeleton p-2 w-60 h-9"></div>
-      </div>
-      <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 w-full">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>
-                  <label>
-                    <input disabled type="checkbox" class="checkbox" />
-                  </label>
-                </th>
-                <th><div class="skeleton p-2 w-40 h-6"></div></th>
-                <th><div class="skeleton p-2 w-40 h-6"></div></th>
-                <th><div class="skeleton p-2 w-40 h-6"></div></th>
-                <th><div class="skeleton p-2 w-40 h-6"></div></th>
-                <th><div class="skeleton p-2 w-40 h-6"></div></th>
-                <th><div class="skeleton p-2 w-40 h-6"></div></th>
-              </tr>
-            </thead>
-            <tbody>
-                @for (item of [].constructor(5); track $index) {
-                  <tr class="hover:bg-base-300">
-                    <td>
-                        <label>
-                            <input disabled type="checkbox" class="checkbox" />
-                        </label>
-                    </td>
-                    <td>
-                        <div class="skeleton p-2 w-full h-4"></div>
-                    </td>
-                    <td>
-                      <div class="skeleton p-2 w-full h-4"></div>
-                    </td>
-                    <td>
-                      <div class="skeleton p-2 w-full h-4"></div>
-                    </td>
-                    <td>
-                      <div class="skeleton p-2 w-full h-4"></div>
-                    </td>
-                    <td>
-                      <div class="skeleton p-2 w-full h-4"></div>
-                    </td>
-                    <td>
-                      <div class="skeleton p-2 w-full h-4"></div>
-                    </td>
-                }
-
-            </tbody>
-          </table>
-      </div>
-      <div class="skeleton p-2 w-60 h-9 self-end"></div>
-    </div>
-  }
 </div>
