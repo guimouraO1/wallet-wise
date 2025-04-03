@@ -22,8 +22,8 @@ export class HomeComponent implements OnInit {
     totalMoneyMovimented: number = 0;
     totalBillsPaid: number = 0;
 
-    percentageDifferenceInTransactionsCount: number = 0;
-    percentageDifferenceInTransactions: number = 0;
+    percentageDifferenceInTransactionsCount: string = '0';
+    percentageDifferenceInTransactions: string = '0';
 
     thisMonth = new FormControl(DateTime.now().setZone('America/Sao_Paulo').endOf('day').toISODate() as string);
     thisMonthInit = new FormControl();
@@ -80,11 +80,11 @@ export class HomeComponent implements OnInit {
 
     calculatePercentageDifference(currentCount: number, previousCount: number) {
         if (previousCount === 0) {
-            return currentCount === 0 ? 0 : currentCount * 100;
+            return currentCount === 0 ? '0' : (currentCount * 100).toFixed(2).toString();;
         } else if (currentCount === 0) {
-            return -previousCount * 100;
+            return (-previousCount * 100).toFixed(2).toString();
         } else {
-            return Math.round(((currentCount - previousCount) * 100) / previousCount);
+            return ((currentCount - previousCount) * 100 / previousCount).toFixed(2).toString();;
         }
     }
 
