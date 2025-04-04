@@ -36,7 +36,7 @@ export class TransactionsComponent implements OnInit {
 
     selectedPaymentMethod = new FormControl<PaymentMethod | ''>('');
     selectedTransactionType = new FormControl<TransactionTypes | ''>('');
-    selectedName = new FormControl('');
+    selectedName = new FormControl<string>('');
 
     selectedTransactions: Transaction[] = [];
 
@@ -187,9 +187,10 @@ export class TransactionsComponent implements OnInit {
 
             const { transactions, transactionsCount } = await firstValueFrom(this.transactionsService.getTransactions(data));
             this.transactions = transactions;
-            this.transactionsCount = transactionsCount;
+            this.transactionsCount = +transactionsCount;
         } catch (error) {
             this.transactions = [];
+            this.transactionsCount = 0;
             this.isError = true;
             toast.error('Error getting transactions');
         }
