@@ -60,6 +60,9 @@ export class TransactionsComponent implements OnInit {
     }
 
     async resetFilters() {
+        this.selectedName.reset('');
+        this.selectedPaymentMethod.reset('');
+        this.selectedTransactionType.reset('');
         this.router.navigate([], { queryParams: {} });
         await this.getTransactions();
     }
