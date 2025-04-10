@@ -51,31 +51,40 @@ export class MakeBillModalComponent {
         this.isLoading = true;
 
         try {
-            const account = await firstValueFrom(this.accountService.getAccount());
-            this.makeBillForm.get('accountId')?.setValue(account.id);
+            const {
+                name,
+                amount,
+                description,
+                dueDay,
+                paidInstallments,
+                frequency,
+                billType
+            } = this.makeBillForm.value;
 
-            const formValue = {
-                accountId: this.makeBillForm.value.accountId,
-                name: this.makeBillForm.value.name,
-                amount: this.makeBillForm.value.amount,
-                ...(this.makeBillForm.value.description ? { description: this.makeBillForm.value.description } : {}),
-                dueDay: this.makeBillForm.value.dueDay,
-                paidInstallments: this.makeBillForm.value.paidInstallments,
-                frequency: this.makeBillForm.value.frequency,
-                billType: this.makeBillForm.value.billType,
+            const installments = this.makeBillForm.get('installments')?.value ?? 0;
+
+            const formValue: any = {
+                name,
+                amount,
+                dueDay,
+                paidInstallments,
+                frequency,
+                billType,
                 active: true,
-                ...(this.makeBillForm.get('billType')?.value === 'installment' &&
-                    this.makeBillForm.errors && !this.makeBillForm.errors['paidGreaterThanInstallments'] ?
-                        { installments: this.makeBillForm.value.installments } : {})
+                ...(description ? { description } : {}),
+                ...(installments > 0 ? { installments } : {})
             };
+
+            const { id } = await firstValueFrom(this.accountService.getAccount());
+            formValue.accountId = id;
 
             await firstValueFrom(this.billService.makeBill(formValue as BillCreateInput));
             this.closeDialog(true);
         } catch (error) {
             toast.error('Error in make Transaction');
+        } finally {
+            this.isLoading = false;
         }
-
-        this.isLoading = false;
     }
 
     billTypeValidator(): ValidatorFn {

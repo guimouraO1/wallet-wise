@@ -13,7 +13,7 @@ export type BillCreateInput = {
     billType: BillType;
     dueDay: number | null;
     frequency: BillFrequency;
-    installments?: number | null;
+    installments?: number;
     paidInstallments: number;
     active: boolean;
     accountId: string;
