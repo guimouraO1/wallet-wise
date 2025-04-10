@@ -11,6 +11,9 @@ import { LanguageService } from '../../services/language.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { Bill, BillService, FindManyBillsInput } from '../../services/bill.service';
 import { MakeBillModalComponent } from '../../components/make-bill-modal/make-bill-modal.component';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DeleteBillModalComponent } from '../../components/delete-bill-modal/delete-bill-modal.component';
+import { PayInvoiceModalComponent } from '../../components/pay-invoice-modal/pay-invoice-modal.component';
 
 @Component({
     selector: 'app-bills',
@@ -23,17 +26,40 @@ export class BillsComponent {
     accountService = inject(AccountService);
     dialog = inject(Dialog);
     languageService = inject(LanguageService);
-    bills: Bill[] | undefined;
+    router = inject(Router);
+    route = inject(ActivatedRoute);
+
+    bills: Bill[] = [];
     billsCount: number = 0;
     offset: number = 5;
     page: number = 1;
 
-    selectedIsPaid = new FormControl<boolean | undefined>(false);
     selectedName = new FormControl('');
+    selectedActive = new FormControl('');
+    selecteBillType = new FormControl('');
+    selectedFrequency = new FormControl('');
 
     selectedBills: Bill[] = [];
 
+    isLoading = true;
+    isError = false;
+
     async ngOnInit() {
+        this.route.queryParams.subscribe(params => {
+            this.selectedName.setValue(params['name'] || '');
+            this.page = params['page'] ? Number(params['page']) : 1;
+        });
+
+        await this.getBills();
+    }
+
+    async resetFilters() {
+        this.page = 1;
+        this.router.navigate([], { queryParams: {} });
+        this.selectedName.reset('');
+        this.selectedActive.reset('');
+        this.selecteBillType.reset('');
+        this.selectedFrequency.reset('');
         await this.getBills();
     }
 
@@ -60,17 +86,12 @@ export class BillsComponent {
     async removeNameFilter() {
         this.selectedName.reset('');
         this.page = 1;
-        await this.getBills();
-    }
-
-    async onIsPaidChange() {
-        this.page = 1;
-        await this.getBills();
+        await this.addFilterParam({ name: null });
     }
 
     async searchByName() {
         this.page = 1;
-        await this.getBills();
+        await this.addFilterParam({ name: this.selectedName.value });
     }
 
     formatMoneyToString(amount: number){
@@ -84,17 +105,15 @@ export class BillsComponent {
     async nextPage() {
         if ((this.page * this.offset) < this.billsCount) {
             this.page++;
+            await this.addFilterParam({ page: this.page });
         }
-
-        await this.getBills();
     }
 
     async previousPage() {
         if (this.page > 1) {
             this.page--;
+            await this.addFilterParam({ page: this.page });
         }
-
-        await this.getBills();
     }
 
     get startIndex(): number {
@@ -106,43 +125,124 @@ export class BillsComponent {
     }
 
     async makeBill() {
-        this.openDialog();
-    }
-
-    openDialog(): void {
         const dialogRef = this.dialog.open(MakeBillModalComponent);
 
         dialogRef.closed.pipe(take(1)).subscribe(async (result) => {
             if (!result) return;
 
             this.page = 1;
-            await this.getBills();
+            await this.resetFilters();
         });
     }
 
-    deleteBills() {
-        toast.error('No delete function at all');
-        this.selectedBills = [];
+    async addFilterParam(filter: any) {
+        this.router.navigate([], { queryParams: filter, queryParamsHandling: 'merge' });
+        await this.getBills();
+    }
+
+    async onActiveChange() {
+        this.page = 1;
+        await this.addFilterParam({ type: this.selectedActive.value });
+    }
+
+    async onBillTypeChange() {
+        this.page = 1;
+        await this.addFilterParam({ type: this.selectedActive.value });
+    }
+
+    async onFrequencyChange() {
+        this.page = 1;
+        await this.addFilterParam({ type: this.selectedActive.value });
     }
 
     async getBills(){
+        this.isLoading = true;
+        this.isError = false;
+
         try {
             const account = await firstValueFrom(this.accountService.getAccount());
 
-            const data: FindManyBillsInput = {
+            const data = {
                 accountId: account.id,
                 page: this.page,
                 offset: this.offset,
                 ...(this.selectedName.value ? { name: this.selectedName.value } : {}),
-                ...(this.selectedIsPaid.value ? { isPaid: this.selectedIsPaid.value } : {})
+                ...(this.selecteBillType.value ? { billType: this.selecteBillType.value } : {}),
+                ...(this.selectedActive.value ? { active: this.selectedActive.value } : {}),
+                ...(this.selectedFrequency.value ? { frequency: this.selectedFrequency.value } : {})
             };
 
-            const { bills, billsCount } = await firstValueFrom(this.billService.getBills(data));
+            const { bills, billsCount } = await firstValueFrom(this.billService.getBills(data as FindManyBillsInput));
 
             this.bills = bills;
             this.billsCount = billsCount;
         } catch (error) {
+            this.bills = [];
+            this.billsCount = 0;
+            this.isError = true;
             toast.error('Error get Bills');
         }
+
+        this.isLoading = false;
+    }
+
+    async deleteBills() {
+        if (!this.selectedBills) return;
+
+        const dialogRef = this.dialog.open(DeleteBillModalComponent);
+        const result = await firstValueFrom(dialogRef.closed);
+        if (!result) {
+            this.isLoading = false;
+            return;
+        }
+
+        this.isLoading = true;
+        this.isError = false;
+
+        try {
+            const account = await firstValueFrom(this.accountService.getAccount());
+
+            for (const bill of this.selectedBills) {
+                await firstValueFrom(this.billService.deleteBill(bill.id, account.id));
+            }
+
+            await this.getBills();
+        } catch (error) {
+            this.isError = true;
+            toast.error('Error deleting transactions');
+        }
+
+        this.selectedBills = [];
+        this.isLoading = false;
+    }
+
+    async payInvoice() {
+        if (!this.selectedBills) return;
+
+        const dialogRef = this.dialog.open(PayInvoiceModalComponent);
+        const result = await firstValueFrom(dialogRef.closed);
+        if (!result) {
+            this.isLoading = false;
+            return;
+        }
+
+        this.isLoading = true;
+        this.isError = false;
+
+        try {
+            const account = await firstValueFrom(this.accountService.getAccount());
+
+            const bill = this.selectedBills[0];
+            await firstValueFrom(this.billService.payInvoice(bill.id, account.id));
+            this.accountService.triggerAction();
+
+            await this.getBills();
+        } catch (error) {
+            this.isError = true;
+            toast.error('Error pay invoice');
+        }
+
+        this.selectedBills = [];
+        this.isLoading = false;
     }
 }

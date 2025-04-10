@@ -1,79 +1,34 @@
 <div class="flex flex-col gap-2 items-center justify-center min-h-[calc(100vh-4rem)]">
+  @if (isLoading) {
     <div class="w-4/5 flex flex-col items-center gap-2">
-      <div class="flex items-center gap-2 justify-between w-full">
-        <div class="flex gap-2 w-full">
-          <div class="join">            
-            <input [formControl]="selectedName" class="input join-item focus:outline-none focus:border-primary" placeholder="{{'pages.bills.filters.searchByName.placeholder' | translate }}" />
-            <button (click)="searchByName()" [disabled]="selectedName.value === ''" class="btn join-item">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 join-item">
-                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-              </svg>
-              {{'pages.bills.filters.searchByName.button' | translate }}</button>
-          </div>
-
-          @if (selectedName.value) {
-            <button (click)="removeNameFilter()" class="btn btn-error btn-soft">{{'pages.bills.filters.searchByName.remove' | translate }}</button>
-          }
+      <div class="flex flex-wrap md:flex-nowrap md:flex-row items-center gap-2 justify-between w-full">
+        <div class="flex gap-2 w-full flex-col md:flex-row">
+          <div class="skeleton p-2 w-full md:w-60 h-9"></div>
+          <div class="skeleton p-2 w-full md:w-60 h-9"></div>
+          <div class="skeleton p-2 w-full md:w-60 h-9"></div>
+          <div class="skeleton p-2 w-full md:w-60 h-9"></div>
         </div>
-
-        @if (billsCount <= 0) {
-          <button (click)="getBills()" class="btn btn-error btn-soft">{{'pages.bills.tryAgain' | translate }}</button>
-        }
-
-        @if (selectedBills.length > 0) {
-          <button (click)="deleteBills()" class="btn btn-error btn-soft">{{'pages.bills.deleteBills' | translate }}</button>
-        }
-
-        <button (click)="makeBill()" class="btn btn-primary btn-soft">{{'pages.bills.makeBill' | translate }}</button>
+        <div class="skeleton p-2 w-full md:w-60 h-9"></div>
       </div>
-
       <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 w-full">
           <table class="table">
             <thead>
               <tr>
                 <th>
                   <label>
-                    <input (change)="toggleAllSelection($event)" type="checkbox" class="checkbox" />
+                    <input disabled type="checkbox" class="checkbox" />
                   </label>
                 </th>
-                <th>{{'pages.bills.table.header.name' | translate }}</th>
-                <th>{{'pages.bills.table.header.description' | translate }}</th>
-                <th>{{'pages.bills.table.header.dueDate' | translate }}</th>
-                <th>{{'pages.bills.table.header.installments' | translate }}</th>
-                <th>{{'pages.bills.table.header.amount' | translate }}</th>
+                <th><div class="skeleton p-2 w-40 h-6"></div></th>
+                <th><div class="skeleton p-2 w-40 h-6"></div></th>
+                <th><div class="skeleton p-2 w-40 h-6"></div></th>
+                <th><div class="skeleton p-2 w-40 h-6"></div></th>
+                <th><div class="skeleton p-2 w-40 h-6"></div></th>
+                <th><div class="skeleton p-2 w-40 h-6"></div></th>
               </tr>
             </thead>
             <tbody>
-              
-              @for (bill of bills; track $index) {
-                <tr class="hover:bg-base-300">
-                    <td>
-                        <label>
-                            <input 
-                              [checked]="selectedBills.includes(bill)"
-                              (change)="toggleSelection(bill, $event)"
-                              type="checkbox" class="checkbox" 
-                            />
-                        </label>
-                    </td>
-                    <td>
-                        <span class="text-sm opacity-80">{{bill.name}}</span>
-                    </td>
-                    <td class="max-w-80 truncate">
-                        <span class="text-sm opacity-80">{{bill.description}}</span>
-                    </td>
-                    <td>
-                        <span class="text-sm opacity-80">{{formatDate(bill.dueDate.toString())}}</span>
-                    </td>
-                    <td>
-                        <span class="text-sm opacity-80">{{bill.paidInstallments}} of {{bill.installments}}</span>
-                    </td>
-                    <td>
-                        <span class="text-sm opacity-80">{{formatMoneyToString(bill.amount)}}</span>
-                    </td>
-                </tr>
-              } @empty {
-                @for (item of [1,2,3,4,5]; track $index) {
+                @for (item of [].constructor(5); track $index) {
                   <tr class="hover:bg-base-300">
                     <td>
                         <label>
@@ -95,25 +50,164 @@
                     <td>
                       <div class="skeleton p-2 w-full h-4"></div>
                     </td>
+                    <td>
+                      <div class="skeleton p-2 w-full h-4"></div>
+                    </td>
                 }
-              }
+
             </tbody>
           </table>
       </div>
-      <div class="self-end flex items-center gap-2">
-        <span class="text-sm mr-4 opacity-65">{{ startIndex }}-{{ endIndex }} of {{ billsCount }}</span>
-        <div class="join flex gap-2">
-          <button (click)="previousPage()" [disabled]="page <= 1" class="join-item btn btn-sm btn-soft">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5" />
-            </svg>
-          </button>
-          <button (click)="nextPage()" [disabled]="page * offset >= billsCount" class="join-item btn btn-sm btn-ghost btn-soft">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
-            </svg>          
-          </button>
-        </div>
-      </div>
+      <div class="skeleton p-2 w-60 h-9 self-end"></div>
     </div>
+  }
+  @else if (isError) {
+    <div class="flex flex-col gap-1 items-center">
+      <span class="text-2xl md:text-5xl font-bold">{{'pages.bills.conditions.isError.title' | translate }}</span>
+      <span class="text-sm md:text-md opacity-50">{{'pages.bills.conditions.isError.subtitle' | translate }}</span>
+      <button (click)="getBills()" class="btn btn-error btn-soft btn-wide">{{'pages.bills.conditions.isError.button' | translate }}</button>
+    </div>
+  }
+  @else if (billsCount <= 0 && (selectedName.value !== '' || selectedActive.value || selecteBillType.value || selectedFrequency.value)) {
+    <div class="flex flex-col gap-1 items-center text-center">
+      <span class="text-2xl md:text-5xl font-bold">{{'pages.bills.conditions.firstBill.title' | translate }}</span>
+      <span class="text-sm md:text-md opacity-50">{{'pages.bills.conditions.firstBill.subtitle' | translate }}</span>
+      <button (click)="resetFilters()" class="btn btn-secondary btn-soft btn-wide">{{'pages.bills.conditions.firstBill.button' | translate }}</button>
+    </div>
+  }
+  @else if (billsCount <= 0) {
+      <div class="flex flex-col gap-1 items-center text-center">
+        <span class="text-2xl md:text-5xl font-bold">{{'pages.bills.conditions.noBillsForFilters.title' | translate }}</span>
+        <span class="text-sm md:text-md opacity-50">{{'pages.bills.conditions.noBillsForFilters.subtitle' | translate }}</span>
+        <button (click)="makeBill()" class="btn btn-neutral btn-soft btn-wide">{{'pages.bills.conditions.noBillsForFilters.button' | translate }}</button>
+      </div>
+  }
+  @else { 
+      <div class="w-4/5 flex flex-col items-center gap-2">
+
+        <!-- filters -->
+        <div class="flex items-center gap-2 justify-between w-full flex-wrap md:flex-nowrap">
+          <div class="flex gap-2 w-full flex-wrap md:flex-nowrap">
+            <div class="join w-full md:w-74">            
+              <input [formControl]="selectedName" class="input join-item border-neutral/10 focus:outline-none focus:border-neutral" placeholder="{{'pages.bills.filters.searchByName.placeholder' | translate }}" />
+              <button (click)="searchByName()" [disabled]="selectedName.value === ''" class="btn btn-neutral btn-soft join-item">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 join-item">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
+                {{'pages.bills.filters.searchByName.button' | translate }}</button>
+            </div>
+
+            @if (selectedName.value) {
+              <button (click)="removeNameFilter()" class="btn btn-error btn-soft w-full md:w-60">{{'pages.bills.filters.searchByName.remove' | translate }}</button>
+            }
+
+            <select (change)="onActiveChange()" [formControl]="selectedActive" class="select w-full md:w-40 focus:outline-none focus:border-neutral">
+              <option value="" disabled selected>{{'pages.bills.filters.isPaid.placeholder' | translate }}</option>
+              <option value="">{{'pages.bills.filters.none' | translate }}</option>
+              <option [value]="false">{{'pages.bills.filters.isPaid.isPaid' | translate }}</option>
+              <option [value]="true">{{'pages.bills.filters.isPaid.open' | translate }}</option>
+            </select>
+            <select (change)="onBillTypeChange()" [formControl]="selecteBillType" class="select w-full md:w-40 focus:outline-none focus:border-neutral">
+              <option value="" disabled selected>{{ 'components.makeBillModal.form.billType.placeholder' | translate }}</option>
+              <option value="">{{'pages.bills.filters.none' | translate }}</option>
+              <option value="recurring">{{ 'components.makeBillModal.form.billType.recurring' | translate }}</option>
+              <option value="installment">{{ 'components.makeBillModal.form.billType.installment' | translate }}</option>
+            </select>
+            <select (change)="onFrequencyChange()" [formControl]="selectedFrequency" class="select w-full md:w-40 focus:outline-none focus:border-neutral">
+              <option value="" disabled selected>{{ 'components.makeBillModal.form.frequency.placeholder' | translate }}</option>
+              <option value="">{{'pages.bills.filters.none' | translate }}</option>
+              <option value="monthly">{{ 'components.makeBillModal.form.frequency.monthly' | translate }}</option>
+              <option value="weekly">{{ 'components.makeBillModal.form.frequency.weekly' | translate }}</option>
+              <option value="annual">{{ 'components.makeBillModal.form.frequency.annual' | translate }}</option>
+            </select>
+          </div>
+
+          @if (selectedBills.length === 1) {
+            <button (click)="payInvoice()" class="btn btn-success btn-soft w-full md:w-50">{{'pages.bills.payInstallment' | translate }}</button>
+          }
+
+          @if (selectedBills.length > 0) {
+            <button (click)="deleteBills()" class="btn btn-error btn-soft w-full md:w-50">{{'pages.bills.deleteBills' | translate }}</button>
+          }
+          <button (click)="makeBill()" class="btn btn-neutral btn-soft w-full md:w-50">{{'pages.bills.makeBill' | translate }}</button>
+        </div>
+        <!-- filters -->
+        
+
+        <!-- table -->
+        <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 w-full">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>
+                    <label>
+                      <input (change)="toggleAllSelection($event)" type="checkbox" class="checkbox" />
+                    </label>
+                  </th>
+                  <th>{{'pages.bills.table.header.name' | translate }}</th>
+                  <th>{{'pages.bills.table.header.description' | translate }}</th>
+                  <th>{{'pages.bills.table.header.dueDay' | translate }}</th>
+                  <th>{{'pages.bills.table.header.installmentValue' | translate }}</th>
+                  <th>{{'pages.bills.table.header.installments' | translate }}</th>
+                  <th>{{'pages.bills.table.header.lastPayment' | translate }}</th>
+                </tr>
+              </thead>
+              @for (bill of bills; track $index) {
+              <tbody>
+                  <tr class="hover:bg-base-300">
+                      <td>
+                          <label>
+                              <input 
+                                [checked]="selectedBills.includes(bill)"
+                                (change)="toggleSelection(bill, $event)" 
+                                type="checkbox" class="checkbox" 
+                              />
+                          </label>
+                      </td>
+                      <td class="max-w-50 truncate">
+                        <span class="text-sm opacity-80 truncate">{{bill.name}}</span>
+                      </td>
+                      <td class="max-w-80 truncate">
+                          <span class="text-sm opacity-80 truncate">{{bill.description}}</span>
+                      </td>
+                      <td class="max-w-30 truncate">
+                        <span class="text-sm opacity-80">{{bill.dueDay}}</span>
+                      </td>
+                      <td class="max-w-60 truncate">
+                        <span class="text-sm opacity-80">{{formatMoneyToString(bill.amount)}}</span>
+                      </td>
+                      <td>
+                        <span class="text-sm opacity-80">{{ bill.paidInstallments }}{{ bill.installments ? ' of ' + bill.installments : '' }}</span>
+                      </td>
+                      <td class="max-w-50 truncate">
+                        <span class="text-sm opacity-80 truncate">{{formatDate(bill.updatedAt.toString())}}</span>
+                      </td>
+                  </tr>
+              </tbody>
+            } @empty {
+
+            }
+            </table>
+        </div>
+        <!-- table -->
+
+        <!-- pagination -->
+        <div class="self-end flex items-center gap-2">
+          <span class="text-sm mr-4 opacity-65">{{ startIndex }}-{{ endIndex }} of {{ billsCount }}</span>
+          <div class="join flex gap-2">
+            <button (click)="previousPage()" [disabled]="page <= 1" class="join-item btn btn-sm btn-soft">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5" />
+              </svg>
+            </button>
+            <button (click)="nextPage()" [disabled]="page * offset >= billsCount" class="join-item btn btn-sm btn-ghost btn-soft">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
+              </svg>          
+            </button>
+          </div>
+        </div>
+        <!-- pagination -->
+      </div>
+  }
 </div>

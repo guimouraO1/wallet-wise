@@ -17,13 +17,24 @@
             "subtitle": "Preencha os detalhes para criar sua conta",
             "form": {
                 "name": "Nome",
-                "amount": "Valor Total",
+                "amount": "Valor da parcela",
                 "cancel": "Cancelar",
                 "makeTransaction": "Criar Conta",
                 "installmentDay": "Dia do pagamento",
                 "installments": "Parcelas",
                 "paidInstallments": "Parcelas pagas",
-                "selectDueDate": "Selecione a data de vencimento"
+                "dueDay": "Selecione a data de vencimento",
+                "billType": {
+                    "placeholder": "Tipo de conta",
+                    "recurring": "Recorrente",
+                    "installment": "Parcelado"
+                },
+                "frequency": {
+                    "placeholder": "Frequência",
+                    "monthly": "Mensal",
+                    "weekly": "Semanal",
+                    "annual": "Anual"
+                }
             }
         },
         "deleteTransactionsModal": {
@@ -55,6 +66,18 @@
                 "cancel": "Cancelar",
                 "makeTransaction": "Nova Transação"
             }
+        },
+        "deleteBillsModal": {
+            "title": "Excluir contas",
+            "subtitle": "Tem certeza de que deseja deletar as contas selecionadas?",
+            "cancel": "Cancelar",
+            "confirm": "Excluir contas"
+        },
+        "payInvoiceModal": {
+            "title": "Pagar fatura",
+            "subtitle": "Tem certeza de que deseja pagar a fatura selecionada?",
+            "cancel": "Cancelar",
+            "confirm": "Confirmar"
         }
     },
     "pages": {
@@ -66,24 +89,46 @@
                     "remove": "Remover filtro de nome"
                 },
                 "isPaid": {
-                    "placeholder": "Filtro de pagamento",
-                    "none": "Nenhum",
-                    "withdraw": "Está paga",
-                    "deposit": "Não está paga"
-                }
+                    "placeholder": "Conta",
+                    "isPaid": "Quitada",
+                    "open": "Em aberto"
+                },
+                "none": "Nenhum"
             },
             "tryAgain": "Tentar novamente",
-            "deleteBills": "Excluir Contas",
-            "makeBill": "Nova Conta",
+            "payInstallment": "Pagar fatura",
+            "deleteBills": "Excluir contas",
+            "makeBill": "Nova conta",
             "table": {
                 "header": {
                     "name": "Nome",
                     "description": "Descrição",
-                    "dueDate": "Data de Vencimento",
-                    "installments": "Parcelas",
+                    "dueDay": "Dia de vencimento",
+                    "installments": "Parcelas pagas",
+                    "installmentValue": "Valor da parcela",
+                    "lastPayment": "Último pagamento",
                     "amount": "Valor"
                 },
-                "body": {}
+                "body": {
+                    "button": "Pagar parcela"
+                }
+            },
+            "conditions": {
+                "firstBill": {
+                    "title": "Ops! Nada por aqui...",
+                    "subtitle": "Talvez os filtros estejam muito restritivos. Tente ajustá-los ou removê-los",
+                    "button": "Ver todas as contas"
+                },
+                "noBillsForFilters": {
+                    "title": "Sua jornada começa aqui!",
+                    "subtitle": "Crie sua primeira conta",
+                    "button": "Criar conta"
+                },
+                "isError": {
+                    "title": "Algo deu errado...",
+                    "subtitle": "Não se preocupe! Você pode tentar novamente",
+                    "button": "Tentar novamente"
+                }
             }
         },
         "transactions": {

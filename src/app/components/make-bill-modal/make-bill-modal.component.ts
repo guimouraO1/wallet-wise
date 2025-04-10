@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { DialogRef } from '@angular/cdk/dialog';
 import { ThemeService } from '../../services/theme.service';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { toast } from 'ngx-sonner';
 import { CommonModule } from '@angular/common';
 import { AccountService } from '../../services/account.service';
@@ -36,12 +36,12 @@ export class MakeBillModalComponent {
         name: new FormControl('', [Validators.required, Validators.minLength(3)]),
         description: new FormControl('', [Validators.minLength(3)]),
         amount: new FormControl(0, [Validators.required, Validators.min(0.01)]),
-
-        dueDate: new FormControl(new Date(), [Validators.required]),
-        installmentDay: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(31)]),
-        installments: new FormControl(1, [Validators.required, Validators.min(1)]),
-        paidInstallments: new FormControl(undefined)
-    });
+        billType: new FormControl('', [Validators.required]),
+        frequency: new FormControl('', [Validators.required]),
+        installments: new FormControl<number>(0),
+        paidInstallments: new FormControl<number>(0, Validators.required),
+        dueDay: new FormControl(1, [Validators.required, this.dayRangeValidator()])
+    }, { validators: this.billTypeValidator() });
 
     closeDialog(response: boolean = false) {
         this.dialogRef.close(response);
@@ -49,21 +49,24 @@ export class MakeBillModalComponent {
 
     async makeBill() {
         this.isLoading = true;
+
         try {
             const account = await firstValueFrom(this.accountService.getAccount());
             this.makeBillForm.get('accountId')?.setValue(account.id);
 
-            if(!this.makeBillForm.get('dueDate')?.value) return;
-
             const formValue = {
-                dueDate: this.makeBillForm.value.dueDate ? new Date(this.makeBillForm.value.dueDate) : null,
+                accountId: this.makeBillForm.value.accountId,
                 name: this.makeBillForm.value.name,
                 amount: this.makeBillForm.value.amount,
-                installmentDay: this.makeBillForm.value.installmentDay,
-                installments: this.makeBillForm.value.installments,
-                accountId: this.makeBillForm.value.accountId,
                 ...(this.makeBillForm.value.description ? { description: this.makeBillForm.value.description } : {}),
-                ...(this.makeBillForm.value.paidInstallments != null ? { paidInstallments: this.makeBillForm.value.paidInstallments } : {})
+                dueDay: this.makeBillForm.value.dueDay,
+                paidInstallments: this.makeBillForm.value.paidInstallments,
+                frequency: this.makeBillForm.value.frequency,
+                billType: this.makeBillForm.value.billType,
+                active: true,
+                ...(this.makeBillForm.get('billType')?.value === 'installment' &&
+                    this.makeBillForm.errors && !this.makeBillForm.errors['paidGreaterThanInstallments'] ?
+                        { installments: this.makeBillForm.value.installments } : {})
             };
 
             await firstValueFrom(this.billService.makeBill(formValue as BillCreateInput));
@@ -73,5 +76,34 @@ export class MakeBillModalComponent {
         }
 
         this.isLoading = false;
+    }
+
+    billTypeValidator(): ValidatorFn {
+        return (group: AbstractControl): ValidationErrors | null => {
+            const type = group.get('billType')?.value;
+
+            if (type !== 'installment') {
+                return null;
+            }
+
+            const installments = group.get('installments')?.value;
+            const paidInstallments = group.get('paidInstallments')?.value;
+
+            if (paidInstallments > installments) {
+                return { paidGreaterThanInstallments: true };
+            }
+
+            return null;
+        };
+    }
+
+    dayRangeValidator(): ValidatorFn {
+        return (control: AbstractControl): ValidationErrors | null => {
+            const value = +control.value;
+            if (isNaN(value) || value < 1 || value > 31) {
+                return { outOfRange: true };
+            }
+            return null;
+        };
     }
 }

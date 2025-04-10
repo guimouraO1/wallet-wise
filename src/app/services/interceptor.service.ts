@@ -29,14 +29,6 @@ export const httpInterceptor: HttpInterceptorFn = (request: HttpRequest<unknown>
                 return throwError(() => error);
             }
 
-            if (request.url.includes('/refresh-token') && error.status === 401) {
-                tokenService.clearAccessToken();
-                authService.setIsUserAuthenticated(false);
-                router.navigate(['/sign-in']);
-                isRefreshing = false;
-                return throwError(() => error);
-            }
-
             if (!isRefreshing) {
                 isRefreshing = true;
                 refreshTokenSubject.next(null);
@@ -51,23 +43,26 @@ export const httpInterceptor: HttpInterceptorFn = (request: HttpRequest<unknown>
 
                         return next(request.clone({ setHeaders: { Authorization: `Bearer ${response.token}` }, withCredentials: true }));
                     }),
-                    catchError(error => {
-                        console.log(error);
-                        console.log('Deslogando...');
+                    catchError(refreshError => {
+                        isRefreshing = false;
+                        tokenService.clearAccessToken();
+                        authService.setIsUserAuthenticated(false);
+                        authService.signOut();
                         router.navigate(['/sign-in']);
-
-                        // tokenService.clearAccessToken();
-                        // authService.setIsUserAuthenticated(false);
-                        // isRefreshing = false;
-                        return throwError(() => error);
-                    }));
+                        return throwError(() => refreshError);
+                    })
+                );
             } else {
-                return refreshTokenSubject.pipe(filter(newToken => newToken != null), take(1),
-                switchMap(newToken => {
-                    return next(request.clone({ setHeaders: { Authorization: `Bearer ${newToken}` },  withCredentials: true }));
-                })
-            );
+                return refreshTokenSubject.pipe(
+                    filter(newToken => newToken != null),
+                    take(1),
+                    switchMap(newToken =>
+                        next(
+                            request.clone({ setHeaders: { Authorization: `Bearer ${newToken}` }, withCredentials: true })
+                        )
+                    )
+                );
             }
         })
-  );
+    );
 };

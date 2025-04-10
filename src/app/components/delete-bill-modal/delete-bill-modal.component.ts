@@ -6,11 +6,11 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-    selector: 'app-delete-transactino-modal',
+    selector: 'app-delete-bill-modal',
     imports: [CommonModule, TranslateModule],
-    templateUrl: './delete-transactions-modal.component.html'
+    templateUrl: './delete-bill-modal.component.html'
 })
-export class DeleteTransactionsModalComponent {
+export class DeleteBillModalComponent {
     dialogRef = inject(DialogRef);
     themeService = inject(ThemeService);
 

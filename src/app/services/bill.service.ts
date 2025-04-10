@@ -3,36 +3,43 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 
+type BillType = 'recurring' | 'installment'
+type BillFrequency = 'monthly' | 'weekly' | 'annual'
+
 export type BillCreateInput = {
-    name: string
+    name: string;
     description?: string | null;
     amount: number;
-    dueDate: Date;
-    isPaid?: boolean;
-    installmentDay: number;
-    installments: number;
-    paidInstallments?: number;
+    billType: BillType;
+    dueDay: number | null;
+    frequency: BillFrequency;
+    installments?: number | null;
+    paidInstallments: number;
+    active: boolean;
     accountId: string;
-}
+};
 
 export type Bill = {
     name: string;
     id: string;
     description: string | null;
     amount: number;
-    dueDate: Date;
-    isPaid: boolean;
+    billType: BillType;
+    dueDay?: number | null;
+    frequency?: BillFrequency | null;
+    active: boolean;
     accountId: string;
-    installments: number;
-    installmentDay: number;
-    paidInstallments: number;
+    installments: number | null;
+    paidInstallments: number | null;
     createdAt: Date;
     updatedAt: Date;
 }
 
 export type FindManyBillsInput = {
     name?: string;
-    isPaid?: boolean;
+    active?: boolean;
+    billType?: BillType;
+    frequency?: BillFrequency;
     accountId: string;
     page: number;
     offset: number;
@@ -56,8 +63,16 @@ export class BillService {
             params = params.set('name', data.name);
         }
 
-        if (data.isPaid !== undefined) {
-            params = params.set('isPaid', data.isPaid);
+        if (data.active) {
+            params = params.set('active', data.active);
+        }
+
+        if (data.billType) {
+            params = params.set('billType', data.billType);
+        }
+
+        if (data.frequency) {
+            params = params.set('frequency', data.frequency);
         }
 
         return this.http.get<FindManyBillsResponse>(`${environment.apiUrl}/bill/${data.accountId}`, { params });
@@ -65,5 +80,13 @@ export class BillService {
 
     makeBill(data: BillCreateInput) {
         return this.http.post(`${environment.apiUrl}/bill`, data);
+    }
+
+    payInvoice(billId: string, accountId: string) {
+        return this.http.post(`${environment.apiUrl}/invoice/bill`, { billId, accountId });
+    }
+
+    deleteBill(id: string, accountId: string): Observable<object> {
+        return this.http.delete<object>(`${environment.apiUrl}/bill/${accountId}/${id}`);
     }
 }
