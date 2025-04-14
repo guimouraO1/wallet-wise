@@ -1,6 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { PayloadTransaction, PaymentMethod, Transaction, TransactionsService, TransactionTypes } from '../../services/transactions.service';
-import { firstValueFrom, take } from 'rxjs';
+import { firstValueFrom, Subject, take, takeUntil } from 'rxjs';
 import { AccountService } from '../../services/account.service';
 import { CommonModule } from '@angular/common';
 import { formatMoneyToString } from '../../helpers/format-money';
@@ -20,7 +20,7 @@ import { DeleteTransactionsModalComponent } from '../../components/delete-transa
     imports: [CommonModule, ReactiveFormsModule, DialogModule, TranslateModule],
     templateUrl: './transactions.component.html'
 })
-export class TransactionsComponent implements OnInit {
+export class TransactionsComponent implements OnInit, OnDestroy {
     protected readonly toast = toast;
     transactionsService = inject(TransactionsService);
     accountService = inject(AccountService);
@@ -43,8 +43,10 @@ export class TransactionsComponent implements OnInit {
     isLoading = true;
     isError = false;
 
+    private destroy$ = new Subject<void>();
+
     async ngOnInit() {
-        this.route.queryParams.subscribe(params => {
+        this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
             this.selectedTransactionType.setValue(params['type'] || '');
             this.selectedPaymentMethod.setValue(params['paymentMethod'] || '');
             this.selectedName.setValue(params['name'] || '');
@@ -198,5 +200,10 @@ export class TransactionsComponent implements OnInit {
             toast.error('Error getting transactions');
         }
         this.isLoading = false;
+    }
+
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 }

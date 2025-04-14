@@ -42,10 +42,10 @@ export class MakeTransactionsModalComponent {
         this.isLoading = true;
         try {
             const account = await firstValueFrom(this.accountService.getAccount());
-            this.makeTransactionForm.get('accountId')?.setValue(account.id);
+            this.makeTransactionForm.controls.accountId.setValue(account.id);
 
             await firstValueFrom(this.transactionsService.makeTransaction(this.makeTransactionForm.value as PayloadMakeTransaction));
-            this.accountService.triggerAction();
+            this.accountService.fetchAccountSubject.next();
             this.closeDialog(true);
         } catch (error) {
             toast.error('Failed to create transaction');

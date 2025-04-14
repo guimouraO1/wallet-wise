@@ -1,10 +1,10 @@
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
 import { CommonModule } from '@angular/common';
 import { formatDate } from '../../helpers/formate-date';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { toast } from 'ngx-sonner';
-import { take, firstValueFrom } from 'rxjs';
+import { take, firstValueFrom, Subject, takeUntil } from 'rxjs';
 import { formatMoneyToString } from '../../helpers/format-money';
 import { AccountService } from '../../services/account.service';
 import { LanguageService } from '../../services/language.service';
@@ -20,7 +20,7 @@ import { PayInvoiceModalComponent } from '../../components/pay-invoice-modal/pay
     imports: [CommonModule, ReactiveFormsModule, DialogModule, TranslateModule],
     templateUrl: './bills.component.html'
 })
-export class BillsComponent {
+export class BillsComponent implements OnDestroy {
     protected readonly toast = toast;
     billService = inject(BillService);
     accountService = inject(AccountService);
@@ -44,9 +44,14 @@ export class BillsComponent {
     isLoading = true;
     isError = false;
 
+    private destroy$ = new Subject<void>();
+
     async ngOnInit() {
-        this.route.queryParams.subscribe(params => {
+        this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
             this.selectedName.setValue(params['name'] || '');
+            this.selectedActive.setValue(params['active'] || '');
+            this.selecteBillType.setValue(params['billType'] || '');
+            this.selectedFrequency.setValue(params['frequency'] || '');
             this.page = params['page'] ? Number(params['page']) : 1;
         });
 
@@ -124,6 +129,26 @@ export class BillsComponent {
         return Math.min(this.page * this.offset, this.billsCount);
     }
 
+    async addFilterParam(filter: any) {
+        this.router.navigate([], { queryParams: filter, queryParamsHandling: 'merge' });
+        await this.getBills();
+    }
+
+    async onActiveChange() {
+        this.page = 1;
+        await this.addFilterParam({ active: this.selectedActive.value });
+    }
+
+    async onBillTypeChange() {
+        this.page = 1;
+        await this.addFilterParam({ billType: this.selecteBillType.value });
+    }
+
+    async onFrequencyChange() {
+        this.page = 1;
+        await this.addFilterParam({ frequency: this.selectedFrequency.value });
+    }
+
     async makeBill() {
         const dialogRef = this.dialog.open(MakeBillModalComponent);
 
@@ -133,26 +158,6 @@ export class BillsComponent {
             this.page = 1;
             await this.resetFilters();
         });
-    }
-
-    async addFilterParam(filter: any) {
-        this.router.navigate([], { queryParams: filter, queryParamsHandling: 'merge' });
-        await this.getBills();
-    }
-
-    async onActiveChange() {
-        this.page = 1;
-        await this.addFilterParam({ type: this.selectedActive.value });
-    }
-
-    async onBillTypeChange() {
-        this.page = 1;
-        await this.addFilterParam({ type: this.selectedActive.value });
-    }
-
-    async onFrequencyChange() {
-        this.page = 1;
-        await this.addFilterParam({ type: this.selectedActive.value });
     }
 
     async getBills(){
@@ -234,7 +239,7 @@ export class BillsComponent {
 
             const bill = this.selectedBills[0];
             await firstValueFrom(this.billService.payInvoice(bill.id, account.id));
-            this.accountService.triggerAction();
+            this.accountService.fetchAccountSubject.next();
 
             await this.getBills();
         } catch (error) {
@@ -244,5 +249,10 @@ export class BillsComponent {
 
         this.selectedBills = [];
         this.isLoading = false;
+    }
+
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 }

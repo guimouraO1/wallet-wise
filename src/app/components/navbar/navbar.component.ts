@@ -17,7 +17,7 @@ import { formatMoneyToString } from '../../helpers/format-money';
     imports: [RouterLink, TranslateModule, ReactiveFormsModule, CommonModule, RouterLinkActive],
     templateUrl: './navbar.component.html'
 })
-export class NavbarComponent implements OnInit, OnDestroy {
+export class NavbarComponent implements OnInit {
     drawerOpen = new FormControl(false);
     tokenService = inject(TokenService);
     authService = inject(AuthService);
@@ -27,28 +27,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
     userService = inject(UserService);
     accountService = inject(AccountService);
     user: User | undefined;
-    account: Account | undefined;
-    formatedAmount: string = '';
-    private actionSubscription: Subscription | null = null;
 
     async ngOnInit() {
-        this.actionSubscription = this.accountService.triggerAction$.subscribe(() => {
-            this.getAccount();
-        });
-        this.getAccount();
-    }
-
-    ngOnDestroy() {
-        if (this.actionSubscription) {
-            this.actionSubscription.unsubscribe();
-        }
+        await this.getAccount();
     }
 
     async getAccount() {
         try {
-            const { name, avatarUrl, email, email_already_verified, role } = await firstValueFrom(this.userService.getUser());
-                // Está vindo com senha arrumar backend
+            const { name, avatarUrl, email, email_already_verified, role, Account } = await firstValueFrom(this.userService.getUser());
             this.user = {
+                Account,
                 name,
                 avatarUrl,
                 email,
@@ -56,12 +44,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
                 role
             };
 
-            const { balance, id } = await firstValueFrom(this.accountService.getAccount());
-            this.formatedAmount = formatMoneyToString(+balance);
-            this.account = {
-                balance,
-                id
-            };
+            this.accountService.setAccount(Account[0]);
         } catch (error) {
             console.error(error);
         }
@@ -69,6 +52,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
     toggleSidenav() {
         this.drawerOpen.setValue(false);
+    }
+
+    formatMoney(balance: number) {
+        return formatMoneyToString(balance);
     }
 
     async signOut() {

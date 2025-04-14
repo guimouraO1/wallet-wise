@@ -100,7 +100,6 @@
             @if (selectedName.value) {
               <button (click)="removeNameFilter()" class="btn btn-error btn-soft w-full md:w-60">{{'pages.bills.filters.searchByName.remove' | translate }}</button>
             }
-
             <select (change)="onActiveChange()" [formControl]="selectedActive" class="select w-full md:w-40 focus:outline-none focus:border-neutral">
               <option value="" disabled selected>{{'pages.bills.filters.isPaid.placeholder' | translate }}</option>
               <option value="">{{'pages.bills.filters.none' | translate }}</option>
@@ -168,7 +167,7 @@
                         <span class="text-sm opacity-80 truncate">{{bill.name}}</span>
                       </td>
                       <td class="max-w-80 truncate">
-                          <span class="text-sm opacity-80 truncate">{{bill.description}}</span>
+                          <span class="text-sm opacity-80 truncate">{{bill.description ?? ''}}</span>
                       </td>
                       <td class="max-w-30 truncate">
                         <span class="text-sm opacity-80">{{bill.dueDay}}</span>

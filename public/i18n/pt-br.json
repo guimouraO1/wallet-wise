@@ -59,7 +59,8 @@
                     "creditCard": "Cartão de crédito",
                     "debitCard": "Cartão de débito",
                     "accountCash": "Dinheiro na conta",
-                    "pix": "Pix"
+                    "pix": "Pix",
+                    "other": "Outro"
                 },
                 "textareaLabel": "Descrição (Opcional)",
                 "textareaPlaceholder": "Descrição",
@@ -150,7 +151,8 @@
                     "creditCard": "Cartão de crédito",
                     "debitCard": "Cartão de débito",
                     "accountCash": "Dinheiro da conta",
-                    "pix": "Pix"
+                    "pix": "Pix",
+                    "other": "Outro"
                 }
             },
             "tryAgain": "Tentar novamente",
@@ -171,7 +173,8 @@
                     "creditCard": "Cartão de crédito",
                     "debitCard": "Cartão de débito",
                     "accountCash": "Dinheiro da conta",
-                    "pix": "Pix"
+                    "pix": "Pix",
+                    "other": "Outro"
                 }
             },
             "conditions": {

@@ -22,8 +22,10 @@
     </div>
 
     <div class="h-full flex items-center gap-4 justify-end select-none self-end">
-      @if (this.account && this.account.balance) {
-        <span class="font-bold" [ngClass]="+this.account.balance < 0 ? 'text-error': 'text-success'">{{this.formatedAmount}}</span>
+      @if (this.accountService.account && this.accountService.account.balance) {
+        <span class="font-bold" [ngClass]="+this.accountService.account.balance < 0 ? 'text-error': 'text-success'">
+          {{formatMoney(+this.accountService.account.balance)}}
+        </span>
       }
 
       <div class="dropdown dropdown-end">

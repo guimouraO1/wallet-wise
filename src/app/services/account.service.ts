@@ -1,8 +1,8 @@
+import { Injectable, OnDestroy, OnInit, effect, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { TokenService } from './token.service';
+import { environment } from '../../environments/environment';
+import { firstValueFrom, Observable, Subject, takeUntil } from 'rxjs';
 
 export interface Account {
   id: string;
@@ -12,24 +12,42 @@ export interface Account {
   userId?: string;
 }
 
-@Injectable({
-    providedIn: 'root'
-})
-export class AccountService {
+@Injectable({ providedIn: 'root' })
+export class AccountService implements OnDestroy {
     private http = inject(HttpClient);
     private tokenService = inject(TokenService);
 
-    private triggerActionSubject = new Subject<void>();
+    private _account = signal<Account | null>(null);
+    fetchAccountSubject = new Subject<void>();
+    private destroy$ = new Subject<void>();
 
-    triggerAction$ = this.triggerActionSubject.asObservable();
+    constructor() {
+        this.fetchAccountSubject.pipe(takeUntil(this.destroy$)).subscribe(() => {
+            this.fetchAccount();
+        });
+    }
 
-    triggerAction() {
-        this.triggerActionSubject.next();
+    setAccount(account: Account) {
+        this._account.set(account);
+    }
+
+    get account() {
+        return this._account();
+    }
+
+    private async fetchAccount() {
+        const account = await firstValueFrom(this.getAccount());
+        this._account.set(account);
     }
 
     getAccount(): Observable<Account> {
         const userDecoded = this.tokenService.decodeToken();
         const userId = userDecoded?.sub;
         return this.http.get<Account>(`${environment.apiUrl}/account/${userId}`);
+    }
+
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 }

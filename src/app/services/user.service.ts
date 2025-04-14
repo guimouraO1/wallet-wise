@@ -3,8 +3,10 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { TokenService } from './token.service';
+import { Account } from './account.service';
 
 export interface User {
+  Account: Account[],
   name: string;
   id?: string;
   email: string;

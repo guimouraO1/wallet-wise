@@ -59,7 +59,8 @@
                     "creditCard": "Credit card",
                     "debitCard": "Debit card",
                     "accountCash": "Account cash",
-                    "pix": "Pix"
+                    "pix": "Pix",
+                    "other": "Other"
                 },
                 "textareaLabel": "Description (Optional)",
                 "textareaPlaceholder": "Description",
@@ -100,7 +101,8 @@
                     "creditCard": "Credit card",
                     "debitCard": "Debit card",
                     "accountCash": "Account cash",
-                    "pix": "Pix"
+                    "pix": "Pix",
+                    "other": "Other"
                 }
             },
             "tryAgain": "Try again",
@@ -121,7 +123,8 @@
                     "creditCard": "Credit card",
                     "debitCard": "Debit card",
                     "accountCash": "Account cash",
-                    "pix": "Pix"
+                    "pix": "Pix",
+                    "other": "Other"
                 }
             },
             "conditions": {

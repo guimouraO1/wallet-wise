@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { DateTime } from 'luxon';
 
 export type TransactionTypes = 'withdraw' | 'deposit';
-export type PaymentMethod = 'credit_card' | 'debit_card' | 'account_cash' | 'pix';
+export type PaymentMethod = 'credit_card' | 'debit_card' | 'account_cash' | 'pix' | 'other';
 
 export interface PayloadTransaction {
   accountId: string;
@@ -19,7 +19,7 @@ export interface PayloadTransaction {
 export interface Transaction {
     id: string,
     name: string,
-    description: string,
+    description: string | null,
     amount: number,
     createdAt: Date,
     updatedAt: Date,
