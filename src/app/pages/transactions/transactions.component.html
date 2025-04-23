@@ -143,7 +143,7 @@
                   <th>{{'pages.transactions.table.header.amount' | translate }}</th>
                 </tr>
               </thead>
-              @for (transaction of transactions; track $index) {
+              @for (transaction of transactions; track transaction.id) {
               <tbody>
                   <tr class="hover:bg-base-300">
                       <td>

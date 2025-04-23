@@ -151,41 +151,39 @@
                   <th>{{'pages.bills.table.header.lastPayment' | translate }}</th>
                 </tr>
               </thead>
-              @for (bill of bills; track $index) {
-              <tbody>
-                  <tr class="hover:bg-base-300">
-                      <td>
-                          <label>
-                              <input 
-                                [checked]="selectedBills.includes(bill)"
-                                (change)="toggleSelection(bill, $event)" 
-                                type="checkbox" class="checkbox" 
-                              />
-                          </label>
-                      </td>
-                      <td class="max-w-50 truncate">
-                        <span class="text-sm opacity-80 truncate">{{bill.name}}</span>
-                      </td>
-                      <td class="max-w-80 truncate">
-                          <span class="text-sm opacity-80 truncate">{{bill.description ?? ''}}</span>
-                      </td>
-                      <td class="max-w-30 truncate">
-                        <span class="text-sm opacity-80">{{bill.dueDay}}</span>
-                      </td>
-                      <td class="max-w-60 truncate">
-                        <span class="text-sm opacity-80">{{formatMoneyToString(bill.amount)}}</span>
-                      </td>
-                      <td>
-                        <span class="text-sm opacity-80">{{ bill.paidInstallments }}{{ bill.installments ? ' of ' + bill.installments : '' }}</span>
-                      </td>
-                      <td class="max-w-50 truncate">
-                        <span class="text-sm opacity-80 truncate">{{formatDate(bill.updatedAt.toString())}}</span>
-                      </td>
-                  </tr>
-              </tbody>
-            } @empty {
-
-            }
+                @for (bill of bills; track bill.id) {
+                <tbody>
+                    <tr class="hover:bg-base-300">
+                        <td>
+                            <label>
+                                <input 
+                                  [checked]="selectedBills.includes(bill)"
+                                  (change)="toggleSelection(bill, $event)" 
+                                  type="checkbox" class="checkbox" 
+                                />
+                            </label>
+                        </td>
+                        <td class="max-w-50 truncate">
+                          <span class="text-sm opacity-80 truncate">{{bill.name}}</span>
+                        </td>
+                        <td class="max-w-80 truncate">
+                            <span class="text-sm opacity-80 truncate">{{bill.description ?? ''}}</span>
+                        </td>
+                        <td class="max-w-30 truncate">
+                          <span class="text-sm opacity-80">{{bill.dueDay}}</span>
+                        </td>
+                        <td class="max-w-60 truncate">
+                          <span class="text-sm opacity-80">{{formatMoneyToString(bill.amount)}}</span>
+                        </td>
+                        <td>
+                          <span class="text-sm opacity-80">{{ bill.paidInstallments }}{{ bill.installments ? ' of ' + bill.installments : '' }}</span>
+                        </td>
+                        <td class="max-w-50 truncate">
+                          <span class="text-sm opacity-80 truncate">{{formatDate(bill.updatedAt.toString())}}</span>
+                        </td>
+                    </tr>
+                </tbody>
+                }
             </table>
         </div>
         <!-- table -->
