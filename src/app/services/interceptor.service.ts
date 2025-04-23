@@ -1,6 +1,6 @@
 import { HttpErrorResponse, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { BehaviorSubject, catchError, filter, switchMap, take, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, delay, filter, switchMap, take, throwError } from 'rxjs';
 import { TokenService } from './token.service';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
@@ -20,6 +20,7 @@ export const httpInterceptor: HttpInterceptorFn = (request: HttpRequest<unknown>
     }
 
     return next(request).pipe(
+        // delay(500),
         catchError((error: HttpErrorResponse) => {
             if (error.status !== 401) {
                 return throwError(() => error);
