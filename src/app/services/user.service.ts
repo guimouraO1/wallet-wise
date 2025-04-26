@@ -14,7 +14,7 @@ export interface User {
   created_at?: string;
   updated_at?: string;
   avatarUrl: string;
-  email_already_verified: boolean;
+  email_already_verifyed: boolean;
 }
 
 @Injectable({

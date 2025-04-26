@@ -228,7 +228,7 @@
 
         <!-- pagination -->
         <div class="self-end flex items-center gap-2">
-          <span class="text-sm mr-4 opacity-65">{{ startIndex }}-{{ endIndex }} of {{ transactionsCount }}</span>
+          <span class="text-sm mr-4 opacity-65 select-none">{{ startIndex }}-{{ endIndex }} of {{ transactionsCount }}</span>
           <div class="join flex gap-2">
             <button (click)="previousPage()" [disabled]="page <= 1" class="join-item btn btn-sm btn-soft">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3">

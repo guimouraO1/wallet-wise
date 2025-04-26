@@ -1,6 +1,6 @@
 <div class="h-16 flex items-center justify-between px-3 md:px-10 border-b-1 border-base-content/5">
     <div class="h-full items-center hidden md:flex">
-      <span class="text-sm md:text-xl font-semibold text-base-content/15">Wallet Wise</span>
+      <span class="text-sm md:text-xl font-semibold text-base-content/40 select-none">Wallet Wise</span>
     </div>
     
     <div class="h-full hidden md:flex items-center gap-2 justify-center">
@@ -29,15 +29,30 @@
       }
 
       <div class="dropdown dropdown-end">
-        <div tabindex="0" role="button" class="avatar cursor-pointer">
-          <div class="w-10 rounded-full">
-            @if (this.user && this.user.avatarUrl) {
-              <img src="{{this.user.avatarUrl}}" />
-            } @else {
+
+        @if (isLoading) {
+          <div tabindex="0" role="button" class="avatar cursor-pointer">
+            <div class="w-10 rounded-full">
               <div class="skeleton h-10 w-10 shrink-0 rounded-full"></div>
-            }
+            </div>
           </div>
-        </div>
+        } @else {
+          @if (this.user && this.user.avatarUrl) {
+            <div tabindex="0" role="button" class="avatar cursor-pointer">
+              <div class="w-10 rounded-full">
+                  <img src="{{this.user.avatarUrl}}" />
+              </div>
+            </div>
+          } @else {
+            <div tabindex="0" role="button" class="avatar cursor-pointer">
+              <div class="avatar avatar-placeholder">
+                <div class="bg-base-200 text-base-content w-10 h-10 rounded-full">
+                  <span>{{transformNameIntoAvatar}}</span>
+                </div>
+              </div>
+            </div>
+          }
+        }
 
         <div tabindex="0" class="absolute menu dropdown-content bg-base-100 border border-base-content/15 rounded-box w-80 p-4">
           <div tabindex="0" class="flex flex-col w-[90%] gap-1">
@@ -55,7 +70,6 @@
           <div class="divider m-0"></div>
 
           <ul tabindex="0" class="flex flex-col gap-1">
-
             <li (click)="languageService.setLanguage(languageService.getLanguage() === 'pt-br' ? 'en' : 'pt-br')">
               <div class="flex pl-2 gap-1.5 justify-between hover:bg-neutral/20">
                 <div class="flex gap-2">

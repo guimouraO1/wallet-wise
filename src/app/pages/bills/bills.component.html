@@ -84,7 +84,6 @@
   }
   @else { 
       <div class="w-4/5 flex flex-col items-center gap-2">
-
         <!-- filters -->
         <div class="flex items-center gap-2 justify-between w-full flex-wrap md:flex-nowrap">
           <div class="flex gap-2 w-full flex-wrap md:flex-nowrap">
@@ -96,7 +95,6 @@
                 </svg>
                 {{'pages.bills.filters.searchByName.button' | translate }}</button>
             </div>
-
             @if (selectedName.value) {
               <button (click)="removeNameFilter()" class="btn btn-error btn-soft w-full md:w-60">{{'pages.bills.filters.searchByName.remove' | translate }}</button>
             }
@@ -115,23 +113,20 @@
             <select (change)="onFrequencyChange()" [formControl]="selectedFrequency" class="select w-full md:w-40 focus:outline-none focus:border-neutral">
               <option value="" disabled selected>{{ 'components.makeBillModal.form.frequency.placeholder' | translate }}</option>
               <option value="">{{'pages.bills.filters.none' | translate }}</option>
-              <option value="monthly">{{ 'components.makeBillModal.form.frequency.monthly' | translate }}</option>
               <option value="weekly">{{ 'components.makeBillModal.form.frequency.weekly' | translate }}</option>
+              <option value="monthly">{{ 'components.makeBillModal.form.frequency.monthly' | translate }}</option>
               <option value="annual">{{ 'components.makeBillModal.form.frequency.annual' | translate }}</option>
             </select>
           </div>
-
           @if (selectedBills.length === 1) {
             <button (click)="payInvoice()" class="btn btn-success btn-soft w-full md:w-50">{{'pages.bills.payInstallment' | translate }}</button>
           }
-
           @if (selectedBills.length > 0) {
             <button (click)="deleteBills()" class="btn btn-error btn-soft w-full md:w-50">{{'pages.bills.deleteBills' | translate }}</button>
           }
           <button (click)="makeBill()" class="btn btn-neutral btn-soft w-full md:w-50">{{'pages.bills.makeBill' | translate }}</button>
         </div>
         <!-- filters -->
-        
 
         <!-- table -->
         <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 w-full">
@@ -190,7 +185,7 @@
 
         <!-- pagination -->
         <div class="self-end flex items-center gap-2">
-          <span class="text-sm mr-4 opacity-65">{{ startIndex }}-{{ endIndex }} of {{ billsCount }}</span>
+          <span class="text-sm mr-4 opacity-65 select-none">{{ startIndex }}-{{ endIndex }} of {{ billsCount }}</span>
           <div class="join flex gap-2">
             <button (click)="previousPage()" [disabled]="page <= 1" class="join-item btn btn-sm btn-soft">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3">
