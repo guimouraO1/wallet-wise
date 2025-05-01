@@ -205,7 +205,7 @@
                 "transactions": "Dinheiro movimentado (Mês)",
                 "transactionsPorcentage": "do mês passado"
             },
-            "commingSoon": "Em breve",
+            "comingSoon": "Em breve",
             "noTransactions": {
                 "title": "Parece que ainda está tudo vazio por aqui!",
                 "subtitle": "Que tal começar agora mesmo?",

@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, OnInit, effect, inject, signal } from '@angular/core';
+import { Injectable, OnDestroy, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { TokenService } from './token.service';
 import { environment } from '../../environments/environment';

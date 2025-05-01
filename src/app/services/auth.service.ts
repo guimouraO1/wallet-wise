@@ -52,8 +52,4 @@ export class AuthService {
     signIn(data: SignInForm) {
         return this.http.post<TokenResponse>(`${environment.apiUrl}/sign-in`, data, { withCredentials: true });
     }
-
-    error() {
-        return this.http.get(`${environment.apiUrl}/error`);
-    }
 }

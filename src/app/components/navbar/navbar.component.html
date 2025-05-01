@@ -23,13 +23,14 @@
 
     <div class="h-full flex items-center gap-4 justify-end select-none self-end">
       @if (this.accountService.account && this.accountService.account.balance) {
-        <span class="font-bold" [ngClass]="+this.accountService.account.balance < 0 ? 'text-error': 'text-success'">
-          {{formatMoney(+this.accountService.account.balance)}}
-        </span>
+        <div class="flex h-full items-center max-w-40 overflow-hidden">
+          <span class="font-bold inline-block truncate" [ngClass]="+this.accountService.account.balance < 0 ? 'text-error': 'text-success'">
+            {{formatMoney(+this.accountService.account.balance)}}
+          </span>
+        </div>
       }
 
       <div class="dropdown dropdown-end">
-
         @if (isLoading) {
           <div tabindex="0" role="button" class="avatar cursor-pointer">
             <div class="w-10 rounded-full">
