@@ -33,9 +33,9 @@ export class MakeBillModalComponent {
     isLoading = false;
     makeBillForm = new FormGroup({
         accountId: new FormControl(''),
-        name: new FormControl('', [Validators.required, Validators.minLength(3)]),
-        description: new FormControl('', [Validators.minLength(3)]),
-        amount: new FormControl(0, [Validators.required, Validators.min(0.01)]),
+        name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.max(200)]),
+        description: new FormControl('', [Validators.minLength(3), Validators.max(500)]),
+        amount: new FormControl(0, [Validators.required, Validators.min(0.01), Validators.max(10_000)]),
         billType: new FormControl('', [Validators.required]),
         frequency: new FormControl('', [Validators.required]),
         installments: new FormControl<number>(0),
@@ -80,8 +80,8 @@ export class MakeBillModalComponent {
 
             await firstValueFrom(this.billService.makeBill(formValue as BillCreateInput));
             this.closeDialog(true);
-        } catch (error) {
-            toast.error('Error in make Transaction');
+        } catch (error: any) {
+            toast.error(error.message);
         } finally {
             this.isLoading = false;
         }

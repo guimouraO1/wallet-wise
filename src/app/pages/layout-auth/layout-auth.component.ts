@@ -7,6 +7,4 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
     imports: [RouterOutlet, NavbarComponent],
     templateUrl: './layout-auth.component.html'
 })
-export class LayoutAuthComponent {
-
-}
+export class LayoutAuthComponent {}

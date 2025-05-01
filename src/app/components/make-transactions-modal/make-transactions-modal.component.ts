@@ -26,12 +26,12 @@ export class MakeTransactionsModalComponent {
     isLoading = false;
 
     makeTransactionForm = new FormGroup({
-        name: new FormControl('', [Validators.required, Validators.min(3)]),
-        amount: new FormControl(0, [Validators.required, Validators.min(0.01)]),
+        name: new FormControl('', [Validators.required, Validators.min(3), Validators.max(200)]),
+        amount: new FormControl(0, [Validators.required, Validators.min(0.01), Validators.max(10_000)]),
         type: new FormControl('', [Validators.required]),
         paymentMethod: new FormControl('', [Validators.required]),
         accountId: new FormControl(''),
-        description: new FormControl('')
+        description: new FormControl('', Validators.max(500))
     });
 
     closeDialog(response: boolean = false) {
@@ -47,8 +47,8 @@ export class MakeTransactionsModalComponent {
             await firstValueFrom(this.transactionsService.makeTransaction(this.makeTransactionForm.value as PayloadMakeTransaction));
             this.accountService.fetchAccountSubject.next();
             this.closeDialog(true);
-        } catch (error) {
-            toast.error('Failed to create transaction');
+        } catch (error: any) {
+            toast.error(error.error.message);
         }
         this.isLoading = false;
     }

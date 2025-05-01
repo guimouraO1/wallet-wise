@@ -200,10 +200,10 @@
                 "date": "Selecionar data"
             },
             "cards": {
-                "transactionsCount": "Transações (Mês)",
-                "transactionsCountPorcentage": "do mês passado",
-                "transactions": "Dinheiro movimentado (Mês)",
-                "transactionsPorcentage": "do mês passado"
+                "transactionsCount": "Transações (Últimos 31 Dias)",
+                "transactions": "Dinheiro Movimentado (Últimos 31 Dias)",
+                "transactionsCountPorcentage": "Comparado aos 31 Dias Anteriores",
+                "transactionsPorcentage": "Comparado aos 31 Dias Anteriores"
             },
             "comingSoon": "Em breve",
             "noTransactions": {
@@ -228,6 +228,27 @@
                 "passwordPlaceholder": "Sua senha",
                 "button": "Entrar"
             }
+        }
+    },
+    "errors": {
+        "signIn": {
+            "email": "E-mail inválido",
+            "password": "A senha deve conter pelo menos 6 caracteres",
+            "unauthorized": "E-mail ou senha incorretos. Por favor, tente novamente."
+        },
+        "transactions": {
+            "get": {
+                "accountId": "ID da conta inválido",
+                "page": "A página deve ser um número válido",
+                "offset": "O offset deve ser um número positivo",
+                "type": "Tipo de transação inválido",
+                "paymentMethod": "Método de pagamento inválido",
+                "name": "O nome é obrigatório"
+            },
+            "unauthorized": "Você não tem autorização para ver essas transações"
+        },
+        "home": {
+            "dateRange": "O intervalo entre as datas de início e fim não pode exceder 31 dias"
         }
     }
 }

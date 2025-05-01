@@ -60,10 +60,8 @@
           <input formControlName="password" [type]="isPasswordVisible ? 'text' : 'password'" class="grow" placeholder="{{ 'pages.sign-in.form.passwordPlaceholder' | translate }}" />
         </label>
       </div>
-
       <button type="submit" [disabled]="this.signInForm.invalid || isLoading" class="btn btn-neutral btn-soft btn-wide">{{ 'pages.sign-in.form.button' | translate }}</button>
     </form>
   </div>
-
   <span class="bottom-4 left-4 absolute text-xs text-base-content/50">Guilherme de Moura Oliveira - Copyright &copy; 2025</span>
 </div>

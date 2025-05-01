@@ -1,234 +1,254 @@
 {
-    "components": {
-      "navbar": {
-        "pages": {
-          "home": "Home",
-          "transactions": "Transactions",
-          "bills": "Bills"
-        },
-        "options": {
-          "theme": "Theme",
-          "language": "Language",
-          "sign-out": "Sign Out"
-        }
+  "components": {
+    "navbar": {
+      "pages": {
+        "home": "Home",
+        "transactions": "Transactions",
+        "bills": "Bills"
       },
-      "makeBillModal": {
-        "title": "New Bill",
-        "subtitle": "Fill in the details to create your bill",
-        "form": {
-          "name": "Name",
-          "amount": "Amount Frequency",
-          "cancel": "Cancel",
-          "makeTransaction": "Create Bill",
-          "installmentDay": "Installment Day",
-          "installments": "Installments",
-          "paidInstallments": "Paid Installments",
-          "dueDay": "Select Due Day",
-          "billType": {
-            "placeholder": "Bill Type",
-            "recurring": "Recurring",
-            "installment": "Installment"
-          },
-          "frequency": {
-            "placeholder": "Frequency",
-            "monthly": "Monthly",
-            "weekly": "Weekly",
-            "annual": "Annually"
-          }
-        }
-      },
-      "deleteTransactionsModal": {
-        "title": "Delete Transactions",
-        "subtitle": "Are you sure you want to delete the selected transactions?",
-        "cancel": "Cancel",
-        "confirm": "Delete Transactions"
-      },
-      "makeTransactionsModal": {
-        "title": "New Transaction",
-        "subtitle": "Fill in the details to complete your transaction",
-        "form": {
-          "name": "Name",
-          "amount": "Amount",
-          "transactionsType": {
-            "placeholder": "Transaction Type",
-            "withdraw": "Withdraw",
-            "deposit": "Deposit"
-          },
-          "paymentMethod": {
-            "placeholder": "Payment Method",
-            "creditCard": "Credit Card",
-            "debitCard": "Debit Card",
-            "accountCash": "Cash",
-            "pix": "Pix",
-            "other": "Other"
-          },
-          "textareaLabel": "Description (Optional)",
-          "textareaPlaceholder": "Description",
-          "cancel": "Cancel",
-          "makeTransaction": "Create Transaction"
-        }
-      },
-      "deleteBillsModal": {
-        "title": "Delete Bills",
-        "subtitle": "Are you sure you want to delete the selected bills?",
-        "cancel": "Cancel",
-        "confirm": "Delete Bills"
-      },
-      "payInvoiceModal": {
-        "title": "Pay Invoice",
-        "subtitle": "Are you sure you want to pay the selected invoice?",
-        "cancel": "Cancel",
-        "confirm": "Confirm"
+      "options": {
+        "theme": "Theme",
+        "language": "Language",
+        "sign-out": "Sign Out"
       }
     },
-    "pages": {
-      "transactions": {
-        "filters": {
-          "searchByName": {
-            "placeholder": "Search by name",
-            "button": "Search",
-            "remove": "Remove name filter"
-          },
-          "transactionsType": {
-            "placeholder": "Transaction Type",
-            "none": "None",
-            "withdraw": "Withdraw",
-            "deposit": "Deposit"
-          },
-          "paymentMethod": {
-            "placeholder": "Payment Method",
-            "none": "None",
-            "creditCard": "Credit Card",
-            "debitCard": "Debit Card",
-            "accountCash": "Cash",
-            "pix": "Pix",
-            "other": "Other"
-          }
+    "makeBillModal": {
+      "title": "New Bill",
+      "subtitle": "Fill in the details to create your bill",
+      "form": {
+        "name": "Name",
+        "amount": "Amount Frequency",
+        "cancel": "Cancel",
+        "makeTransaction": "Create Bill",
+        "installmentDay": "Installment Day",
+        "installments": "Installments",
+        "paidInstallments": "Paid Installments",
+        "dueDay": "Select Due Day",
+        "billType": {
+          "placeholder": "Bill Type",
+          "recurring": "Recurring",
+          "installment": "Installment"
         },
-        "tryAgain": "Try Again",
-        "deleteTransactions": "Delete Transactions",
-        "makeTransaction": "New Transaction",
-        "table": {
-          "header": {
-            "name": "Name",
-            "description": "Description",
-            "date": "Date",
-            "transactionType": "Transaction Type",
-            "paymentMethod": "Payment Method",
-            "amount": "Amount"
-          },
-          "body": {
-            "withdraw": "Withdraw",
-            "deposit": "Deposit",
-            "creditCard": "Credit Card",
-            "debitCard": "Debit Card",
-            "accountCash": "Cash",
-            "pix": "Pix",
-            "other": "Other"
-          }
-        },
-        "conditions": {
-          "firstTransaction": {
-            "title": "Oops! Nothing here...",
-            "subtitle": "Maybe the filters are too restrictive. Try adjusting or removing them.",
-            "button": "View All Transactions"
-          },
-          "noTransactionsForFilters": {
-            "title": "Your journey starts here!",
-            "subtitle": "Make your first transaction and start tracking your activity.",
-            "button": "Start Transaction"
-          },
-          "isError": {
-            "title": "Something went wrong...",
-            "subtitle": "Don't worry! You can try again.",
-            "button": "Try Again"
-          }
-        }
-      },
-      "bills": {
-        "filters": {
-          "searchByName": {
-            "placeholder": "Search by name",
-            "button": "Search",
-            "remove": "Remove name filter"
-          },
-          "isPaid": {
-            "placeholder": "Bill",
-            "isPaid": "Paid",
-            "open": "Unpaid"
-          },
-          "none": "None"
-        },
-        "tryAgain": "Try Again",
-        "payInstallment": "Pay Installment",
-        "deleteBills": "Delete Bills",
-        "makeBill": "New Bill",
-        "table": {
-          "header": {
-            "name": "Name",
-            "description": "Description",
-            "dueDay": "Due Day",
-            "installments": "Paid Installments",
-            "installmentValue": "Installment Value",
-            "lastPayment": "Last Payment",
-            "amount": "Amount"
-          },
-          "body": {
-            "button": "Pay Installment"
-          }
-        },
-        "conditions": {
-          "firstBill": {
-            "title": "Oops! Nothing here...",
-            "subtitle": "Maybe the filters are too restrictive. Try adjusting or removing them.",
-            "button": "View All Bills"
-          },
-          "noBillsForFilters": {
-            "title": "Your journey starts here!",
-            "subtitle": "Create your first bill.",
-            "button": "Create Bill"
-          },
-          "isError": {
-            "title": "Something went wrong...",
-            "subtitle": "Don't worry! You can try again.",
-            "button": "Try Again"
-          }
-        }
-      },
-      "home": {
-        "filters": {
-          "date": "Select Date"
-        },
-        "cards": {
-          "transactionsCount": "Transactions (Month)",
-          "transactionsCountPorcentage": "compared to last month",
-          "transactions": "Money Moved (Month)",
-          "transactionsPorcentage": "compared to last month"
-        },
-        "comingSoon": "Coming Soon",
-        "noTransactions": {
-          "title": "Looks like it's still empty around here!",
-          "subtitle": "How about getting started right now?",
-          "transactions": "Log a Transaction",
-          "bills": "Create an Installment Bill"
-        },
-        "isError": {
-          "title": "Something went wrong",
-          "subtitle": "We couldn't complete the action. Please try again.",
-          "button": "Try Again"
-        }
-      },
-      "sign-in": {
-        "form": {
-          "title": "Welcome Back!",
-          "subtitle": "Everything you need to manage your money",
-          "email": "Email",
-          "emailPlaceholder": "your@mail.com",
-          "password": "Password",
-          "passwordPlaceholder": "Your password",
-          "button": "Sign In"
+        "frequency": {
+          "placeholder": "Frequency",
+          "monthly": "Monthly",
+          "weekly": "Weekly",
+          "annual": "Annually"
         }
       }
+    },
+    "deleteTransactionsModal": {
+      "title": "Delete Transactions",
+      "subtitle": "Are you sure you want to delete the selected transactions?",
+      "cancel": "Cancel",
+      "confirm": "Delete Transactions"
+    },
+    "makeTransactionsModal": {
+      "title": "New Transaction",
+      "subtitle": "Fill in the details to complete your transaction",
+      "form": {
+        "name": "Name",
+        "amount": "Amount",
+        "transactionsType": {
+          "placeholder": "Transaction Type",
+          "withdraw": "Withdraw",
+          "deposit": "Deposit"
+        },
+        "paymentMethod": {
+          "placeholder": "Payment Method",
+          "creditCard": "Credit Card",
+          "debitCard": "Debit Card",
+          "accountCash": "Cash",
+          "pix": "Pix",
+          "other": "Other"
+        },
+        "textareaLabel": "Description (Optional)",
+        "textareaPlaceholder": "Description",
+        "cancel": "Cancel",
+        "makeTransaction": "Create Transaction"
+      }
+    },
+    "deleteBillsModal": {
+      "title": "Delete Bills",
+      "subtitle": "Are you sure you want to delete the selected bills?",
+      "cancel": "Cancel",
+      "confirm": "Delete Bills"
+    },
+    "payInvoiceModal": {
+      "title": "Pay Invoice",
+      "subtitle": "Are you sure you want to pay the selected invoice?",
+      "cancel": "Cancel",
+      "confirm": "Confirm"
     }
+  },
+  "pages": {
+    "transactions": {
+      "filters": {
+        "searchByName": {
+          "placeholder": "Search by name",
+          "button": "Search",
+          "remove": "Remove name filter"
+        },
+        "transactionsType": {
+          "placeholder": "Transaction Type",
+          "none": "None",
+          "withdraw": "Withdraw",
+          "deposit": "Deposit"
+        },
+        "paymentMethod": {
+          "placeholder": "Payment Method",
+          "none": "None",
+          "creditCard": "Credit Card",
+          "debitCard": "Debit Card",
+          "accountCash": "Cash",
+          "pix": "Pix",
+          "other": "Other"
+        }
+      },
+      "tryAgain": "Try Again",
+      "deleteTransactions": "Delete Transactions",
+      "makeTransaction": "New Transaction",
+      "table": {
+        "header": {
+          "name": "Name",
+          "description": "Description",
+          "date": "Date",
+          "transactionType": "Transaction Type",
+          "paymentMethod": "Payment Method",
+          "amount": "Amount"
+        },
+        "body": {
+          "withdraw": "Withdraw",
+          "deposit": "Deposit",
+          "creditCard": "Credit Card",
+          "debitCard": "Debit Card",
+          "accountCash": "Cash",
+          "pix": "Pix",
+          "other": "Other"
+        }
+      },
+      "conditions": {
+        "firstTransaction": {
+          "title": "Oops! Nothing here...",
+          "subtitle": "Maybe the filters are too restrictive. Try adjusting or removing them.",
+          "button": "View All Transactions"
+        },
+        "noTransactionsForFilters": {
+          "title": "Your journey starts here!",
+          "subtitle": "Make your first transaction and start tracking your activity.",
+          "button": "Start Transaction"
+        },
+        "isError": {
+          "title": "Something went wrong...",
+          "subtitle": "Don't worry! You can try again.",
+          "button": "Try Again"
+        }
+      }
+    },
+    "bills": {
+      "filters": {
+        "searchByName": {
+          "placeholder": "Search by name",
+          "button": "Search",
+          "remove": "Remove name filter"
+        },
+        "isPaid": {
+          "placeholder": "Bill",
+          "isPaid": "Paid",
+          "open": "Unpaid"
+        },
+        "none": "None"
+      },
+      "tryAgain": "Try Again",
+      "payInstallment": "Pay Installment",
+      "deleteBills": "Delete Bills",
+      "makeBill": "New Bill",
+      "table": {
+        "header": {
+          "name": "Name",
+          "description": "Description",
+          "dueDay": "Due Day",
+          "installments": "Paid Installments",
+          "installmentValue": "Installment Value",
+          "lastPayment": "Last Payment",
+          "amount": "Amount"
+        },
+        "body": {
+          "button": "Pay Installment"
+        }
+      },
+      "conditions": {
+        "firstBill": {
+          "title": "Oops! Nothing here...",
+          "subtitle": "Maybe the filters are too restrictive. Try adjusting or removing them.",
+          "button": "View All Bills"
+        },
+        "noBillsForFilters": {
+          "title": "Your journey starts here!",
+          "subtitle": "Create your first bill.",
+          "button": "Create Bill"
+        },
+        "isError": {
+          "title": "Something went wrong...",
+          "subtitle": "Don't worry! You can try again.",
+          "button": "Try Again"
+        }
+      }
+    },
+    "home": {
+      "filters": {
+        "date": "Select Date"
+      },
+      "cards": {
+        "transactionsCount": "Transactions (Last 31 Days)",
+        "transactions": "Money Moved (Last 31 Days)",
+        "transactionsCountPorcentage": "compared (Previous 31 Days)",
+        "transactionsPorcentage": "compared (Previous 31 Days)"
+      },
+      "comingSoon": "Coming Soon",
+      "noTransactions": {
+        "title": "Looks like it's still empty around here!",
+        "subtitle": "How about getting started right now?",
+        "transactions": "Log a Transaction",
+        "bills": "Create an Installment Bill"
+      },
+      "isError": {
+        "title": "Something went wrong",
+        "subtitle": "We couldn't complete the action. Please try again.",
+        "button": "Try Again"
+      }
+    },
+    "sign-in": {
+      "form": {
+        "title": "Welcome Back!",
+        "subtitle": "Everything you need to manage your money",
+        "email": "Email",
+        "emailPlaceholder": "your@mail.com",
+        "password": "Password",
+        "passwordPlaceholder": "Your password",
+        "button": "Sign In"
+      }
+    }
+  },
+  "errors": {
+    "signIn": {
+      "email": "Invalid email",
+      "password": "password must contain at least 6 character(s)",
+      "unauthorized": "Incorrect email or password. Please try again."
+    },
+    "transactions": {
+      "get": {
+        "accountId": "Invalid account ID",
+        "page": "Page must be a valid number",
+        "offset": "Offset must be a positive number",
+        "type": "Invalid transaction type",
+        "paymentMethod": "Invalid payment method",
+        "name": "Name is required"
+      },
+      "unauthorized": "You are not authorized to view these transactions"
+    },
+    "home": {
+      "dateRange": "The interval between start and end dates cannot exceed 31 days"
+    }
+  }
 }
-  

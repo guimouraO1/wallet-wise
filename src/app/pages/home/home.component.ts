@@ -6,7 +6,18 @@ import { RouterLink } from '@angular/router';
 import { formatMoneyToString } from '../../helpers/format-money';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { DateTime } from 'luxon';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { toast } from 'ngx-sonner';
+import { HttpErrorResponse } from '@angular/common/http';
+import { BadRequestError } from '../../interfaces/bad-request-error.interface';
+import { TIMEZONE } from '../../helpers/timezone';
+import { DATE_FORMAT } from '../../helpers/date-format';
+
+interface Period {
+    today: DateTime;
+    thirtyOneDaysAgo: DateTime;
+    sixtyTwoDaysAgo: DateTime;
+  }
 
 @Component({
     selector: 'app-home',
@@ -14,82 +25,120 @@ import { TranslateModule } from '@ngx-translate/core';
     templateUrl: './home.component.html'
 })
 export class HomeComponent implements OnInit {
-    transactionsService = inject(TransactionsService);
-    accountService = inject(AccountService);
+    protected translateService = inject(TranslateService);
+    protected transactionsService = inject(TransactionsService);
+    protected accountService = inject(AccountService);
 
-    transactionsCount: number | undefined = 0;
-    transactions: Transaction[] | undefined;
-    totalMoneyMovimented: number = 0;
-    totalBillsPaid: number = 0;
+    protected readonly toast = toast;
 
-    percentageDifferenceInTransactionsCount: string = '0';
-    percentageDifferenceInTransactions: string = '0';
+    protected transactionsCount: number | undefined = 0;
+    protected totalMoneyMovimented: number = 0;
+    protected totalBillsPaid: number = 0;
 
-    thisMonth = new FormControl(DateTime.now().setZone('America/Sao_Paulo').endOf('day').toISODate() as string);
-    thisMonthInit = new FormControl();
-    oneMonthAgo = new FormControl();
+    protected transactionsCountChangePercent: string = '0';
+    protected transactionsTotalMoneyChangePercent: string = '0';
 
-    isLoading = true;
-    isError = false;
+    protected datePeriod: Period | undefined = undefined;
+    protected dateSelected = new FormControl();
+
+    protected isLoading = true;
+    protected isError = false;
 
     async ngOnInit() {
+        this.dateSelected.setValue(this.isoToday());
         this.setUpDate();
         await this.getTransactionsInPeriod();
     }
 
-    async onChangeDate(){
+    protected async onChangeDate(){
+        this.setUpDate();
         await this.getTransactionsInPeriod();
     }
 
-    setUpDate() {
-        const thisMonth = this.thisMonth.value as string;
-        const thisMonthInit = DateTime.fromISO(thisMonth).minus({ month: 1 }).startOf('day').setZone('America/Sao_Paulo').toISODate() as string;
-        const oneMonthAgo = DateTime.fromISO(thisMonthInit).minus({ month: 1 }).startOf('day').setZone('America/Sao_Paulo').toISODate() as string;
+    protected setUpDate() {
+        const dateSelectedValue = this.dateSelected.value;
+        const today = DateTime.fromISO(dateSelectedValue, { zone: TIMEZONE });
+        const thirtyOneDaysAgo = today.minus({ days: 31 });
+        const sixtyTwoDaysAgo = thirtyOneDaysAgo.minus({ days: 31 });
 
-        this.thisMonth.setValue(thisMonth);
-        this.thisMonthInit.setValue(thisMonthInit);
-        this.oneMonthAgo.setValue(oneMonthAgo);
+        // console.log(today.toISODate(), thirtyOneDaysAgo.toISODate(), sixtyTwoDaysAgo.toISODate());
+        this.datePeriod = { today, thirtyOneDaysAgo, sixtyTwoDaysAgo };
     }
 
-    async getTransactionsInPeriod() {
+    protected async tryAgain() {
+        this.dateSelected.setValue(this.isoToday());
+        this.setUpDate();
+        await this.getTransactionsInPeriod();
+    }
+
+    private isoToday() {
+        return DateTime.now().setZone(TIMEZONE).toISODate();
+    }
+
+    protected async getTransactionsInPeriod() {
         this.isLoading = true;
         this.isError = false;
+
+        if (!this.datePeriod) {
+            toast.error('Date period error');
+            return;
+        }
+
+        const today = this.datePeriod.today.setZone(TIMEZONE).toFormat(DATE_FORMAT);
+        const thirtyOneDaysAgo = this.datePeriod.thirtyOneDaysAgo.setZone(TIMEZONE).toFormat(DATE_FORMAT);
+        const sixtyTwoDaysAgo = this.datePeriod.sixtyTwoDaysAgo.setZone(TIMEZONE).toFormat(DATE_FORMAT);
+
         try {
             const account = await firstValueFrom(this.accountService.getAccount());
-            const { transactions, transactionsCount } = await firstValueFrom(this.transactionsService.getTransactionsInPeriod(account.id,
-                    this.thisMonthInit.value, this.thisMonth.value as string));
 
-            this.transactions = transactions;
+            const { transactions, transactionsCount } = await firstValueFrom(
+                this.transactionsService.getTransactionsInPeriod(account.id, thirtyOneDaysAgo, today));
+
             this.transactionsCount = transactionsCount;
             this.totalMoneyMovimented = transactions.reduce((total, transaction) => total + transaction.amount, 0);
 
-            const transactionsTwoMonths = await firstValueFrom(this.transactionsService.getTransactionsInPeriod(account.id,
-                this.oneMonthAgo.value, this.thisMonthInit.value));
+            const previousPeriodData = await firstValueFrom(
+                this.transactionsService.getTransactionsInPeriod(account.id,sixtyTwoDaysAgo, thirtyOneDaysAgo));
 
-            const totalMoneyMovimentedLastMonth = transactionsTwoMonths.transactions.reduce((total, transaction) => total + transaction.amount, 0);
+            const previousPeriodTotal = previousPeriodData.transactions.reduce((total, transaction) => total + transaction.amount, 0);
 
-            this.percentageDifferenceInTransactionsCount = this.calculatePercentageDifference(this.transactionsCount, transactionsTwoMonths.transactionsCount);
-            this.percentageDifferenceInTransactions = this.calculatePercentageDifference(this.totalMoneyMovimented, totalMoneyMovimentedLastMonth);
+            this.transactionsCountChangePercent = this.calculatePercentageDifference(this.transactionsCount, previousPeriodData.transactionsCount);
+            this.transactionsTotalMoneyChangePercent = this.calculatePercentageDifference(this.totalMoneyMovimented, previousPeriodTotal);
+
             this.isError = false;
+        } catch (response: any) {
+            if (response instanceof HttpErrorResponse) {
+                if (response.status === 400) {
+                    const errorsZod = response.error as BadRequestError;
+                    this.isError = true;
 
-        } catch (error) {
-            this.isError = true;
+                    errorsZod.errors.forEach((error) => {
+                        if (error.path  === 'endDate') {
+                            const msg = this.translateService.instant('errors.home.dateRange');
+                            toast.error(msg, { duration: 5000 });
+                        } else if (error.path  === 'startDate') {
+                            const msg = this.translateService.instant('errors.home.dateRange');
+                            toast.error(msg, { duration: 5000 });
+                        } else {
+                            toast.error(`${error.path} - ${error.message}`, { duration: 5000 });
+                        }
+                    });
+                } else {
+                    toast.error(response.error.message);
+                }
+            }
         }
+
         this.isLoading = false;
     }
 
-    calculatePercentageDifference(currentCount: number, previousCount: number) {
-        if (previousCount === 0) {
-            return currentCount === 0 ? '0' : (currentCount * 100).toFixed(2).toString();;
-
-        } else if (currentCount === 0) {
-            return (-previousCount * 100).toFixed(2).toString();
-        } else {
-            return ((currentCount - previousCount) * 100 / previousCount).toFixed(2).toString();;
-        }
+    protected calculatePercentageDifference(current: number, previous: number): string {
+        const baseline = previous === 0 ? 1 : Math.abs(previous);
+        const difference = ((current - previous) / baseline) * 100;
+        return difference.toFixed(2);
     }
 
-    formatMoneyToString(amount: number) {
+    protected formatMoneyToString(amount: number) {
         return formatMoneyToString(amount);
     }
 }

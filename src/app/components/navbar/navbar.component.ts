@@ -62,8 +62,8 @@ export class NavbarComponent implements OnInit {
             //         }
             //     });
             // }
-        } catch (error) {
-            console.error(error);
+        } catch (error: any) {
+            toast.error(error.message);
         }
 
         this.isLoading = false;

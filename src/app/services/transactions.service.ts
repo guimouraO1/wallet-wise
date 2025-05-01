@@ -67,10 +67,7 @@ export class TransactionsService {
     }
 
     getTransactionsInPeriod(accountId: string, startDate: string, endDate: string): Observable<TransactionsResponse> {
-        const formattedStartDate = DateTime.fromISO(startDate).toFormat('dd-MM-yyyy');
-        const formattedEndDate = DateTime.fromISO(endDate).toFormat('dd-MM-yyyy');
-
-        const params = new HttpParams().set('startDate', formattedStartDate).set('endDate', formattedEndDate);
+        const params = new HttpParams().set('startDate', startDate).set('endDate', endDate);
 
         return this.http.get<TransactionsResponse>(`${environment.apiUrl}/transaction/period/${accountId}`, { params });
     }

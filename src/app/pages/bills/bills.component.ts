@@ -181,11 +181,11 @@ export class BillsComponent implements OnDestroy {
 
             this.bills = bills;
             this.billsCount = billsCount;
-        } catch (error) {
+        } catch (error: any) {
             this.bills = [];
             this.billsCount = 0;
             this.isError = true;
-            toast.error('Error get Bills');
+            toast.error(error.message);
         }
 
         this.isLoading = false;
@@ -212,9 +212,9 @@ export class BillsComponent implements OnDestroy {
             }
 
             await this.getBills();
-        } catch (error) {
+        } catch (error: any) {
             this.isError = true;
-            toast.error('Error deleting transactions');
+            toast.error(error.message);
         }
 
         this.selectedBills = [];
@@ -242,9 +242,9 @@ export class BillsComponent implements OnDestroy {
             this.accountService.fetchAccountSubject.next();
 
             await this.getBills();
-        } catch (error) {
+        } catch (error: any) {
             this.isError = true;
-            toast.error('Error pay invoice');
+            toast.error(error.message);
         }
 
         this.selectedBills = [];
