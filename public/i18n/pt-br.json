@@ -228,6 +228,11 @@
                 "passwordPlaceholder": "Sua senha",
                 "button": "Entrar"
             }
+        },
+        "not-found": {
+            "title": "Página não encontrada",
+            "subtitle": "Ops! O conteúdo que você procura não está aqui.",
+            "button": "Voltar para a navegação"
         }
     },
     "errors": {

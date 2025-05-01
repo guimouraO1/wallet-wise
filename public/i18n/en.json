@@ -228,6 +228,11 @@
         "passwordPlaceholder": "Your password",
         "button": "Sign In"
       }
+    },
+    "not-found": {
+      "title": "Page not found",
+      "subtitle": "Oops! The content you're looking for isn't here.",
+      "button": "Back to navigation"
     }
   },
   "errors": {

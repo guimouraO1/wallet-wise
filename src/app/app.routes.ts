@@ -33,5 +33,10 @@ export const routes: Routes = [
                 loadComponent: () => import('./pages/bills/bills.component').then((m) => m.BillsComponent)
             }
         ]
+    },
+    {
+        path: '**',
+        title: 'Wallet Wise - Not found',
+        loadComponent: () => import('./pages/not-found/not-found.component').then((m) => m.NotFoundComponent)
     }
 ];
