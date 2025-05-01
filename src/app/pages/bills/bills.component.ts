@@ -14,35 +14,38 @@ import { MakeBillModalComponent } from '../../components/make-bill-modal/make-bi
 import { ActivatedRoute, Router } from '@angular/router';
 import { DeleteBillModalComponent } from '../../components/delete-bill-modal/delete-bill-modal.component';
 import { PayInvoiceModalComponent } from '../../components/pay-invoice-modal/pay-invoice-modal.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
     selector: 'app-bills',
-    imports: [CommonModule, ReactiveFormsModule, DialogModule, TranslateModule],
+    imports: [CommonModule, ReactiveFormsModule, DialogModule, TranslateModule, MatTooltipModule],
     templateUrl: './bills.component.html'
 })
 export class BillsComponent implements OnDestroy {
+    protected billService = inject(BillService);
+    protected accountService = inject(AccountService);
+    protected dialog = inject(Dialog);
+    protected languageService = inject(LanguageService);
+    protected router = inject(Router);
+    protected route = inject(ActivatedRoute);
+
     protected readonly toast = toast;
-    billService = inject(BillService);
-    accountService = inject(AccountService);
-    dialog = inject(Dialog);
-    languageService = inject(LanguageService);
-    router = inject(Router);
-    route = inject(ActivatedRoute);
 
-    bills: Bill[] = [];
-    billsCount: number = 0;
-    offset: number = 5;
-    page: number = 1;
+    protected bills: Bill[] = [];
+    protected billsCount: number = 0;
 
-    selectedName = new FormControl('');
-    selectedActive = new FormControl('');
-    selecteBillType = new FormControl('');
-    selectedFrequency = new FormControl('');
+    protected offset: number = 5;
+    protected page: number = 1;
 
-    selectedBills: Bill[] = [];
+    protected selectedName = new FormControl('');
+    protected selectedActive = new FormControl('');
+    protected selecteBillType = new FormControl('');
+    protected selectedFrequency = new FormControl('');
 
-    isLoading = true;
-    isError = false;
+    protected selectedBills: Bill[] = [];
+
+    protected isLoading = true;
+    protected isError = false;
 
     private destroy$ = new Subject<void>();
 
@@ -58,7 +61,7 @@ export class BillsComponent implements OnDestroy {
         await this.getBills();
     }
 
-    async resetFilters() {
+    protected async resetFilters() {
         this.page = 1;
         this.router.navigate([], { queryParams: {} });
         this.selectedName.reset('');
@@ -68,7 +71,7 @@ export class BillsComponent implements OnDestroy {
         await this.getBills();
     }
 
-    toggleAllSelection(event: Event) {
+    protected toggleAllSelection(event: Event) {
         const isChecked = (event.target as HTMLInputElement).checked;
 
         if (isChecked && this.billsCount > 0 && this.bills) {
@@ -78,7 +81,7 @@ export class BillsComponent implements OnDestroy {
         }
     }
 
-    toggleSelection(bill: Bill, event: Event) {
+    protected toggleSelection(bill: Bill, event: Event) {
         const isChecked = (event.target as HTMLInputElement).checked;
 
         if (isChecked) {
@@ -88,68 +91,68 @@ export class BillsComponent implements OnDestroy {
         }
     }
 
-    async removeNameFilter() {
+    protected async removeNameFilter() {
         this.selectedName.reset('');
         this.page = 1;
         await this.addFilterParam({ name: null });
     }
 
-    async searchByName() {
+    protected async searchByName() {
         this.page = 1;
         await this.addFilterParam({ name: this.selectedName.value });
     }
 
-    formatMoneyToString(amount: number){
+    protected formatMoneyToString(amount: number){
         return formatMoneyToString(amount);
     }
 
-    formatDate(date: string){
+    protected formatDate(date: string){
         return formatDate(new Date(date), this.languageService);
     }
 
-    async nextPage() {
+    protected async nextPage() {
         if ((this.page * this.offset) < this.billsCount) {
             this.page++;
             await this.addFilterParam({ page: this.page });
         }
     }
 
-    async previousPage() {
+    protected async previousPage() {
         if (this.page > 1) {
             this.page--;
             await this.addFilterParam({ page: this.page });
         }
     }
 
-    get startIndex(): number {
+    protected get startIndex(): number {
         return (this.page - 1) * this.offset + 1;
     }
 
-    get endIndex(): number {
+    protected get endIndex(): number {
         return Math.min(this.page * this.offset, this.billsCount);
     }
 
-    async addFilterParam(filter: any) {
+    protected async addFilterParam(filter: any) {
         this.router.navigate([], { queryParams: filter, queryParamsHandling: 'merge' });
         await this.getBills();
     }
 
-    async onActiveChange() {
+    protected async onActiveChange() {
         this.page = 1;
         await this.addFilterParam({ active: this.selectedActive.value });
     }
 
-    async onBillTypeChange() {
+    protected async onBillTypeChange() {
         this.page = 1;
         await this.addFilterParam({ billType: this.selecteBillType.value });
     }
 
-    async onFrequencyChange() {
+    protected async onFrequencyChange() {
         this.page = 1;
         await this.addFilterParam({ frequency: this.selectedFrequency.value });
     }
 
-    async makeBill() {
+    protected async makeBill() {
         const dialogRef = this.dialog.open(MakeBillModalComponent);
 
         dialogRef.closed.pipe(take(1)).subscribe(async (result) => {
@@ -160,7 +163,7 @@ export class BillsComponent implements OnDestroy {
         });
     }
 
-    async getBills(){
+    protected async getBills(){
         this.isLoading = true;
         this.isError = false;
 
@@ -181,17 +184,18 @@ export class BillsComponent implements OnDestroy {
 
             this.bills = bills;
             this.billsCount = billsCount;
-        } catch (error: any) {
+        } catch (response: any) {
             this.bills = [];
             this.billsCount = 0;
             this.isError = true;
-            toast.error(error.message);
+
+            toast.error(response.error.message);
         }
 
         this.isLoading = false;
     }
 
-    async deleteBills() {
+    protected async deleteBills() {
         if (!this.selectedBills) return;
 
         const dialogRef = this.dialog.open(DeleteBillModalComponent);
@@ -212,16 +216,16 @@ export class BillsComponent implements OnDestroy {
             }
 
             await this.getBills();
-        } catch (error: any) {
+        } catch (response: any) {
             this.isError = true;
-            toast.error(error.message);
+            toast.error(response.error.message);
         }
 
         this.selectedBills = [];
         this.isLoading = false;
     }
 
-    async payInvoice() {
+    protected async payInvoice() {
         if (!this.selectedBills) return;
 
         const dialogRef = this.dialog.open(PayInvoiceModalComponent);
@@ -242,9 +246,9 @@ export class BillsComponent implements OnDestroy {
             this.accountService.fetchAccountSubject.next();
 
             await this.getBills();
-        } catch (error: any) {
+        } catch (response: any) {
             this.isError = true;
-            toast.error(error.message);
+            toast.error(response.error.message);
         }
 
         this.selectedBills = [];

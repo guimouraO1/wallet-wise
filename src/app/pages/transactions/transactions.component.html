@@ -156,9 +156,14 @@
                           </label>
                       </td>
                       <td class="max-w-50 truncate">
-                          <span class="text-sm opacity-80 truncate">{{transaction.name}}</span>
+                          <span class="text-sm opacity-80 truncate select-none"
+                            matTooltip="{{transaction.name}}"
+                            matTooltipPosition="above"
+                          >{{transaction.name}}</span>
                       </td>
-                      <td class="max-w-80 truncate">
+                      <td class="max-w-80 truncate select-none"
+                          matTooltip="{{transaction.description ?? ''}}"
+                          matTooltipPosition="above">
                           <span class="text-sm opacity-80">{{transaction.description ?? ''}}</span>
                       </td>
                       <td class="max-w-50 truncate">

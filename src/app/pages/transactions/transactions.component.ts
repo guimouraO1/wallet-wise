@@ -15,11 +15,12 @@ import { MakeTransactionsModalComponent } from '../../components/make-transactio
 import { DeleteTransactionsModalComponent } from '../../components/delete-transactions-modal/delete-transactions-modal.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BadRequestError } from '../../interfaces/bad-request-error.interface';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
     selector: 'app-transactions',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, DialogModule, TranslateModule],
+    imports: [CommonModule, ReactiveFormsModule, DialogModule, TranslateModule, MatTooltipModule],
     templateUrl: './transactions.component.html'
 })
 export class TransactionsComponent implements OnInit, OnDestroy {

@@ -12,6 +12,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { BadRequestError } from '../../interfaces/bad-request-error.interface';
 import { TIMEZONE } from '../../helpers/timezone';
 import { DATE_FORMAT } from '../../helpers/date-format';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 interface Period {
     today: DateTime;
@@ -21,7 +22,7 @@ interface Period {
 
 @Component({
     selector: 'app-home',
-    imports: [RouterLink, ReactiveFormsModule, TranslateModule],
+    imports: [RouterLink, ReactiveFormsModule, TranslateModule, MatTooltipModule],
     templateUrl: './home.component.html'
 })
 export class HomeComponent implements OnInit {

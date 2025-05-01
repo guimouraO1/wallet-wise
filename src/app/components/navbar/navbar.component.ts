@@ -12,10 +12,11 @@ import { firstValueFrom } from 'rxjs';
 import { AccountService } from '../../services/account.service';
 import { formatMoneyToString } from '../../helpers/format-money';
 import { toast } from 'ngx-sonner';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
     selector: 'app-navbar',
-    imports: [RouterLink, TranslateModule, ReactiveFormsModule, CommonModule, RouterLinkActive],
+    imports: [RouterLink, TranslateModule, ReactiveFormsModule, CommonModule, RouterLinkActive, MatTooltipModule],
     templateUrl: './navbar.component.html'
 })
 export class NavbarComponent implements OnInit {

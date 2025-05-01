@@ -158,10 +158,10 @@
                                 />
                             </label>
                         </td>
-                        <td class="max-w-50 truncate">
-                          <span class="text-sm opacity-80 truncate">{{bill.name}}</span>
+                        <td class="max-w-50 truncate" matTooltip="{{bill.name}}" matTooltipPosition="above">
+                          <span class="text-sm opacity-80 truncate select-none">{{bill.name}}</span>
                         </td>
-                        <td class="max-w-80 truncate">
+                        <td class="max-w-80 truncate select-none" matTooltip="{{bill.description ?? ''}}" matTooltipPosition="above">
                             <span class="text-sm opacity-80 truncate">{{bill.description ?? ''}}</span>
                         </td>
                         <td class="max-w-30 truncate">
