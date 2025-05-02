@@ -78,6 +78,11 @@ export class BillService {
         return this.http.get<FindManyBillsResponse>(`${environment.apiUrl}/bill/${data.accountId}`, { params });
     }
 
+    getBillsInPeriod(accountId: string, startDate: string, endDate: string): Observable<FindManyBillsResponse> {
+        const params = new HttpParams().set('startDate', startDate).set('endDate', endDate);
+        return this.http.get<FindManyBillsResponse>(`${environment.apiUrl}/bill/period/${accountId}`, { params });
+    }
+
     makeBill(data: BillCreateInput) {
         return this.http.post(`${environment.apiUrl}/bill`, data);
     }

@@ -13,6 +13,7 @@ import { BadRequestError } from '../../interfaces/bad-request-error.interface';
 import { TIMEZONE } from '../../helpers/timezone';
 import { DATE_FORMAT } from '../../helpers/date-format';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { BillService } from '../../services/bill.service';
 
 interface Period {
     today: DateTime;
@@ -29,15 +30,18 @@ export class HomeComponent implements OnInit {
     protected translateService = inject(TranslateService);
     protected transactionsService = inject(TransactionsService);
     protected accountService = inject(AccountService);
+    protected billsService = inject(BillService);
 
     protected readonly toast = toast;
 
-    protected transactionsCount: number | undefined = 0;
+    protected transactionsCount: number = 0;
     protected totalMoneyMovimented: number = 0;
-    protected totalBillsPaid: number = 0;
-
     protected transactionsCountChangePercent: string = '0';
     protected transactionsTotalMoneyChangePercent: string = '0';
+
+    protected newBills: number = 0;
+    protected activeBills: number = 0;
+    protected billsCountChangePercent: string = '0';
 
     protected datePeriod: Period | undefined = undefined;
     protected dateSelected = new FormControl();
@@ -49,6 +53,7 @@ export class HomeComponent implements OnInit {
         this.dateSelected.setValue(this.isoToday());
         this.setUpDate();
         await this.getTransactionsInPeriod();
+        await this.getBillsInPeriod();
     }
 
     protected async onChangeDate(){
@@ -105,6 +110,57 @@ export class HomeComponent implements OnInit {
 
             this.transactionsCountChangePercent = this.calculatePercentageDifference(this.transactionsCount, previousPeriodData.transactionsCount);
             this.transactionsTotalMoneyChangePercent = this.calculatePercentageDifference(this.totalMoneyMovimented, previousPeriodTotal);
+
+            this.isError = false;
+        } catch (response: any) {
+            if (response instanceof HttpErrorResponse) {
+                if (response.status === 400) {
+                    const errorsZod = response.error as BadRequestError;
+                    this.isError = true;
+
+                    errorsZod.errors.forEach((error) => {
+                        if (error.path  === 'endDate') {
+                            const msg = this.translateService.instant('errors.home.dateRange');
+                            toast.error(msg, { duration: 5000 });
+                        } else if (error.path  === 'startDate') {
+                            const msg = this.translateService.instant('errors.home.dateRange');
+                            toast.error(msg, { duration: 5000 });
+                        } else {
+                            toast.error(`${error.path} - ${error.message}`, { duration: 5000 });
+                        }
+                    });
+                } else {
+                    toast.error(response.error.message);
+                }
+            }
+        }
+
+        this.isLoading = false;
+    }
+
+    protected async getBillsInPeriod() {
+        this.isLoading = true;
+        this.isError = false;
+
+        if (!this.datePeriod) {
+            toast.error('Date period error');
+            return;
+        }
+
+        const today = this.datePeriod.today.setZone(TIMEZONE).toFormat(DATE_FORMAT);
+        const thirtyOneDaysAgo = this.datePeriod.thirtyOneDaysAgo.setZone(TIMEZONE).toFormat(DATE_FORMAT);
+        const sixtyTwoDaysAgo = this.datePeriod.sixtyTwoDaysAgo.setZone(TIMEZONE).toFormat(DATE_FORMAT);
+
+        try {
+            const account = await firstValueFrom(this.accountService.getAccount());
+
+            const { bills, billsCount } = await firstValueFrom(this.billsService.getBillsInPeriod(account.id, thirtyOneDaysAgo, today));
+
+            this.newBills = billsCount;
+            this.activeBills = bills.reduce((total, bill) => total + (bill.active ? 1 : 0), 0);
+
+            const previousPeriodData = await firstValueFrom(this.billsService.getBillsInPeriod(account.id, sixtyTwoDaysAgo, thirtyOneDaysAgo));
+            this.billsCountChangePercent = this.calculatePercentageDifference(this.newBills, previousPeriodData.billsCount);
 
             this.isError = false;
         } catch (response: any) {

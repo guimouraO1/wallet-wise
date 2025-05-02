@@ -91,12 +91,57 @@
               >{{transactionsTotalMoneyChangePercent}}% {{'pages.home.cards.transactionsPorcentage' | translate }}</span>
           </div>
         </div>
-        <div class="skeleton p-2 w-80 h-42 flex items-center justify-center">
-          <button class="btn btn-soft btn-neutral">{{'pages.home.comingSoon' | translate }}</button>
+
+        <div class="card w-80 border border-base-300 card-lg bg-base-100 max-h-42 overflow-hidden">
+          <div class="card-body">
+            <div class="w-full flex justify-between items-center">
+              <span 
+                class="card-title text-sm truncate inline-block select-none" 
+                matTooltip="{{'pages.home.cards.activeBills' | translate }}"
+                matTooltipPosition="above">{{'pages.home.cards.activeBills' | translate }}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+                </svg>                
+            </div>
+            <span class="text-4xl font-bold truncate select-none" matTooltip="{{activeBills}}" matTooltipPosition="above">{{ activeBills }}</span>
+            
+            @if (activeBills <= 0) {
+              <span class="text-xs text-base-content/40 truncate select-none" 
+                    matTooltip="{{'pages.home.cards.noActiveBills' | translate }}" 
+                    matTooltipPosition="above">{{'pages.home.cards.noActiveBills' | translate }}</span>
+            } @else if (activeBills > 0 && activeBills <= 5) {
+              <span class="text-xs text-base-content/40 truncate select-none" 
+                    matTooltip="{{'pages.home.cards.belowOrEqualFiveBills' | translate }}" 
+                    matTooltipPosition="above">{{'pages.home.cards.belowOrEqualFiveBills' | translate }}</span>
+            } @else {
+              <span class="text-xs text-base-content/40 truncate select-none" 
+                  matTooltip="{{'pages.home.cards.aboveOrEqualFiveBills' | translate }}" 
+                  matTooltipPosition="above">{{'pages.home.cards.aboveOrEqualFiveBills' | translate }}</span>
+            }
+          </div>
         </div>
-        <div class="skeleton p-2 w-80 h-42 flex items-center justify-center">
-          <button class="btn btn-soft btn-neutral">{{'pages.home.comingSoon' | translate }}</button>
+
+        <div class="card w-80 border border-base-300 card-lg bg-base-100 max-h-42 overflow-hidden">
+          <div class="card-body">
+            <div class="w-full flex justify-between items-center">
+              <span 
+                  class="card-title text-sm truncate inline-block select-none" 
+                  matTooltip="{{'pages.home.cards.newBills' | translate }}"
+                  matTooltipPosition="above">{{'pages.home.cards.newBills' | translate }}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+            </div>
+            <span class="text-4xl font-bold truncate select-none" matTooltip="{{newBills}}" matTooltipPosition="above">{{ newBills }}</span>
+            <span class="text-xs text-base-content/40 truncate select-none" 
+              matTooltip="{{billsCountChangePercent}}% {{'pages.home.cards.billsCountPorcentage' | translate }}" 
+              matTooltipPosition="above"> {{billsCountChangePercent}}%  {{'pages.home.cards.billsCountPorcentage' | translate }}</span>
+          </div>
         </div>
+
+        <!-- <div class="skeleton p-2 w-80 h-42 flex items-center justify-center">
+          <button class="btn btn-soft btn-neutral">{{'pages.home.comingSoon' | translate }}</button>
+        </div> -->
       </div>
       <div class="md:px-74 w-full overflow-hidden">
         <div class="skeleton p-2 w-full h-90 flex items-center justify-center">

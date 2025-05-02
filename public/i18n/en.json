@@ -203,7 +203,13 @@
         "transactionsCount": "Transactions (Last 31 Days)",
         "transactions": "Money Moved (Last 31 Days)",
         "transactionsCountPorcentage": "compared (Previous 31 Days)",
-        "transactionsPorcentage": "compared (Previous 31 Days)"
+        "transactionsPorcentage": "compared (Previous 31 Days)",
+        "activeBills": "Active bills",
+        "noActiveBills": "No bills, no stress.",
+        "belowOrEqualFiveBills": "A few bills trickling in, but nothing out of the ordinary.",
+        "aboveOrEqualFiveBills": "Better organize before it all collapses!",
+        "newBills": "New bills (Last 31 Days)",
+        "billsCountPorcentage": "compared (Previous 31 Days)"
       },
       "comingSoon": "Coming Soon",
       "noTransactions": {
