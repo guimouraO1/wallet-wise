@@ -1,12 +1,12 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { Transaction, TransactionsService } from '../../services/transactions.service';
-import { firstValueFrom } from 'rxjs';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { TransactionsService } from '../../services/transactions.service';
+import { firstValueFrom, Subscription } from 'rxjs';
 import { AccountService } from '../../services/account.service';
 import { RouterLink } from '@angular/router';
 import { formatMoneyToString } from '../../helpers/format-money';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { DateTime } from 'luxon';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { LangChangeEvent, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { toast } from 'ngx-sonner';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BadRequestError } from '../../interfaces/bad-request-error.interface';
@@ -14,6 +14,8 @@ import { TIMEZONE } from '../../helpers/timezone';
 import { DATE_FORMAT } from '../../helpers/date-format';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BillService } from '../../services/bill.service';
+import { NgxChartsModule, ScaleType } from '@swimlane/ngx-charts';
+import { CommonModule } from '@angular/common';
 
 interface Period {
     today: DateTime;
@@ -23,10 +25,10 @@ interface Period {
 
 @Component({
     selector: 'app-home',
-    imports: [RouterLink, ReactiveFormsModule, TranslateModule, MatTooltipModule],
+    imports: [RouterLink, ReactiveFormsModule, TranslateModule, MatTooltipModule, NgxChartsModule, CommonModule],
     templateUrl: './home.component.html'
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
     protected translateService = inject(TranslateService);
     protected transactionsService = inject(TransactionsService);
     protected accountService = inject(AccountService);
@@ -47,18 +49,47 @@ export class HomeComponent implements OnInit {
     protected dateSelected = new FormControl();
 
     protected isLoading = true;
+    protected isLoadingCharData = true;
     protected isError = false;
 
+    protected chartData: { name: string, value: number }[] = [];
+
+    protected monthKeys = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+
+    protected showXAxis = true;
+    protected showYAxis = true;
+    protected gradient = false;
+    protected showLegend = true;
+    protected showXAxisLabel = true;
+    protected showYAxisLabel = true;
+
+    // colorScheme = {
+    //     domain: ['#007595', '#fcb700', '#ff9fa0', '#61738d',  '#7af1a7', '#f82834'],
+    //     group: ScaleType.Ordinal,
+    //     selectable: true,
+    //     name: 'customScheme'
+    // };
+
+    protected colorScheme = 'dark';
+
+    private langChangeSub!: Subscription;
+
     async ngOnInit() {
+        this.langChangeSub = this.translateService.onLangChange.subscribe((event: LangChangeEvent) => {
+            this.getYearTransactionsTotal();
+        });
+
         this.dateSelected.setValue(this.isoToday());
         this.setUpDate();
         await this.getTransactionsInPeriod();
         await this.getBillsInPeriod();
+        await this.getYearTransactionsTotal();
     }
 
     protected async onChangeDate(){
         this.setUpDate();
         await this.getTransactionsInPeriod();
+        await this.getYearTransactionsTotal();
     }
 
     protected setUpDate() {
@@ -197,5 +228,46 @@ export class HomeComponent implements OnInit {
 
     protected formatMoneyToString(amount: number) {
         return formatMoneyToString(amount);
+    }
+
+    protected async getYearTransactionsTotal() {
+        this.isLoadingCharData = true;
+
+        if (!this.datePeriod) {
+            toast.error('Date period error');
+            return;
+        }
+
+        this.chartData = [];
+
+        const thisYear = this.datePeriod.today.setZone(TIMEZONE).year;
+        const account = await firstValueFrom(this.accountService.getAccount());
+
+        for (let month = 1; month <= 12; month++) {
+            const inicio = DateTime.local(thisYear, month, 1).setZone(TIMEZONE);
+            const fim = inicio.endOf('month').setZone(TIMEZONE);
+
+            const { transactions } = await firstValueFrom(
+                this.transactionsService.getTransactionsInPeriod(
+                    account.id,
+                    inicio.toFormat('dd-MM-yyyy'),
+                    fim.toFormat('dd-MM-yyyy')
+                )
+            );
+
+            const total = transactions.reduce((soma, t) => soma + (t.amount || 0), 0);
+            const key = this.monthKeys[month - 1];
+            const translated = await firstValueFrom(this.translateService.get(`months.${key}`));
+
+            this.chartData.push({ name: translated, value: Number(total.toFixed(2)) });
+        }
+
+        this.isLoadingCharData = false;
+    }
+
+    ngOnDestroy(): void {
+        if (this.langChangeSub) {
+            this.langChangeSub.unsubscribe();
+        }
     }
 }

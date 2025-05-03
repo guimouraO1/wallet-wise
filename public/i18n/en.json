@@ -91,13 +91,13 @@
         },
         "transactionsType": {
           "placeholder": "Transaction Type",
-          "none": "None",
+          "none": "All",
           "withdraw": "Withdraw",
           "deposit": "Deposit"
         },
         "paymentMethod": {
           "placeholder": "Payment Method",
-          "none": "None",
+          "none": "All",
           "creditCard": "Credit Card",
           "debitCard": "Debit Card",
           "accountCash": "Cash",
@@ -157,7 +157,7 @@
           "isPaid": "Paid",
           "open": "Unpaid"
         },
-        "none": "None"
+        "none": "All"
       },
       "tryAgain": "Try Again",
       "payInstallment": "Pay Installment",
@@ -222,6 +222,9 @@
         "title": "Something went wrong",
         "subtitle": "We couldn't complete the action. Please try again.",
         "button": "Try Again"
+      },
+      "chart": {
+        "legendTitle": "Transactions by month"
       }
     },
     "sign-in": {
@@ -261,5 +264,19 @@
     "home": {
       "dateRange": "The interval between start and end dates cannot exceed 31 days"
     }
+  },
+  "months": {
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December"
   }
 }

@@ -94,7 +94,7 @@
                     "isPaid": "Quitada",
                     "open": "Em aberto"
                 },
-                "none": "Nenhum"
+                "none": "Todos"
             },
             "tryAgain": "Tentar novamente",
             "payInstallment": "Pagar fatura",
@@ -141,13 +141,13 @@
                 },
                 "transactionsType": {
                     "placeholder": "Tipo de Transação",
-                    "none": "Nenhum",
+                    "none": "Todos",
                     "withdraw": "Saque",
                     "deposit": "Depósito"
                 },
                 "paymentMethod": {
                     "placeholder": "Método de Pagamento",
-                    "none": "Nenhum",
+                    "none": "Todos",
                     "creditCard": "Cartão de crédito",
                     "debitCard": "Cartão de débito",
                     "accountCash": "Dinheiro da conta",
@@ -222,6 +222,9 @@
                 "title": "Algo deu errado",
                 "subtitle": "Não foi possível concluir a ação. Por favor, tente novamente",
                 "button": "Tentar novamente"
+            },
+            "chart": {
+                "legendTitle": "Transações por mês"
             }
         },
         "sign-in": {
@@ -261,5 +264,19 @@
         "home": {
             "dateRange": "O intervalo entre as datas de início e fim não pode exceder 31 dias"
         }
+    },
+    "months": {
+        "january": "Janeiro",
+        "february": "Fevereiro",
+        "march": "Março",
+        "april": "Abril",
+        "may": "Maio",
+        "june": "Junho",
+        "july": "Julho",
+        "august": "Agosto",
+        "september": "Setembro",
+        "october": "Outubro",
+        "november": "Novembro",
+        "december": "Dezembro"
     }
 }

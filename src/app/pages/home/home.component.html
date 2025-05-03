@@ -143,10 +143,32 @@
           <button class="btn btn-soft btn-neutral">{{'pages.home.comingSoon' | translate }}</button>
         </div> -->
       </div>
+
       <div class="md:px-74 w-full overflow-hidden">
-        <div class="skeleton p-2 w-full h-90 flex items-center justify-center">
-          <button class="btn btn-soft btn-neutral">{{'pages.home.comingSoon' | translate }}</button>
-        </div>
+          @if (!isLoadingCharData) {
+              <div class="p-2 w-full h-90 flex items-center justify-center">
+                <ngx-charts-bar-vertical
+                    class="
+                      fill-base-content 
+                      text-base-content 
+                      [&_.legend-label]:!text-base-content
+                      [&_.gridline-path]:!stroke-base-content/15
+                      p-4"
+                    [results]="chartData"
+                    [gradient]="gradient"
+                    [scheme]="'vivid'"
+                    [xAxis]="showXAxis"
+                    [yAxis]="showYAxis"
+                    [legend]="showLegend"
+                    [showXAxisLabel]="showXAxisLabel"
+                    [showYAxisLabel]="showYAxisLabel"
+                    legendTitle="{{'pages.home.chart.legendTitle' | translate}}"
+                    >
+                </ngx-charts-bar-vertical>
+              </div>
+            } @else {
+              <div class="skeleton p-2 w-full h-90 flex items-center justify-center"></div>
+            }
       </div>
     </div>
   }
