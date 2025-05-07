@@ -1,8 +1,8 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { TransactionsService } from '../../services/transactions.service';
-import { firstValueFrom, Subscription } from 'rxjs';
+import { TransactionsService, TransactionTypes } from '../../services/transactions.service';
+import { firstValueFrom, Subject, takeUntil } from 'rxjs';
 import { AccountService } from '../../services/account.service';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { formatMoneyToString } from '../../helpers/format-money';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { DateTime } from 'luxon';
@@ -33,6 +33,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     protected transactionsService = inject(TransactionsService);
     protected accountService = inject(AccountService);
     protected billsService = inject(BillService);
+    protected router = inject(Router);
+    protected route = inject(ActivatedRoute);
 
     protected readonly toast = toast;
 
@@ -63,20 +65,25 @@ export class HomeComponent implements OnInit, OnDestroy {
     protected showXAxisLabel = true;
     protected showYAxisLabel = true;
 
-    // colorScheme = {
-    //     domain: ['#007595', '#fcb700', '#ff9fa0', '#61738d',  '#7af1a7', '#f82834'],
-    //     group: ScaleType.Ordinal,
-    //     selectable: true,
-    //     name: 'customScheme'
-    // };
+    protected selectedTransactionType = new FormControl<TransactionTypes | ''>('');
 
-    protected colorScheme = 'dark';
+    protected colorScheme = {
+        domain: ['#007595', '#fcb700', '#ff9fa0', '#61738d',  '#7af1a7', '#f82834'],
+        group: ScaleType.Ordinal,
+        selectable: true,
+        name: 'customScheme'
+    };
 
-    private langChangeSub!: Subscription;
+    // protected colorScheme = 'dark';
+    private destroy$ = new Subject<void>();
 
     async ngOnInit() {
-        this.langChangeSub = this.translateService.onLangChange.subscribe((event: LangChangeEvent) => {
-            this.getYearTransactionsTotal();
+        this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
+            this.selectedTransactionType.setValue(params['type'] || '');
+        });
+
+        this.translateService.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(async (event: LangChangeEvent) => {
+            await this.getYearTransactionsTotal();
         });
 
         this.dateSelected.setValue(this.isoToday());
@@ -86,8 +93,18 @@ export class HomeComponent implements OnInit, OnDestroy {
         await this.getYearTransactionsTotal();
     }
 
+    protected async onTransactionTypeChange() {
+        await this.addFilterParam({ type: this.selectedTransactionType.value });
+    }
+
     protected async onChangeDate(){
         this.setUpDate();
+        await this.getTransactionsInPeriod();
+        await this.getYearTransactionsTotal();
+    }
+
+    protected async addFilterParam(filter: any) {
+        this.router.navigate([], { queryParams: filter, queryParamsHandling: 'merge' });
         await this.getTransactionsInPeriod();
         await this.getYearTransactionsTotal();
     }
@@ -129,13 +146,15 @@ export class HomeComponent implements OnInit, OnDestroy {
             const account = await firstValueFrom(this.accountService.getAccount());
 
             const { transactions, transactionsCount } = await firstValueFrom(
-                this.transactionsService.getTransactionsInPeriod(account.id, thirtyOneDaysAgo, today));
+                this.transactionsService.getTransactionsInPeriod({ accountId: account.id, startDate: thirtyOneDaysAgo,
+                    endDate: today, type: this.selectedTransactionType.value ?? '' }));
 
             this.transactionsCount = transactionsCount;
             this.totalMoneyMovimented = transactions.reduce((total, transaction) => total + transaction.amount, 0);
 
             const previousPeriodData = await firstValueFrom(
-                this.transactionsService.getTransactionsInPeriod(account.id,sixtyTwoDaysAgo, thirtyOneDaysAgo));
+                this.transactionsService.getTransactionsInPeriod({ accountId: account.id, startDate: sixtyTwoDaysAgo,
+                    endDate: thirtyOneDaysAgo, type: this.selectedTransactionType.value ?? '' }));
 
             const previousPeriodTotal = previousPeriodData.transactions.reduce((total, transaction) => total + transaction.amount, 0);
 
@@ -248,11 +267,12 @@ export class HomeComponent implements OnInit, OnDestroy {
             const fim = inicio.endOf('month').setZone(TIMEZONE);
 
             const { transactions } = await firstValueFrom(
-                this.transactionsService.getTransactionsInPeriod(
-                    account.id,
-                    inicio.toFormat('dd-MM-yyyy'),
-                    fim.toFormat('dd-MM-yyyy')
-                )
+                this.transactionsService.getTransactionsInPeriod({
+                    accountId: account.id,
+                    startDate: inicio.toFormat('dd-MM-yyyy'),
+                    endDate: fim.toFormat('dd-MM-yyyy'),
+                    type: this.selectedTransactionType.value ?? ''
+                })
             );
 
             const total = transactions.reduce((soma, t) => soma + (t.amount || 0), 0);
@@ -266,8 +286,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        if (this.langChangeSub) {
-            this.langChangeSub.unsubscribe();
-        }
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 }

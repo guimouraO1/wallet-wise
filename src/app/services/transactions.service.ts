@@ -66,8 +66,13 @@ export class TransactionsService {
         return this.http.get<TransactionsResponse>(`${environment.apiUrl}/transaction/${data.accountId}`, { params });
     }
 
-    getTransactionsInPeriod(accountId: string, startDate: string, endDate: string): Observable<TransactionsResponse> {
-        const params = new HttpParams().set('startDate', startDate).set('endDate', endDate);
+    getTransactionsInPeriod({ accountId, startDate, endDate, type }: { accountId: string,
+            startDate: string, endDate: string, type?: string }): Observable<TransactionsResponse> {
+        let params = new HttpParams().set('startDate', startDate).set('endDate', endDate);
+
+        if (type) {
+            params = params.set('type', type);
+        }
 
         return this.http.get<TransactionsResponse>(`${environment.apiUrl}/transaction/period/${accountId}`, { params });
     }
