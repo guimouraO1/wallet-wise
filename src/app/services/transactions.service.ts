@@ -42,6 +42,9 @@ export interface PayloadMakeTransaction {
     description: string;
 }
 
+export type TransactionsYearResponse = { name: string, value: number }[];
+export type TransactionsYearRequest = { accountId: string, year: string, type?: TransactionTypes };
+
 @Injectable({
     providedIn: 'root'
 })
@@ -75,6 +78,16 @@ export class TransactionsService {
         }
 
         return this.http.get<TransactionsResponse>(`${environment.apiUrl}/transaction/period/${accountId}`, { params });
+    }
+
+    getTransactionsInYear({ accountId, year, type }: TransactionsYearRequest) {
+        let params = new HttpParams().set('year', year);
+
+        if (type) {
+            params = params.set('type', type);
+        }
+
+        return this.http.get<TransactionsYearResponse>(`${environment.apiUrl}/transaction/year/${accountId}`, { params });
     }
 
     makeTransaction(data: PayloadMakeTransaction): Observable<any> {
