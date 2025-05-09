@@ -24,6 +24,7 @@ export const appConfig: ApplicationConfig = {
                 deps: [HttpClient]
             }
         })]),
+        provideHttpClient(withInterceptors([httpInterceptor])),
         provideAppInitializer(() => {
             const themeService = inject(ThemeService);
             themeService.getInitialTheme();
@@ -34,7 +35,6 @@ export const appConfig: ApplicationConfig = {
             const authService = inject(AuthService);
             authService.initializeVerifyIsUserAuthenticated();
         }),
-        provideHttpClient(withInterceptors([httpInterceptor])),
         provideEnvironmentNgxMask(),
         provideAnimations()
     ]

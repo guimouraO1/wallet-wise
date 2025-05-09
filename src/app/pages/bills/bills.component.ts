@@ -6,7 +6,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { toast } from 'ngx-sonner';
 import { take, firstValueFrom, Subject, takeUntil } from 'rxjs';
 import { formatMoneyToString } from '../../helpers/format-money';
-import { AccountService } from '../../services/account.service';
+import { Account, AccountService } from '../../services/account.service';
 import { LanguageService } from '../../services/language.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { Bill, BillService, FindManyBillsInput } from '../../services/bill.service';
@@ -49,7 +49,11 @@ export class BillsComponent implements OnDestroy {
 
     private destroy$ = new Subject<void>();
 
+    protected account: Account | undefined;
+
     async ngOnInit() {
+        this.account = await firstValueFrom(this.accountService.getAccount());
+
         this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
             this.selectedName.setValue(params['name'] || '');
             this.selectedActive.setValue(params['active'] || '');
@@ -164,14 +168,17 @@ export class BillsComponent implements OnDestroy {
     }
 
     protected async getBills(){
+        if (!this.account) {
+            toast.error('Account not found');
+            return;
+        }
+
         this.isLoading = true;
         this.isError = false;
 
         try {
-            const account = await firstValueFrom(this.accountService.getAccount());
-
             const data = {
-                accountId: account.id,
+                accountId: this.account.id,
                 page: this.page,
                 offset: this.offset,
                 ...(this.selectedName.value ? { name: this.selectedName.value } : {}),
@@ -196,7 +203,10 @@ export class BillsComponent implements OnDestroy {
     }
 
     protected async deleteBills() {
-        if (!this.selectedBills) return;
+        if (!this.account) {
+            toast.error('Account not found');
+            return;
+        }
 
         const dialogRef = this.dialog.open(DeleteBillModalComponent);
         const result = await firstValueFrom(dialogRef.closed);
@@ -209,10 +219,8 @@ export class BillsComponent implements OnDestroy {
         this.isError = false;
 
         try {
-            const account = await firstValueFrom(this.accountService.getAccount());
-
             for (const bill of this.selectedBills) {
-                await firstValueFrom(this.billService.deleteBill(bill.id, account.id));
+                await firstValueFrom(this.billService.deleteBill(bill.id, this.account.id));
             }
 
             await this.getBills();
@@ -226,7 +234,10 @@ export class BillsComponent implements OnDestroy {
     }
 
     protected async payInvoice() {
-        if (!this.selectedBills) return;
+        if (!this.account) {
+            toast.error('Account not found');
+            return;
+        }
 
         const dialogRef = this.dialog.open(PayInvoiceModalComponent);
         const result = await firstValueFrom(dialogRef.closed);
@@ -239,10 +250,8 @@ export class BillsComponent implements OnDestroy {
         this.isError = false;
 
         try {
-            const account = await firstValueFrom(this.accountService.getAccount());
-
             const bill = this.selectedBills[0];
-            await firstValueFrom(this.billService.payInvoice(bill.id, account.id));
+            await firstValueFrom(this.billService.payInvoice(bill.id, this.account.id));
             this.accountService.fetchAccountSubject.next();
 
             await this.getBills();

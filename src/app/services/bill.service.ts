@@ -3,8 +3,8 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 
-type BillType = 'recurring' | 'installment'
-type BillFrequency = 'monthly' | 'weekly' | 'annual'
+type BillType = 'recurring' | 'installment';
+type BillFrequency = 'monthly' | 'weekly' | 'annual';
 
 export type BillCreateInput = {
     name: string;

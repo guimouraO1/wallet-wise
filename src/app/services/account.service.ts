@@ -22,8 +22,8 @@ export class AccountService implements OnDestroy {
     private destroy$ = new Subject<void>();
 
     constructor() {
-        this.fetchAccountSubject.pipe(takeUntil(this.destroy$)).subscribe(() => {
-            this.fetchAccount();
+        this.fetchAccountSubject.pipe(takeUntil(this.destroy$)).subscribe(async () => {
+            await this.fetchAccount();
         });
     }
 

@@ -42,8 +42,16 @@ export interface PayloadMakeTransaction {
     description: string;
 }
 
-export type TransactionsYearResponse = { name: string, value: number }[];
-export type TransactionsYearRequest = { accountId: string, year: string, type?: TransactionTypes };
+export type TransactionsYearResponse = {
+    name: string,
+    value: number
+}[];
+
+export type TransactionsYearRequest = {
+    accountId: string,
+    year: string,
+    type?: TransactionTypes
+};
 
 @Injectable({
     providedIn: 'root'

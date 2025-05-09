@@ -1,7 +1,7 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { PayloadTransaction, PaymentMethod, Transaction, TransactionsService, TransactionTypes } from '../../services/transactions.service';
 import { firstValueFrom, Subject, take, takeUntil } from 'rxjs';
-import { AccountService } from '../../services/account.service';
+import { Account, AccountService } from '../../services/account.service';
 import { CommonModule } from '@angular/common';
 import { formatMoneyToString } from '../../helpers/format-money';
 import { formatDate } from '../../helpers/formate-date';
@@ -51,7 +51,11 @@ export class TransactionsComponent implements OnInit, OnDestroy {
 
     private destroy$ = new Subject<void>();
 
+    protected account: Account | undefined;
+
     async ngOnInit() {
+        this.account = await firstValueFrom(this.accountService.getAccount());
+
         this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
             this.selectedTransactionType.setValue(params['type'] || '');
             this.selectedPaymentMethod.setValue(params['paymentMethod'] || '');
@@ -153,7 +157,10 @@ export class TransactionsComponent implements OnInit, OnDestroy {
     }
 
     protected async deleteTransactions() {
-        if (!this.selectedTransactions) return;
+        if (!this.account) {
+            toast.error('Account not found');
+            return;
+        }
 
         const dialogRef = this.dialog.open(DeleteTransactionsModalComponent);
         const result = await firstValueFrom(dialogRef.closed);
@@ -166,9 +173,8 @@ export class TransactionsComponent implements OnInit, OnDestroy {
         this.isError = false;
 
         try {
-            const account = await firstValueFrom(this.accountService.getAccount());
             for (const transaction of this.selectedTransactions) {
-                await firstValueFrom(this.transactionsService.deleteTransaction(transaction.id, account.id));
+                await firstValueFrom(this.transactionsService.deleteTransaction(transaction.id, this.account.id));
             }
 
             await this.getTransactions();
@@ -182,13 +188,17 @@ export class TransactionsComponent implements OnInit, OnDestroy {
     }
 
     protected async getTransactions() {
+        if (!this.account) {
+            toast.error('Account not found');
+            return;
+        }
+
         this.isLoading = true;
         this.isError = false;
 
         try {
-            const account = await firstValueFrom(this.accountService.getAccount());
             const data: PayloadTransaction = {
-                accountId: account.id,
+                accountId: this.account.id,
                 page: this.page,
                 offset: this.offset,
                 ...(this.selectedTransactionType.value ? { type: this.selectedTransactionType.value } : {}),
