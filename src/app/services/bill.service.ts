@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 type BillType = 'recurring' | 'installment';
 type BillFrequency = 'monthly' | 'weekly' | 'annual';
@@ -88,7 +88,7 @@ export class BillService {
     }
 
     payInvoice(billId: string, accountId: string) {
-        return this.http.post(`${environment.apiUrl}/invoice/bill`, { billId, accountId });
+        return this.http.post(`${environment.apiUrl}/bill/pay${accountId}`, { billId });
     }
 
     deleteBill(id: string, accountId: string): Observable<object> {
