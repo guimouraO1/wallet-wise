@@ -88,7 +88,7 @@ export class BillService {
     }
 
     payInvoice(billId: string, accountId: string) {
-        return this.http.post(`${environment.apiUrl}/bill/pay${accountId}`, { billId });
+        return this.http.post(`${environment.apiUrl}/bill/pay/${accountId}`, { billId });
     }
 
     deleteBill(id: string, accountId: string): Observable<object> {
